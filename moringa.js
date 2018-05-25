@@ -73,25 +73,25 @@ class Moringa {
 		var option     = { last:false, exclusive:false, condition:'', actions:[] };  // always executed and always first (per option)
 
 		var commands = [
-			{ command:'comment',     gram:'-- * \n'                          },
-			{ command:'context',     gram:'context " * " \n'                 },
-			{ command:'recognizer',  gram:'recognizer " * " \n'              },
-			{ command:'optionif',    gram:'?last ?exclusive option if * \n'  },
-			{ command:'option',      gram:'?last ?exclusive option \n'       },
-			{ command:'synonym',     gram:'synonym * : * ?timing\n'          },
-			{ command:'group',       gram:'group * : * ?timing \n'           },
-			{ command:'conjugate',   gram:'conjugate \n'                     },
-			{ command:'maintain',    gram:'maintain * ?timing \n'            },
-			{ command:'say',         gram:'say " * " ?timing \n'             },
-			{ command:'remember',    gram:'remember " * " ?timing \n'        },
-			{ command:'recall',      gram:'recall " * " ?timing\n'           },
-			{ command:'forget',      gram:'forget ?timing \n'                },
-			{ command:'interpretas', gram:'interpret as "*" ?timing \n'      },
-			{ command:'expectas',    gram:'expect " * " as " * " ?timing \n' },
-			{ command:'request',     gram:'request " * " ?timing \n'         },
-			{ command:'enter',       gram:'enter " * "'                      },
-			{ command:'exit',        gram:'exit " * " \n'                    },
-			{ command:'blankspace',  gram:'\n'                               }
+			{ command:'comment',     gram:'-- * \n',                          param:{ message:1 }                        },  // useful to export
+			{ command:'context',     gram:'context " * " \n',                 param:{ context:2 }                        },
+			{ command:'recognizer',  gram:'recognizer " * " \n',              param:{ pattern:2 }                        },
+			{ command:'optionif',    gram:'?last ?exclusive option if * \n',  param:{}                                   },  // use logic to find params 
+			{ command:'option',      gram:'?last ?exclusive option \n',       param:{}                                   },  // use logic to find params
+			{ command:'synonym',     gram:'synonym * : * ?timing\n',          param:{ keyword:1, alternates:2, timing:3} },
+			{ command:'group',       gram:'group * : * ?timing \n',           param:{ keyword:1, alternates:2, timing:3} },
+			{ command:'conjugate',   gram:'conjugate * \n',                   param:{ transforms:1 }                     }, 
+			{ command:'maintain',    gram:'maintain * ?timing \n',            param:{ variable:1, timing:2 }             },
+			{ command:'say',         gram:'say " * " ?timing \n',             param:{ message:2, timing:4 }              },
+			{ command:'remember',    gram:'remember " * " ?timing \n',        param:{ message:2, timing:4 }              },
+			{ command:'recall',      gram:'recall " * " ?timing\n',           param:{ message:2, timing:4 }              },
+			{ command:'forget',      gram:'forget " * " ?timing \n',          param:{ message:2, timing:4 }              },
+			{ command:'interpretas', gram:'interpret as " * " ?timing \n',    param:{ statement:3, timing:5 }            },
+			{ command:'expectas',    gram:'expect " * " as " * " ?timing \n', param:{ expecting:2, as:6, timing:8 }      },
+			{ command:'request',     gram:'request " * " ?timing \n',         param:{ url:2, timing:4 }                  },
+			{ command:'enter',       gram:'enter " * " \n',                   param:{ context:2 }                        },
+			{ command:'exit',        gram:'exit " * " \n',                    param:{ context:2 }                        },
+			{ command:'blankspace',  gram:'\n',                               param:{}                                   }
 		];
 
 		// Loop through Code Tokens
@@ -146,8 +146,15 @@ class Moringa {
 					break;
 				} // end of gram loop (w)
 				if( matched ) {
-					found = { command:cmd.command, begins:t, ends:tt-1, tokens:tokens.slice(t,tt-1) };
-					//console.log('found: ' + JSON.stringify(found.command,null,'  '));
+					// Consolidate what was found
+					found = { command:cmd.command, begins:t, ends:tt-1, tokens:tokens.slice(t,tt-1), param:{} };
+
+					// Isolate found parameters -- NOTE: positions can change if preceded by ?optionals; undefine check is for ?timings 
+					for( var param in cmd.param ) {
+						let position = cmd.param[param];
+						if( found.tokens[position] !== undefined ) found.param[param] = found.tokens[position].value;	
+					}
+					//console.log('found: ' + JSON.stringify(found.command,null,'  ') + ' with params: ' + JSON.stringify(found.param));
 					break;
 				}
 				if( found !== undefined ) break;
@@ -164,9 +171,11 @@ class Moringa {
 			// General Philosophy of Directives: push empty new one, populate.. when all done, prune any empty
 			//console.log('FOUND: ' + JSON.stringify(found));
 			switch( found.command ) {
+				// Things to ignore..
 				case 'blankspace':
 					break;
 
+				// Architectural Commands
 				case 'context':
 					context = {name:found.tokens[2].value, recognizers:[], memories:[], active:false}; 
 					personality.push(context);
@@ -184,12 +193,16 @@ class Moringa {
 					recognizer.options.push(option);
 					break;
 
-				// TODO: case for each command
-				case 'say':
-					break;
+				//case 'say':
+				//	let action = { command:'say', message:found.tokens[2].value, lineNo:found.tokens[0].lineNo };  // TODO: timings
+				//	option.actions.push(action);
+				//	break;
 
+				// Action Commands 
 				default:
-					console.log('Known but unsupported command "' + found.command + '".');
+					//console.log('Known but unsupported command "' + found.command + '".');
+					let action = { command:found.command, param:found.param, lineNo:found.tokens[0].lineNo };
+					option.actions.push(action);
 			}
 
 			// Advance in code to continue with next token
@@ -206,7 +219,7 @@ class Moringa {
 	}
 
 	input( message, name = this.name, callback = this.callback ) {
-		console.log('PERSONALITIES:\n' + JSON.stringify(this.personality,null,'  '));
+		console.log('PERSONALITIES:\n' + JSON.stringify(this.personality,null,'  '));  // XXX
 		//let options = this.getOptions( message, this.personality[name] );
 		//let option  = this.getPreferred(options, this.personality[name] );
 		//this.execute( option, this.personality[name] );
