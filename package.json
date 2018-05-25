@@ -1,0 +1,27 @@
+{
+  "name": "moringa",
+  "version": "1.0.0",
+  "description": "Engine for Artificially Intelligent Chatbots based on Moringa Interactivity Scripts",
+  "main": "moringa.js",
+  "scripts": {
+    "test": "node example.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Solifugus/moringa.git"
+  },
+  "keywords": [
+    "AI",
+    "chatbot",
+    "agent"
+  ],
+  "author": "Matthew C. Tedder",
+  "license": "GPL-2.0-only",
+  "bugs": {
+    "url": "https://github.com/Solifugus/moringa/issues"
+  },
+  "homepage": "https://github.com/Solifugus/moringa#readme",
+  "dependencies": {
+    "retokenizer": "^1.1.0"
+  }
+}

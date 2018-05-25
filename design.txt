@@ -1,0 +1,149 @@
+
+
+
+The Moringa Agent Engine and MoringaScript 1.0
+
+The Moringa agent engine (Moringa Engine) is a class that may be instantiated
+and run on any modern ECMAScript interpreter.  The Moringa Engine requires at
+least one foundational Moringa script and may have any number of supplemental
+scripts merged in, thereafter.  
+
+A Moringa script defines the Agent's interactions with its users and there may
+be two types: foundational and supplemental.  A foundational script is a 
+baseline to which supplementals may be added.  
+
+	Foundational Script.  The idea of a baseline is to catch all the generic 
+utterances that might be made by a user and provide generic responses to them.
+At a minimum, a foundational script should contain a catch-all.  That is, what 
+to do if the user's utterance is not understood.  
+
+Multiple foundational scripts may be fed into the Moringa Engine.  The purpose
+for this is that one is to be the agent's baseline personality and others may
+be added to represent other personalities to simulate.  For example, let's say
+the agent is a salesman.  To better guess how a customer might respond to a
+suggestion, it may want to contemplate making the suggestion to its internal
+model of the customer.  Hence, it may need to begin with a foundational 
+"customer" and, as it learns more by talking with the real customer, enhance
+its model by merging supplementals.  For example, if the customer says he/she
+likes sports then merge a "sports" supplemental script into the model of this
+customer being developed.  If the customer says he/she doesn't like water 
+sports then add that to the customer model.  Then before making a suggestion,
+first contemplate the response by suggesting it internally to the customer
+model.  Every time a foundational script is imported into the Moringa Engine,
+it creates a new model.  The first of these is the agent's base model.
+
+	Supplemental Scripts.  The idea of a supplemental script is to provide
+some kind of personality trait or topic expertise.  A supplemental script
+merges into a foundation and over or under what has already been merged in to
+that foundation.  That is, if a recognizer in the supplement already exists
+then it's options are either placed ahead of (over) or after (under) the 
+options already there. 
+
+
+===============================================================================
+The MoringaScript Language
+
+----------------
+Structural Terms
+
+Recognizer "{pattern}"\n
+	{action commands to always do if recognized}
+	[Exclusive] [Last] Option\n
+		{action commands to do if option is chosen}
+	[Exclusive] [Last] Option If {condition}\n
+		{action commands to do if condition is true and option is chosen}
+
+	-------
+	pattern
+
+	A pattern may contain any visible characters between whitespace.  Any
+	whitespace characters in front or on the end are ignored.  Any whitespace
+	characters within are used to separate words. Any visible characters
+	other than letters or numbers are viewed as words themselves.  
+
+	However, variables may be embedded in a pattern by encasing the variable
+	name in square brackets.  In a read operation, whatever text is found in
+	the space of the variable up to the next word in the patter is assigned
+	to that variable as its value.  In a write operation, any value assigned
+	to the variable is inserted else its name (if no value is assigned to it).
+	Also in a write operation, if the variable name starts with "group:" the 
+	only acceptible word must be one in the group so named.
+
+	All patterns are defined within quotes.  However, if a quote or a 
+	square bracket needs to be part of a pattern then it may be escaped with
+	a backslash, such as \", \[, \], or \\.
+
+	---------
+	condition
+	
+	A condition statement evaluates to true or false.  If true, the respective
+	option is elligible to be chosen.  A condition may comprise any combination
+	of patterns, numbers, numeric comparators (">",">=","<>","<","<="), filters
+	("Including", "Excluding"), or logical operators ("and","or","not").
+
+	A pattern will evaluate to the number of matches in memory.  Zero is equal
+	to False and anything else is equal to True.
+
+	In a condition, the pattern is in both a read and write operation, even
+	though nothing is written to memory.  If a variable is assigned then its
+	value is placed in the pattern before reading from memory.  Anything else
+	is assigned from memory when the pattern is found.
+
+	
+---------------
+Action Commands
+
+	Say "{pattern}" [timing]
+	Remember "{pattern}" [timing]
+	Recall "{pattern} [timing]
+	Expect "{pattern}" As "{pattern}" [timing]
+	Interpret As "{pattern}" [timing]
+	Enter Context "{name of context}" [timing] [{ ..context definition.. }]
+	Exit Context ["name of context"] [timing]
+
+
+===============================================================================
+Moringa Engine's Processing Sequence
+
+User messages are passed into the Moringa engine through the ".send(message)"
+method.  Any instant responses are returned by that method.  However, delayed
+responses may be passed to a callback.  By default, the callback is that
+passed into Moringa's constructor.  However, you may over-ride then with each
+call to the ".send(message,callback)" method by adding the callback.  A 
+callback so added would only apply to that specific call.  
+
+(1) Run everything in the global space.
+
+The global space is from the beginning of a script to the first Recognizer 
+declaration.  It may be (correctly) assumed that this global space is a special
+recognizer that processes immediately after reception of each user message.  So
+it may contain any action commands or even any kind of option declaration.
+
+(2) Contexts are processed in order of most to least recently entered.
+
+Each may have its own global area and list of recognizers.  This is all
+processed the same as the main script for its order in the script.
+
+(3) Recognizers
+
+Within each context and then again after all contexts (in the foundation), 
+recognizers evaluate against the user message starting with the longest to the
+shortest, accepting the one that is first found to match.  A recognizer's 
+"reaction" is everything coded from after it to just before the next recognizer
+declaration or the end of the script.
+
+Amid a recognizer's reaction, any commands before the first option declaration
+is executed.  After this, the Moringa engine determines what options are 
+elligible for chosing.  Any options without conditions or with conditions 
+evaluating to true are deemed elligible.  If none are thus found to elligible 
+and then any "Last Option" may be evaluated for elligibility.
+
+
+
+
+
+
+
+
+
+
