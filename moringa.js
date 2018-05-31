@@ -15,11 +15,13 @@ class Moringa {
 	}
 
 	importFoundation( script, name = this.name ) {
-		this.personality[name] = [];
-		this.personality[name].push({
+		this.personality[name] = {  // each personality is named
+			memories:[],            // each, e.g. { context:'base', memory:'the sky is blue' }
+			contexts:[]             // each, e.g. { name:'base', recognizers:[], active:true }
+		};
+		this.personality[name].contexts.push({
 				name:'base',     // base context of personality (interpreted after any other active context(s))
 				recognizers:[],  // context's recognizers
-				memories:[],     // context's memories
 				active:true
 		});
 		this.importSupplement( script, name );
@@ -28,17 +30,17 @@ class Moringa {
 	importSupplement( script, name ) {
 		if( this.personality[name] === undefined ) return 'Failure: Specified foundation "' + name + '" could not be supplemented because it does not exist.'; 
 		var personality = this.personality[name];   // each personality comprises an array of contexts 
-		var context     = personality[0];           // base context of personality 
+		var context     = personality.contexts[0];  // base context of personality 
 
 		// MoringaScript Syntax Lexicon
 		var syntax = {
 			splitters:[
 				' ','\t','\n','--',
-				'recognizer','fallback','nonexclusive','option',
+				'recognizer','fallback','nonexclusive','option','always','if',
 				'<>','>=','<=','>','<','=','(',')','and','or','not','+','-',
-				'synonym','group',':',',','conjugate','maintain',
-				'say','remember','recall','forget','interpret','expect','as','request',
-				'enter','exit','context','{','}',
+				'synonym','group',':',',','conjugate','retain',
+				'say','remember','recall','forget','interpret','expect','as',
+				'enter','exit','context',
 				'in','at','years','months','weeks','days','hours','minutes','seconds'
 			],
 			removes:[' ','\t'],
@@ -55,26 +57,26 @@ class Moringa {
 		context.recognizers.push(recognizer);
 
 		var commands = [
-			{ command:'comment',     gram:'-- * \n',                                param:{ message:1 }                        },  // useful to export
-			{ command:'context',     gram:'context " * " ?:',                       param:{ context:2 }                        },
-			{ command:'recognizer',  gram:'recognizer " * " ?:',                    param:{ pattern:2 }                        },
-			{ command:'alwaysif',    gram:'?nonexclusive always if ?: * \n',        param:{}                                   },  // use logic to find params 
+			{ command:'comment',     gram:'-- * \n',                                    param:{ message:1 }                        },  // useful to export
+			{ command:'context',     gram:'context " * " ?:',                           param:{ context:2 }                        },
+			{ command:'recognizer',  gram:'recognizer " * " ?:',                        param:{ pattern:2 }                        },
+			{ command:'alwaysif',    gram:'?nonexclusive always if ?: * \n',            param:{}                                   },  // use logic to find params 
 			{ command:'optionif',    gram:'?fallback ?nonexclusive option if ?: * \n',  param:{}                                   },  // use logic to find params 
 			{ command:'option',      gram:'?fallback ?nonexclusive option ?:',          param:{}                                   }, 
-			{ command:'synonym',     gram:'synonym * : * ?timing\n',                param:{ keyword:1, alternates:2, timing:3} },
-			{ command:'group',       gram:'group * : * ?timing \n',                 param:{ keyword:1, alternates:2, timing:3} },
-			{ command:'conjugate',   gram:'conjugate * \n',                         param:{ transforms:1 }                     }, 
-			{ command:'invert',      gram:'invert * \n',                            param:{ transforms:1 }                     }, 
-			{ command:'retain',      gram:'retain * ?timing \n',                    param:{ variable:1, timing:2 }             },
-			{ command:'say',         gram:'say " * " ?timing \n',                   param:{ message:2, timing:4 }              },
-			{ command:'remember',    gram:'remember " * " ?timing \n',              param:{ message:2, timing:4 }              },
-			{ command:'recall',      gram:'recall " * " ?timing\n',                 param:{ message:2, timing:4 }              },
-			{ command:'forget',      gram:'forget " * " ?timing \n',                param:{ message:2, timing:4 }              },
-			{ command:'interpretas', gram:'interpret as " * " ?timing \n',          param:{ statement:3, timing:5 }            },
-			{ command:'expectas',    gram:'expect " * " as " * " ?timing \n',       param:{ expecting:2, as:6, timing:8 }      },
-			{ command:'enter',       gram:'enter " * " ?timing \n',                 param:{ context:2 }                        },
-			{ command:'exit',        gram:'exit " * " ?timing \n',                  param:{ context:2 }                        },
-			{ command:'blankspace',  gram:'\n',                                     param:{}                                   }
+			{ command:'synonym',     gram:'synonym * : * ?timing\n',                    param:{ keyword:1, alternates:2, timing:3} },
+			{ command:'group',       gram:'group * : * ?timing \n',                     param:{ keyword:1, alternates:2, timing:3} },
+			{ command:'conjugate',   gram:'conjugate * \n',                             param:{ transforms:1 }                     }, 
+			{ command:'invert',      gram:'invert * \n',                                param:{ transforms:1 }                     }, 
+			{ command:'retain',      gram:'retain * ?timing \n',                        param:{ variable:1, timing:2 }             },
+			{ command:'say',         gram:'say " * " ?timing \n',                       param:{ message:2, timing:4 }              },
+			{ command:'remember',    gram:'remember " * " ?timing \n',                  param:{ message:2, timing:4 }              },
+			{ command:'recall',      gram:'recall " * " ?timing\n',                     param:{ message:2, timing:4 }              },
+			{ command:'forget',      gram:'forget " * " ?timing \n',                    param:{ message:2, timing:4 }              },
+			{ command:'interpretas', gram:'interpret as " * " ?timing \n',              param:{ statement:3, timing:5 }            },
+			{ command:'expectas',    gram:'expect " * " as " * " ?timing \n',           param:{ expecting:2, as:6, timing:8 }      },
+			{ command:'enter',       gram:'enter " * " ?timing \n',                     param:{ context:2 }                        },
+			{ command:'exit',        gram:'exit " * " ?timing \n',                      param:{ context:2 }                        },
+			{ command:'blankspace',  gram:'\n',                                         param:{}                                   }
 		];
 
 		// Loop through Code Tokens
@@ -88,10 +90,7 @@ class Moringa {
 				var gram = cmd.gram.split(' ');  // command grammars are defined space-separated ("?" prefixes optionals; "timings" is a sub-grammar)
 				var matched = true;              // If a recognized command actually found
 				var tt          = t;             // Searching for command starting at t and ending at tt
-				//console.log('LOOKING for whatever command starts at token ' + t + ' (' + JSON.stringify(tokens[t]) + ')');
-				//console.log('Checking if command grammar "' + JSON.stringify(gram) + '" is at token position ' + tt);
 				for( var w = 0; w < gram.length; w += 1 ) {
-					//console.log('\tSeeking ' + JSON.stringify(gram[w]) + ' at position ' + tt + ' (' + JSON.stringify(tokens[tt]) + ')..');
 					// Match Wildcard Regardless
 					if( gram[w] === '*' ) {
 						//console.log( '\t- ' + JSON.stringify(gram[w]) + ' matches wildcard' );
@@ -118,13 +117,11 @@ class Moringa {
 
 					// Is Litteral Match?
 					if( gram[w].toLowerCase() === tokens[tt].value.toLowerCase() ) {
-						//console.log( '\t- ' + JSON.stringify(gram[w]) + ' matches litteral at position ' + tt + ' (just before ' + JSON.stringify(tokens[tt+1].value) + ' at position ' + (tt+1) + ')' );
 						tt += 1;
 						continue;
 					}
 
 					// Was No Match -- Error
-					//console.log('\tCommand did not match..');
 					matched = false;
 					break;
 				} // end of gram loop (w)
@@ -137,7 +134,6 @@ class Moringa {
 						let position = cmd.param[param];
 						if( found.tokens[position] !== undefined ) found.param[param] = found.tokens[position].value;	
 					}
-					//console.log('found: ' + JSON.stringify(found.command,null,'  ') + ' with params: ' + JSON.stringify(found.param));
 					break;
 				}
 				if( found !== undefined ) break;
@@ -164,7 +160,7 @@ class Moringa {
 					recognizer = { pattern:'', matchers:[], options:[], actions:[] };  // context's global always recognizer 
 					option     = recognizer;                                           // to collect recognizer's always actions
 					context.recognizers.push(recognizer);
-					personality.push(context);
+					personality.contexts.push(context);
 					break;
 
 				case 'recognizer':
@@ -196,8 +192,8 @@ class Moringa {
 		if( err !== '' ) console.log( err );
 		
 		// For each context, sort from longest to shortest..
-		for( var c = 0; c < personality.length; c += 1 ) {
-			var context = personality[c];
+		for( var c = 0; c < personality.contexts.length; c += 1 ) {
+			var context = personality.contexts[c];
 			context.recognizers.sort(( a, b ) => { return b.matchers.length - a.matchers.length });
 		}
 	} // end of importSupplement()
@@ -224,7 +220,7 @@ class Moringa {
 		// TODO
 	}
 
-	/*
+	/* XXX
       For each active context:
         - Perform Always Actions (each begins with nonexclusvie always actions)
         - Collect Valid Options
@@ -235,9 +231,8 @@ class Moringa {
 	input( message, name = this.name, callback = this.callback ) {
 		let personality = this.personality[name];
 		let awareness   = this.interpret( message, personality );
-		console.log( JSON.stringify( awareness, null, '  ' ) );
 		let preferred   = this.preferredOption( awareness, personality );
-		this.performActions( preferred.actions, awareness.variables );
+		this.performActions( preferred.actions, awareness.variable, personality );
 		callback('todo response');
 	}
 
@@ -251,15 +246,15 @@ class Moringa {
 		};
 
 		// For each context..
-		for( var c = 0; c < personality.length; c += 1 ) {
+		for( var c = 0; c < personality.contexts.length; c += 1 ) {
 			// For each recognizer..
-			for( var r = 0; r < personality[c].recognizers.length; r += 1 ) {
-				var recognizer = personality[c].recognizers[r];
+			for( var r = 0; r < personality.contexts[c].recognizers.length; r += 1 ) {
+				var recognizer = personality.contexts[c].recognizers[r];
 
 				// If the context's always recognizer.. 
 				if( recognizer.pattern === '' ) {
 					// Perform always actions
-					this.performActions( recognizer.actions, personality );
+					this.performActions( recognizer.actions, awareness.variable, personality );
 					// Collect valid options
 					for( var i = 0; i < recognizer.options.length; i += 1 ) {
 						if( this.isOptionValid( option, personality ) ) awareness.options.push(recognizer.options[i]);
@@ -268,10 +263,10 @@ class Moringa {
 				}
 
 				// If recognizer is matched, collect all its options then stop collecting.
-				let variable = this.matchRecognizer( message, recognizer, personality );
+				let variable = this.matchRecognizer( message, recognizer.matchers, personality );
 				if( variable !== false ) {
 					awareness.recognizer = recognizer.pattern;
-					this.performActions( recognizer.actions, personality );  // perform recognized's always actions
+					this.performActions( recognizer.actions, awareness.variable, personality );  // perform recognized's always actions
 					for( var name in variable )                             awareness.variable[name] = variable[name];
 					for( var i = 0; i < recognizer.options.length; i += 1 ) awareness.options.push(recognizer.options[i]);
 					break;
@@ -285,9 +280,7 @@ class Moringa {
 	}
 
 	// Returns false else object of collected variables
-	matchRecognizer( message, recognizer, personality ) {
-		var matchers = recognizer.matchers;
-
+	matchRecognizer( message, matchers, personality ) {
 		// Tokenize input message
 		let syntax = {	
 			splitters:[' ','\t','\n','~','`','!','@','#','$','%','^','&','*','(',')','-','+','_','=','{','}','[',']',':',';','"','\'','<','>',',','.','?','/','|','\\'],
@@ -356,10 +349,51 @@ class Moringa {
 	}
 
 	preferredOption( awareness, personality ) {
-		return {actions:[]};
+		// TODO: build in smart algorithms
+		var preferred = awareness.options[this.randomBetween(0,awareness.options.length-1)];
+		return preferred;
 	}
 
-	performActions( actions, variables, personality ) {
+	randomBetween( min, max ) {
+		return Math.floor( Math.random() * ( max - min + 1 ) + min );
+	}
+
+	performActions( actions, variable, personality ) {
+		console.log( 'VARIABLE: ' + JSON.stringify(variable,null,'  ') );
+		//console.log( 'ACTIONS: ' + JSON.stringify(actions,null,'  ') );
+		for( var a = 0; a < actions.length; a += 1 ) {
+			var action = actions[a];
+			console.log('ACTION ' + a + ': ' + JSON.stringify(action) );
+			switch( action.command.toLowerCase() ) {
+				case 'say':      this.actionSay( action.param, variable, personality ); break;	
+				case 'remember': this.actionRemember( action.param, variable, personality ); break;	
+				case 'recall':   this.actionRecall( action.param, variable, personality ); break;	
+			}
+		}
+	}
+
+	// ========== Action Performances ==========
+	actionSay( param, variable, personality ) {
+		console.log( param.message );
+	}
+
+	actionRemember( param, variable, personality ) {
+		// TODO: format output pattern
+		personality.memories.push( { context:'base', memory:param.message } );
+	}
+
+	actionRecall( param, variable, personality ) {
+		var matchers = this.formatRecognizerPattern(param.message);
+		for( var m = 0; m < personality.memories.length; m += 1 ) {
+			var memory = personality.memories[m].memory;
+			found = this.matchRecognizer( matchers, memory, personality );
+			if( found !== false ) {
+				for( var name in found ) {
+					if( variable[name] !== undefined ) { variable[name] += ', ' + found[name]; }
+					else                               { variable[name] = found[name]; }
+				}
+			}
+		}
 	}
 
 } // End of class
