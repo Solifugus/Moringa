@@ -1,0 +1,33 @@
+recognizer "hello":
+	option:
+		say "How are you?"
+		remember "user said hello"
+	option:
+		say "Hello.  What is your problem?"
+	option:
+		say "Hey -- do I know you?"
+		expect "no" as "you don't know me"
+		expect "yes" as "we know each other"
+
+recognizer "I am teapot":
+	say "So am I."
+
+recognizer "I like [something]"
+	say "I like [something], too"
+
+recognizer "[something] is [somethingelse]":
+	option:
+		say "I will remember that."
+		remember "[something] is [somethingelse]"
+
+recognizer "talk about food":
+	fallback nonexclusive option:
+		enter "food"
+
+context "food":
+	recognizer "what food do you like"
+		option:
+			say "Apples"
+		option:
+			say "Bananas"
+

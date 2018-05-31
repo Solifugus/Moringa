@@ -46,6 +46,16 @@ The MoringaScript Language
 ----------------
 Structural Terms
 
+context "name"
+	Anything commands hereafter until the next "context" directive is
+	considered part of the context thus named.  Only the "base" context is
+	active by default.  Others become active when entered and inactive when
+	exited.  When interpreting input, matching recognizers are run through 
+	all active contexts from most to least recently entered.  
+
+	When a recognizer is matched in any context (except for "base"), that
+	context becomes the most recent.
+
 Recognizer "{pattern}"\n
 	{action commands to always do if recognized}
 	[Exclusive] [Last] Option\n
@@ -73,6 +83,11 @@ Recognizer "{pattern}"\n
 	square bracket needs to be part of a pattern then it may be escaped with
 	a backslash, such as \", \[, \], or \\.
 
+	Variables.  Anything within square brackets are considered variables.
+
+	Litterals.  Anything enclosed within backtics (under the ~ key) is 
+	considered a character-by-character litteral.
+
 	---------
 	condition
 	
@@ -93,7 +108,7 @@ Recognizer "{pattern}"\n
 ---------------
 Action Commands
 
-	Say "{pattern}" [timing]
+	Output "{pattern}" [timing]
 	Remember "{pattern}" [timing]
 	Recall "{pattern} [timing]
 	Expect "{pattern}" As "{pattern}" [timing]
