@@ -23,6 +23,6 @@
   "homepage": "https://github.com/Solifugus/moringa#readme",
   "dependencies": {
     "fs": "0.0.1-security",
-    "retokenizer": "^1.1.1"
+    "retokenizer": "^1.2.1"
   }
 }

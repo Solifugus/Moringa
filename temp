@@ -1,0 +1,463 @@
+
+Starting Cybernetic Synthia..
+=============================
+TOKENS:
+[
+  {
+    "type": "opener",
+    "value": "--",
+    "lineNo": 1
+  },
+  {
+    "type": "enclosed",
+    "value": " Sample Personality",
+    "lineNo": 1
+  },
+  {
+    "type": "closer",
+    "value": "\n",
+    "lineNo": 2
+  },
+  {
+    "type": "splitter",
+    "value": "\n",
+    "lineNo": 3
+  },
+  {
+    "type": "splitter",
+    "value": "\n",
+    "lineNo": 4
+  },
+  {
+    "type": "opener",
+    "value": "--",
+    "lineNo": 4
+  },
+  {
+    "type": "enclosed",
+    "value": "synonyms yes: yeah, yep, yup, sure",
+    "lineNo": 4
+  },
+  {
+    "type": "closer",
+    "value": "\n",
+    "lineNo": 5
+  },
+  {
+    "type": "splitter",
+    "value": "\n",
+    "lineNo": 6
+  },
+  {
+    "type": "opener",
+    "value": "--",
+    "lineNo": 6
+  },
+  {
+    "type": "enclosed",
+    "value": "synonyms no: nah, neah, nope",
+    "lineNo": 6
+  },
+  {
+    "type": "closer",
+    "value": "\n",
+    "lineNo": 7
+  },
+  {
+    "type": "splitter",
+    "value": "\n",
+    "lineNo": 8
+  },
+  {
+    "type": "splitter",
+    "value": "\n",
+    "lineNo": 9
+  },
+  {
+    "type": "splitter",
+    "value": "recognizer",
+    "lineNo": 9
+  },
+  {
+    "type": "opener",
+    "value": "\"",
+    "lineNo": 9
+  },
+  {
+    "type": "enclosed",
+    "value": "hello",
+    "lineNo": 9
+  },
+  {
+    "type": "closer",
+    "value": "\"",
+    "lineNo": 9
+  },
+  {
+    "type": "string",
+    "value": "\"",
+    "lineNo": 9
+  },
+  {
+    "type": "splitter",
+    "value": "\n",
+    "lineNo": 10
+  },
+  {
+    "type": "splitter",
+    "value": "option",
+    "lineNo": 10
+  },
+  {
+    "type": "splitter",
+    "value": "say",
+    "lineNo": 10
+  },
+  {
+    "type": "opener",
+    "value": "\"",
+    "lineNo": 10
+  },
+  {
+    "type": "enclosed",
+    "value": "Hi.",
+    "lineNo": 10
+  },
+  {
+    "type": "closer",
+    "value": "\"",
+    "lineNo": 10
+  },
+  {
+    "type": "string",
+    "value": "\"",
+    "lineNo": 10
+  },
+  {
+    "type": "splitter",
+    "value": "\n",
+    "lineNo": 11
+  },
+  {
+    "type": "splitter",
+    "value": "option",
+    "lineNo": 11
+  },
+  {
+    "type": "splitter",
+    "value": "say",
+    "lineNo": 11
+  },
+  {
+    "type": "opener",
+    "value": "\"",
+    "lineNo": 11
+  },
+  {
+    "type": "enclosed",
+    "value": "Nice to meet you.",
+    "lineNo": 11
+  },
+  {
+    "type": "closer",
+    "value": "\"",
+    "lineNo": 11
+  },
+  {
+    "type": "string",
+    "value": "\"",
+    "lineNo": 11
+  },
+  {
+    "type": "splitter",
+    "value": "\n",
+    "lineNo": 12
+  },
+  {
+    "type": "splitter",
+    "value": "\n",
+    "lineNo": 13
+  },
+  {
+    "type": "splitter",
+    "value": "recognizer",
+    "lineNo": 13
+  },
+  {
+    "type": "opener",
+    "value": "\"",
+    "lineNo": 13
+  },
+  {
+    "type": "enclosed",
+    "value": "my name is [name]",
+    "lineNo": 13
+  },
+  {
+    "type": "closer",
+    "value": "\"",
+    "lineNo": 13
+  },
+  {
+    "type": "string",
+    "value": "\"",
+    "lineNo": 13
+  },
+  {
+    "type": "splitter",
+    "value": "\n",
+    "lineNo": 14
+  },
+  {
+    "type": "splitter",
+    "value": "option",
+    "lineNo": 14
+  },
+  {
+    "type": "splitter",
+    "value": "say",
+    "lineNo": 14
+  },
+  {
+    "type": "opener",
+    "value": "\"",
+    "lineNo": 14
+  },
+  {
+    "type": "enclosed",
+    "value": "Nice to meet you, [name].",
+    "lineNo": 14
+  },
+  {
+    "type": "closer",
+    "value": "\"",
+    "lineNo": 14
+  },
+  {
+    "type": "string",
+    "value": "\"",
+    "lineNo": 14
+  },
+  {
+    "type": "splitter",
+    "value": "\n",
+    "lineNo": 15
+  },
+  {
+    "type": "splitter",
+    "value": "option",
+    "lineNo": 15
+  },
+  {
+    "type": "splitter",
+    "value": "say",
+    "lineNo": 15
+  },
+  {
+    "type": "opener",
+    "value": "\"",
+    "lineNo": 15
+  },
+  {
+    "type": "enclosed",
+    "value": "The name \"[name\" sounds friendly.",
+    "lineNo": 15
+  },
+  {
+    "type": "closer",
+    "value": "\"",
+    "lineNo": 15
+  },
+  {
+    "type": "string",
+    "value": "\"",
+    "lineNo": 15
+  },
+  {
+    "type": "splitter",
+    "value": "\n",
+    "lineNo": 16
+  },
+  {
+    "type": "splitter",
+    "value": "\n",
+    "lineNo": 17
+  },
+  {
+    "type": "splitter",
+    "value": "recognizer",
+    "lineNo": 17
+  },
+  {
+    "type": "opener",
+    "value": "\"",
+    "lineNo": 17
+  },
+  {
+    "type": "enclosed",
+    "value": "[someone] likes to [thing] on [day] afternoons",
+    "lineNo": 17
+  },
+  {
+    "type": "closer",
+    "value": "\"",
+    "lineNo": 17
+  },
+  {
+    "type": "string",
+    "value": "\"",
+    "lineNo": 17
+  },
+  {
+    "type": "splitter",
+    "value": "\n",
+    "lineNo": 18
+  },
+  {
+    "type": "splitter",
+    "value": "option",
+    "lineNo": 18
+  },
+  {
+    "type": "splitter",
+    "value": "say",
+    "lineNo": 18
+  },
+  {
+    "type": "opener",
+    "value": "\"",
+    "lineNo": 18
+  },
+  {
+    "type": "enclosed",
+    "value": "Why does [someone] like to [thing] only on [day] days?",
+    "lineNo": 18
+  },
+  {
+    "type": "closer",
+    "value": "\"",
+    "lineNo": 18
+  },
+  {
+    "type": "string",
+    "value": "\"",
+    "lineNo": 18
+  },
+  {
+    "type": "splitter",
+    "value": "\n",
+    "lineNo": 19
+  },
+  {
+    "type": "splitter",
+    "value": "\n",
+    "lineNo": 20
+  },
+  {
+    "type": "splitter",
+    "value": "recognizer",
+    "lineNo": 20
+  },
+  {
+    "type": "opener",
+    "value": "\"",
+    "lineNo": 20
+  },
+  {
+    "type": "enclosed",
+    "value": "[anything]",
+    "lineNo": 20
+  },
+  {
+    "type": "closer",
+    "value": "\"",
+    "lineNo": 20
+  },
+  {
+    "type": "string",
+    "value": "\"",
+    "lineNo": 20
+  },
+  {
+    "type": "splitter",
+    "value": "\n",
+    "lineNo": 21
+  },
+  {
+    "type": "splitter",
+    "value": "option",
+    "lineNo": 21
+  },
+  {
+    "type": "splitter",
+    "value": "say",
+    "lineNo": 21
+  },
+  {
+    "type": "opener",
+    "value": "\"",
+    "lineNo": 21
+  },
+  {
+    "type": "enclosed",
+    "value": "Please elaborate on that.",
+    "lineNo": 21
+  },
+  {
+    "type": "closer",
+    "value": "\"",
+    "lineNo": 21
+  },
+  {
+    "type": "string",
+    "value": "\"",
+    "lineNo": 21
+  },
+  {
+    "type": "splitter",
+    "value": "\n",
+    "lineNo": 22
+  },
+  {
+    "type": "splitter",
+    "value": "option",
+    "lineNo": 22
+  },
+  {
+    "type": "splitter",
+    "value": "say",
+    "lineNo": 22
+  },
+  {
+    "type": "opener",
+    "value": "\"",
+    "lineNo": 22
+  },
+  {
+    "type": "enclosed",
+    "value": "Could you rephrase that, please.",
+    "lineNo": 22
+  },
+  {
+    "type": "closer",
+    "value": "\"",
+    "lineNo": 22
+  },
+  {
+    "type": "string",
+    "value": "\"",
+    "lineNo": 22
+  },
+  {
+    "type": "splitter",
+    "value": "\n",
+    "lineNo": 23
+  }
+]
+
+
+COMMENT: {"command":"comment","begins":0,"ends":2,"tokens":[{"type":"opener","value":"--","lineNo":1},{"type":"enclosed","value":" Sample Personality","lineNo":1}],"param":{"message":" Sample Personality"}}
+COMMENT: {"command":"comment","begins":5,"ends":7,"tokens":[{"type":"opener","value":"--","lineNo":4},{"type":"enclosed","value":"synonyms yes: yeah, yep, yup, sure","lineNo":4}],"param":{"message":"synonyms yes: yeah, yep, yup, sure"}}
+COMMENT: {"command":"comment","begins":9,"ends":11,"tokens":[{"type":"opener","value":"--","lineNo":6},{"type":"enclosed","value":"synonyms no: nah, neah, nope","lineNo":6}],"param":{"message":"synonyms no: nah, neah, nope"}}
+COMMAND FOUND: {"command":"recognizer","begins":14,"ends":17,"tokens":[{"type":"splitter","value":"recognizer","lineNo":9},{"type":"opener","value":"\"","lineNo":9},{"type":"enclosed","value":"hello","lineNo":9}],"param":{"pattern":"hello"}}
+Malformed Statement at "\"", line 10.

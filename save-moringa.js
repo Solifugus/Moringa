@@ -48,14 +48,8 @@ class Moringa {
 			],
 			removes:[' ','\t'],
 			enclosures:[
-				{ opener:'--', closer:'\n' },
 				{ opener:'"', escaper:'\\', closer:'"' },
-			//	{ opener:'if', closer:'\n' },
-				{ opener:':', closer:'\n' },
-			//	{ opener:'conjugate', closer:'\n' },
-			//	{ opener:'invert', closer:'\n' },
-			//	{ opener:'at', closer:'\n' },
-			//	{ opener:'for', closer:'\n' }
+				{ opener:'--', closer:'\n' }
 			]
 		};
 
@@ -68,7 +62,6 @@ class Moringa {
 		var option     = recognizer;  // to collect recognizer's always actions
 		context.recognizers.push(recognizer);
 
-		// TODO: add "," to mean, comma separated list..
 		var commands = [
 			{ command:'comment',     gram:'-- * \n',                                    param:{ message:1 }                        },  // useful to export
 			{ command:'context',     gram:'context " * "',                              param:{ context:2 }                        },
@@ -109,6 +102,25 @@ class Moringa {
 						// One token matched by wildcard -- because we are assuming it's an enclosure
 						tt += 1;
 						continue;
+
+						/* 
+						// If no next gram then wildcard can only cover one token -- done, matched.
+						if( w === gram.length - 1 ) {
+							tt += 1;
+							continue;
+						}
+						// Else collect for wildcard up to next gram
+						else {
+							let start = tt;
+							do { tt += 1; } while( tt < tokens.length && tokens[tt].value.toLowerCase() !== gram[w+1].toLowerCase() );
+							// TODO: splice the wildcard tokens into tokens as a single [] YYY
+							let wildcard = tokens.slice(start,tt);
+							console.log( 'WILDCARD: ' + JSON.stringify(wildcard) );
+							tokens.splice(start,tt-start,wildcard);
+							tt = start + 1;
+							continue;
+						}
+						*/
 					}
 					// Match ?Option (but if not, continue without advancing tt because this was only optional)
 					if( gram[w][0] === '?' ) {
@@ -140,6 +152,9 @@ class Moringa {
 					// Consolidate what was found
 					found = { command:cmd.command, begins:t, ends:tt-1, tokens:tokens.slice(t,tt-1), param:{} };
 
+					// DEBUG: need some way of knowing to collect all wildcard matched tokens in one place..  XXX Make READ ALL OF WILDCARD AREA
+					if( found.command === 'synonyms' ) console.log('FOUND: ' + JSON.stringify(found,null,'  ')); // XXX
+
 					// Isolate found parameters -- NOTE: positions can change if preceded by ?optionals; undefine check is for ?timings 
 					for( var param in cmd.param ) {
 						let position = cmd.param[param];
@@ -163,8 +178,8 @@ class Moringa {
 			switch( found.command ) {
 				// Things to ignore..
 				case 'newline':
-				case 'comment':
 					break;
+				case 'comment': console.log('COMMENT: ' + JSON.stringify(found)); break;
 
 				// Architectural Commands
 				case 'context':
@@ -176,6 +191,7 @@ class Moringa {
 					break;
 
 				case 'recognizer':
+			console.log( 'COMMAND FOUND: ' + JSON.stringify(found) );
 					let matchers = this.formatRecognizerPattern(found.param.pattern);  // translate to format for matching
 					recognizer = { pattern:found.param.pattern, matchers:matchers, options:[], actions:[] };
 					option     = recognizer;  // to collect recognizer's always actions 
@@ -195,6 +211,7 @@ class Moringa {
 					let action = { command:found.command, param:found.param, lineNo:found.tokens[0].lineNo };
 					option.actions.push(action);
 			}
+			if( found.command === 'synonyms' ) console.log('COMMAND: ' + found.command + '\nRECOGNIZER: ' + JSON.stringify(recognizer,null,'  '));
 
 			// Advance in code to continue with next token
 			//console.log('Next token will be ' + tt + ' (' + JSON.stringify(tokens[tt].value) + ')');
@@ -206,10 +223,7 @@ class Moringa {
 		// For each context, sort from longest to shortest..
 		for( var c = 0; c < personality.contexts.length; c += 1 ) {
 			var context = personality.contexts[c];
-			context.recognizers.sort(( a, b ) => {
-				if( a.pattern === '' ) return -1;  // ensure always recognizer is always first.. 
-				return b.matchers.length - a.matchers.length 
-			});
+			context.recognizers.sort(( a, b ) => { return b.matchers.length - a.matchers.length });
 		}
 	} // end of importSupplement()
 
@@ -240,7 +254,7 @@ class Moringa {
 		let personality  = this.personality[name];
 		let awareness    = this.interpret( message, personality );
 		let preferred    = this.pickOption( awareness, personality );
-		var response     = this.performActions( preferred.actions, awareness, personality );
+		var response     = this.performActions( preferred.actions, awareness.variable, personality );
 		callback(response);
 	}
 
@@ -249,15 +263,12 @@ class Moringa {
 		// Variable to collecting options and related data in; search stops when recognizer is matched
 		var awareness = {
 			recognizer:false,  // recognizer matched (else undefined)
-			context:'',        // context of matched recognizer
 			variable:{},       // variables collected
 			options:[],        // valid options collected
 		};
 
 		// For each context..
 		for( var c = 0; c < personality.contexts.length; c += 1 ) {
-			awareness.context = personality.contexts[c].name; 
-
 			// For each recognizer..
 			for( var r = 0; r < personality.contexts[c].recognizers.length; r += 1 ) {
 				var recognizer = personality.contexts[c].recognizers[r];
@@ -265,7 +276,7 @@ class Moringa {
 				// If the context's always recognizer.. 
 				if( recognizer.pattern === '' ) {
 					// Perform always actions
-					this.performActions( recognizer.actions, awareness, personality );
+					this.performActions( recognizer.actions, awareness.variable, personality );
 					// Collect valid options
 					for( var i = 0; i < recognizer.options.length; i += 1 ) {
 						if( this.isOptionValid( option, personality ) ) awareness.options.push(recognizer.options[i]);
@@ -277,7 +288,7 @@ class Moringa {
 				let variable = this.matchRecognizer( message, recognizer.matchers, personality );
 				if( variable !== false ) {
 					awareness.recognizer = recognizer.pattern;
-					this.performActions( recognizer.actions, awareness, personality );  // perform recognized's always actions
+					this.performActions( recognizer.actions, awareness.variable, personality );  // perform recognized's always actions
 					for( var name in variable )                             awareness.variable[name] = variable[name];
 					for( var i = 0; i < recognizer.options.length; i += 1 ) awareness.options.push(recognizer.options[i]);
 					break;
@@ -397,28 +408,26 @@ class Moringa {
 		return Math.floor( Math.random() * ( max - min + 1 ) + min );
 	}
 
-	performActions( actions, awareness, personality ) {
-		var variable        = awareness.variable;
-		var contextPriority = this.contextPriority( awareness.context, personality.contexts ); 
-		//console.log( 'VARIABLE: ' + JSON.stringify(awareness.variable,null,'  ') );
+	performActions( actions, variable, personality ) {
+		//console.log( 'VARIABLE: ' + JSON.stringify(variable,null,'  ') );
 		var response = '';
 		for( var a = 0; a < actions.length; a += 1 ) {
 			var action = actions[a];
 			console.log('ACTION ' + a + ': ' + JSON.stringify(action) );
 			switch( action.command.toLowerCase() ) {
-				case 'synonyms':    this.actionSynonyms( action.param, variable, personality, contextPriority ); break;
-				case 'group':       this.actionGroup( action.param, variable, personality, contextPriority ); break;
-				case 'conjugate':   this.actionConjugate( action.param, variable, personality, contextPriority ); break;
-				case 'invert':      this.actionInvert( action.param, variable, personality, contextPriority ); break;
-				case 'retain':      this.actionRetain( action.param, variable, personality, contextPriority ); break;
-				case 'say':         response += this.actionSay( action.param, variable, personality, contextPriority ); break;	
-				case 'remember':    this.actionRemember( action.param, variable, personality, contextPriority ); break;
-				case 'recall':      this.actionRecall( action.param, variable, personality, contextPriority ); break;
-				case 'forget':      this.actionForget( action.param, variable, personality, contextPriority ); break;
-				case 'interpretas': response += this.actionInterpretAs( action.param, variable, personality, contextPriority ); break;
-				case 'expectas':    this.actionExpectAs( action.param, variable, personality, contextPriority ); break;
-				case 'enter':       this.actionEnter( action.param, variable, personality, contextPriority ); break;
-				case 'exit':        this.actionExit( action.param, variable, personality, contextPriority ); break;
+				case 'synonyms':    this.actionSynonyms( action.param, variable, personality ); break;
+				case 'group':       this.actionGroup( action.param, variable, personality ); break;
+				case 'conjugate':   this.actionConjugate( action.param, variable, personality ); break;
+				case 'invert':      this.actionInvert( action.param, variable, personality ); break;
+				case 'retain':      this.actionRetain( action.param, variable, personality ); break;
+				case 'say':         response += this.actionSay( action.param, variable, personality ); break;	
+				case 'remember':    this.actionRemember( action.param, variable, personality ); break;
+				case 'recall':      this.actionRecall( action.param, variable, personality ); break;
+				case 'forget':      this.actionForget( action.param, variable, personality ); break;
+				case 'interpretas': response += this.actionInterpretAs( action.param, variable, personality ); break;
+				case 'expectas':    this.actionExpectAs( action.param, variable, personality ); break;
+				case 'enter':       this.actionEnter( action.param, variable, personality ); break;
+				case 'exit':        this.actionExit( action.param, variable, personality ); break;
 				default:
 					console.log('Command "' + action.command + '" recognized but not supported.');
 			}
@@ -426,38 +435,9 @@ class Moringa {
 		return response;	
 	}
 
-	contextPriority( name, contexts ) {
-		for( let c = 0; c < contexts.length; c += 1 ) {
-			if( name === contexts.name ) return c;
-		}
-	}
-
 	// ========== Action Performances ==========
-	actionSynonyms( param, variable, personality, context ) {
-		var synonyms = personality.synonyms;
-		// each, e.g. { context:'general', keyword:'yes', members:['yeah','yep','yup','sure'] }
-		console.log( 'SYN context ' + JSON.stringify(context) + ', param ' + JSON.stringify(param) );
-		let members = param.members.split(',');
-		for( let i = 0; i < members.length; i += 1 ) members[i] = members[i].trim();
-
-		// See if synonym set already exists
-		var found = undefined;
-		for( let i = 0; i < synonyms.length; i += 1 ) {
-			if( synonyms[i].keyword.toLowerCase() === param.keyword.toLowerCase() ) {
-				found = synonyms[i];
-				break;
-			}
-		} 
-
-		// If exists, replace else append
-		if( found !== undefined ) {
-			found.context = context;
-			found.members = members;
-		}
-		else {
-			personality.synonyms.push({ context:context, keyword:param.keyword, members:members });
-		}
-		console.log( 'Synonyms: ' + JSON.stringify(personality.synonyms) );
+	actionSynonyms( param, variable, personality ) {
+		console.log( 'SYN: ' + JSON.stringify(param) );
 	}
 
 	actionGroup( param, variable, personality ) {
