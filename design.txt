@@ -105,16 +105,41 @@ Recognizer "{pattern}"\n
 	is assigned from memory when the pattern is found.
 
 	
+	---------------------------
+	Decision Driving Directives
+
+		Seek {number}% {condition}
+		Avoid {number}% {condition}
+
+	Increasing or decreasing a percentage, alters any other respective Seeks
+	or Avoids such as to leave a total of 100% at all times.
+
+
+
 ---------------
 Action Commands
 
-	Output "{pattern}" [timing]
-	Remember "{pattern}" [timing]
-	Recall "{pattern} [timing]
-	Expect "{pattern}" As "{pattern}" [timing]
-	Interpret As "{pattern}" [timing]
+	Say "{output pattern}" [timing]
+	Remember "{output pattern}" [timing]
+	Recall "{input pattern} [timing]
+	Expect "{input pattern}" As "{output pattern}" [timing]
+	Interpret As "{output pattern}" [timing]
 	Enter Context "{name of context}" [timing] [{ ..context definition.. }]
 	Exit Context ["name of context"] [timing]
+
+
+---------------------------------------
+Personality Modeling Commands
+
+	To "{output pattern}" {action command}	
+	Create personality "{output pattern}" From "{output pattern}"
+
+	Respo
+	
+
+	The commands to work with different personality models need to be able to
+	create variably-named instances of personality templates, to execute 
+	commands on it, and to communicate with it in condition expressions.
 
 
 ===============================================================================

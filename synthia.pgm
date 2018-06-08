@@ -1,7 +1,7 @@
 -- Sample Personality
 
-synonyms yes: yeah, yep, yup, sure
---synonyms no: nah, neah, nope
+synonyms likes: loves, wants
+group gender: male, female
 
 recognizer "hello"
 	option say "Hi."
@@ -9,7 +9,11 @@ recognizer "hello"
 
 recognizer "my name is [name]"
 	option say "Nice to meet you, [name]."
-	option say "The name \"[name\" sounds friendly."
+	option say "The name \"[name]\" sounds friendly."
+
+recognizer "being [sex:gender] makes me feel [feeling]"
+    option say "Why does being [sex] make you feel [feeling]?"
+    option say "That you are [sex] is none of my business."
 
 recognizer "[someone] likes to [thing] on [day] afternoons"
 	option say "Why does [someone] like to [thing] only on [day] days?"
@@ -17,3 +21,4 @@ recognizer "[someone] likes to [thing] on [day] afternoons"
 recognizer "[anything]"
 	option say "Please elaborate on that."
 	option say "Could you rephrase that, please."
+
