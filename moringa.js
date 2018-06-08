@@ -1,6 +1,15 @@
 // Moringa Agent Engine Version 1.0
 // Copyright (C) 2018 By Matthew C. Tedder
 // All Rights Reserved
+//
+// TO DO ITEMS:
+// 	[ ] If script enclosures not closed -- give error indicating the fact..
+// 	[ ] Condition Evaluations
+// 	[ ] Conjugations
+// 	[ ] Inversions -- If before or after a litteral or group, do not match
+// 	[ ] Decision logic
+// 	[ ] Seekers and Avoiders
+// 	[ ] Inter-Personality
 
 var tokenizer = require('retokenizer');
 
@@ -50,7 +59,7 @@ class Moringa {
 			enclosures:[
 				{ opener:'--', closer:'\n' },
 				{ opener:'"', escaper:'\\', closer:'"' },
-			//	{ opener:'if', closer:'\n' },
+				{ opener:'if', closer:'\n' },
 				{ opener:':', closer:'\n' },
 			//	{ opener:'conjugate', closer:'\n' },
 			//	{ opener:'invert', closer:'\n' },
@@ -61,6 +70,14 @@ class Moringa {
 
 		let tokens = tokenizer( script, syntax, true );
 		//  console.log( 'TOKENS:\n' + JSON.stringify( tokens, null, '  ' ) + '\n\n' );
+		
+		// If quote not closed by end of line, make error clear closing quote is missing..
+		for( let t = 0; t < tokens.length; t += 1 ) {
+			if( tokens[t].type === 'opener' && tokens[t].value === '"' && tokens[t+1] !== undefined && tokens[t+1].value.indexOf('\n') !== -1 ) {
+				throw('Syntax Error: quote on line ' + tokens[t].lineNo + ' not closed.');
+			}
+		}
+		
 		var i = 0;
 		
 		// Begin with assumption we are in global recognizer's global option
@@ -89,6 +106,8 @@ class Moringa {
 			{ command:'expectas',    gram:'expect " * " as " * " ?timing \n',           param:{ expecting:2, as:6, timing:8 }      },
 			{ command:'enter',       gram:'enter " * " ?timing \n',                     param:{ context:2 }                        },
 			{ command:'exit',        gram:'exit " * " ?timing \n',                      param:{ context:2 }                        },
+			{ command:'seek',        gram:'seek * % * \n',                              param:{ percent:1, condition:2 }           }, 
+			{ command:'avoid',       gram:'avoid * % * \n',                             param:{ percent:1, condition:2 }           },
 			{ command:'newline',     gram:'\n',                                         param:{}                                   }
 		];
 
@@ -159,7 +178,10 @@ class Moringa {
 
 			// ----------------------
 			// Grammar was Recognized
-			// General Philosophy of Directives: push empty new one, populate.. when all done, prune any empty
+			let fallback;
+			let nonexclusive;
+			let condition;
+			
 			switch( found.command ) {
 				// Things to ignore..
 				case 'newline':
@@ -168,7 +190,7 @@ class Moringa {
 
 				// Architectural Commands
 				case 'context':
-					context = {name:found.tokens[2].value, recognizers:[], memories:[], active:false}; 
+					context    = {name:found.tokens[2].value, recognizers:[], memories:[], active:false}; 
 					recognizer = { pattern:'', matchers:[], options:[], actions:[] };  // context's global always recognizer 
 					option     = recognizer;                                           // to collect recognizer's always actions
 					context.recognizers.push(recognizer);
@@ -177,15 +199,31 @@ class Moringa {
 
 				case 'recognizer':
 					let matchers = this.formatRecognizerPattern(found.param.pattern);  // translate to format for matching
-					recognizer = { pattern:found.param.pattern, matchers:matchers, options:[], actions:[] };
-					option     = recognizer;  // to collect recognizer's always actions 
+					recognizer   = { pattern:found.param.pattern, matchers:matchers, options:[], actions:[] };
+					option       = recognizer;  // to collect recognizer's always actions 
 					context.recognizers.push(recognizer);
 					break;
 
 				case 'option':
-					let fallback     = (found.tokens.length > 1 && (found.tokens[0].value === 'fallback' || found.tokens[1].value === 'nonexclusive')) ? true : false;
-					let nonexclusive = (found.tokens.length > 1 && (found.tokens[0].value === 'nonexclusive' || found.tokens[1].value === 'nonexclusive')) ? true : false;
-					option           = {condition:'',fallback:fallback,nonexclusive:nonexclusive,actions:[]};
+					fallback     = (found.tokens.length > 1 && (found.tokens[0].value === 'fallback' || found.tokens[1].value === 'fallback')) ? true : false;
+					nonexclusive = (found.tokens.length > 1 && (found.tokens[0].value === 'nonexclusive' || found.tokens[1].value === 'nonexclusive')) ? true : false;
+					option       = {condition:'',fallback:fallback,nonexclusive:nonexclusive,always:false,actions:[]};
+					recognizer.options.push(option);
+					break;
+
+				case 'optionif':
+					fallback     = (found.tokens.length > 1 && (found.tokens[0].value === 'fallback' || found.tokens[1].value === 'fallback')) ? true : false;
+					nonexclusive = (found.tokens.length > 1 && (found.tokens[0].value === 'nonexclusive' || found.tokens[1].value === 'nonexclusive')) ? true : false;
+					condition    = found.tokens[found.tokens.length-2];
+					option       = {condition:condition,fallback:fallback,nonexclusive:nonexclusive,always:false,actions:[]};
+					recognizer.options.push(option);
+					break;
+
+				case 'alwaysif':
+					fallback     = (found.tokens.length > 1 && (found.tokens[0].value === 'fallback' || found.tokens[1].value === 'fallback')) ? true : false;
+					nonexclusive = (found.tokens.length > 1 && (found.tokens[0].value === 'nonexclusive' || found.tokens[1].value === 'nonexclusive')) ? true : false;
+					condition    = found.tokens[found.tokens.length-2];
+					option       = {condition:condition,fallback:fallback,nonexclusive:nonexclusive,always:true,actions:[]};
 					recognizer.options.push(option);
 					break;
 
