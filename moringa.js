@@ -3,9 +3,7 @@
 // All Rights Reserved
 //
 // TO DO ITEMS:
-// 	[ ] If script enclosures not closed -- give error indicating the fact..
 // 	[ ] Condition Evaluations
-// 	[ ] Conjugations
 // 	[ ] Inversions -- If before or after a litteral or group, do not match
 // 	[ ] Decision logic
 // 	[ ] Seekers and Avoiders
@@ -30,6 +28,7 @@ class Moringa {
 			conjugations:[],        // each, e.g. { context:'general', from:'me', to:'you' }
 			synonyms:[],            // each, e.g. { context:'general', keyword:'yes', members:['yeah','yep','yup','sure'] }
 			groups:[],              // each, e.g. { context:'general', keyword:'gender', members:['male','female'] }
+			expectations:[],        // each, e.g. { context:'general', expect:'feeling', as:'I am feeling [feeling].' }
 		};
 		this.personality[name].contexts.push({
 				name:'general',  // general context of personality (interpreted after any other active context(s))
@@ -48,12 +47,11 @@ class Moringa {
 		var syntax = {
 			splitters:[
 				' ','\t','\n','--',
-				'recognizer','fallback','nonexclusive','option','always','if',
-				'<>','>=','<=','>','<','=','(',')','and','or','not','+','-',
-				'synonyms','group',':',',','conjugate','retain',
+				'recognizer','fallback','exclusive','additional','option','always','if',
+				'synonyms','group',':',',','conjugate','and','retain','invert','on',
 				'say','remember','recall','forget','interpret','expect','as',
 				'enter','exit','context',
-				'in','at','years','months','weeks','days','hours','minutes','seconds'
+				'years','months','weeks','days','hours','minutes','seconds'
 			],
 			removes:[' ','\t'],
 			enclosures:[
@@ -61,15 +59,14 @@ class Moringa {
 				{ opener:'"', escaper:'\\', closer:'"' },
 				{ opener:'if', closer:'\n' },
 				{ opener:':', closer:'\n' },
-			//	{ opener:'conjugate', closer:'\n' },
-			//	{ opener:'invert', closer:'\n' },
+			//	{ opener:'in', closer:'\n' },
 			//	{ opener:'at', closer:'\n' },
 			//	{ opener:'for', closer:'\n' }
 			]
 		};
 
-		let tokens = tokenizer( script, syntax, true );
-		//  console.log( 'TOKENS:\n' + JSON.stringify( tokens, null, '  ' ) + '\n\n' );
+		let tokens = tokenizer( script, syntax, {rich:true} );
+		//console.log( 'TOKENS:\n' + JSON.stringify( tokens, null, '  ' ) + '\n\n' );
 		
 		// If quote not closed by end of line, make error clear closing quote is missing..
 		for( let t = 0; t < tokens.length; t += 1 ) {
@@ -85,30 +82,30 @@ class Moringa {
 		var option     = recognizer;  // to collect recognizer's always actions
 		context.recognizers.push(recognizer);
 
-		// TODO: add "," to mean, comma separated list..
 		var commands = [
-			{ command:'comment',     gram:'-- * \n',                                    param:{ message:1 }                        },  // useful to export
-			{ command:'context',     gram:'context " * "',                              param:{ context:2 }                        },
-			{ command:'recognizer',  gram:'recognizer " * "',                           param:{ pattern:2 }                        },
-			{ command:'alwaysif',    gram:'?nonexclusive always if * \n',               param:{}                                   },  // use logic to find params 
-			{ command:'optionif',    gram:'?fallback ?nonexclusive option if * \n',     param:{}                                   },  // use logic to find params 
-			{ command:'option',      gram:'?fallback ?nonexclusive option',             param:{}                                   }, 
-			{ command:'synonyms',    gram:'synonyms * : * \n',                          param:{ keyword:1, members:3 }             },
-			{ command:'group',       gram:'group * : * \n',                             param:{ keyword:1, members:3 }             },
-			{ command:'conjugate',   gram:'conjugate * \n',                             param:{ transforms:1 }                     }, 
-			{ command:'invert',      gram:'invert * \n',                                param:{ transforms:1 }                     }, 
-			{ command:'retain',      gram:'retain * ?timing \n',                        param:{ variable:1, timing:2 }             },
-			{ command:'say',         gram:'say " * " ?timing \n',                       param:{ message:2, timing:4 }              },
-			{ command:'remember',    gram:'remember " * " ?timing \n',                  param:{ message:2, timing:4 }              },
-			{ command:'recall',      gram:'recall " * " ?timing\n',                     param:{ message:2, timing:4 }              },
-			{ command:'forget',      gram:'forget " * " ?timing \n',                    param:{ message:2, timing:4 }              },
-			{ command:'interpretas', gram:'interpret as " * " ?timing \n',              param:{ statement:3, timing:5 }            },
-			{ command:'expectas',    gram:'expect " * " as " * " ?timing \n',           param:{ expecting:2, as:6, timing:8 }      },
-			{ command:'enter',       gram:'enter " * " ?timing \n',                     param:{ context:2 }                        },
-			{ command:'exit',        gram:'exit " * " ?timing \n',                      param:{ context:2 }                        },
-			{ command:'seek',        gram:'seek * % * \n',                              param:{ percent:1, condition:2 }           }, 
-			{ command:'avoid',       gram:'avoid * % * \n',                             param:{ percent:1, condition:2 }           },
-			{ command:'newline',     gram:'\n',                                         param:{}                                   }
+			{ command:'comment',      gram:'-- * \n',                                          param:{ message:1 }                        },  // useful to export
+			{ command:'context',      gram:'context " * "',                                    param:{ context:2 }                        },
+			{ command:'recognizer',   gram:'recognizer " * "',                                 param:{ pattern:2 }                        },
+			{ command:'alwaysif',     gram:'?exclusive ?additional always if * \n',            param:{}                                   },  // use logic to find params 
+			{ command:'optionif',     gram:'?fallback ?exclusive ?additional option if * \n',  param:{}                                   },  // use logic to find params 
+			{ command:'option',       gram:'?fallback ?exclusive ?additional option',          param:{}                                   }, 
+			{ command:'synonyms',     gram:'synonyms * : * \n',                                param:{ keyword:1, members:3 }             },
+			{ command:'group',        gram:'group * : * \n',                                   param:{ keyword:1, members:3 }             },
+			{ command:'conjugateand', gram:'conjugate " * " and " * " \n',                     param:{ first:2, second:6 }                }, 
+			{ command:'conjugateto',  gram:'conjugate " * " to " * " \n',                      param:{ first:2, second:6 }                }, 
+			{ command:'inverton',     gram:'invert on " * " \n',                               param:{ term:3 }                           }, 
+			{ command:'retain',       gram:'retain * ?timing \n',                              param:{ variable:1, timing:2 }             },
+			{ command:'say',          gram:'say " * " ?timing \n',                             param:{ message:2, timing:4 }              },
+			{ command:'remember',     gram:'remember " * " ?timing \n',                        param:{ message:2, timing:4 }              },
+			{ command:'recall',       gram:'recall " * " ?timing\n',                           param:{ message:2, timing:4 }              },
+			{ command:'forget',       gram:'forget " * " ?timing \n',                          param:{ message:2, timing:4 }              },
+			{ command:'interpretas',  gram:'interpret as " * " ?timing \n',                    param:{ statement:3, timing:5 }            },
+			{ command:'expectas',     gram:'expect " * " as " * " ?timing \n',                 param:{ expecting:2, as:6, timing:8 }      },
+			{ command:'enter',        gram:'enter " * " ?timing \n',                           param:{ context:2 }                        },
+			{ command:'exit',         gram:'exit " * " ?timing \n',                            param:{ context:2 }                        },
+			{ command:'seek',         gram:'seek * % * \n',                                    param:{ percent:1, condition:2 }           }, 
+			{ command:'avoid',        gram:'avoid * % * \n',                                   param:{ percent:1, condition:2 }           },
+			{ command:'newline',      gram:'\n',                                               param:{}                                   }
 		];
 
 		// Loop through Code Tokens
@@ -161,6 +158,7 @@ class Moringa {
 
 					// Isolate found parameters -- NOTE: positions can change if preceded by ?optionals; undefine check is for ?timings 
 					for( var param in cmd.param ) {
+						// If ZZZ
 						let position = cmd.param[param];
 						if( found.tokens[position] !== undefined ) found.param[param] = found.tokens[position].value;	
 					}
@@ -179,7 +177,8 @@ class Moringa {
 			// ----------------------
 			// Grammar was Recognized
 			let fallback;
-			let nonexclusive;
+			let exclusive;
+			let additional;
 			let condition;
 			
 			switch( found.command ) {
@@ -205,25 +204,28 @@ class Moringa {
 					break;
 
 				case 'option':
-					fallback     = (found.tokens.length > 1 && (found.tokens[0].value === 'fallback' || found.tokens[1].value === 'fallback')) ? true : false;
-					nonexclusive = (found.tokens.length > 1 && (found.tokens[0].value === 'nonexclusive' || found.tokens[1].value === 'nonexclusive')) ? true : false;
-					option       = {condition:'',fallback:fallback,nonexclusive:nonexclusive,always:false,actions:[]};
+					fallback   = (found.tokens.length > 1 && (found.tokens[0].value === 'fallback'   || found.tokens[1].value === 'fallback'   || found.tokens[2].value === 'fallback'))   ? true : false;
+					exclusive  = (found.tokens.length > 1 && (found.tokens[0].value === 'exclusive'  || found.tokens[1].value === 'exclusive'  || found.tokens[2].value === 'exclusive'))  ? true : false;
+					additional = (found.tokens.length > 1 && (found.tokens[0].value === 'additional' || found.tokens[1].value === 'additional' || found.tokens[2].value === 'additional')) ? true : false;
+					option       = { condition:'', fallback:fallback, exclusive:exclusive, additional:additional, always:false, actions:[] };
 					recognizer.options.push(option);
 					break;
 
 				case 'optionif':
-					fallback     = (found.tokens.length > 1 && (found.tokens[0].value === 'fallback' || found.tokens[1].value === 'fallback')) ? true : false;
-					nonexclusive = (found.tokens.length > 1 && (found.tokens[0].value === 'nonexclusive' || found.tokens[1].value === 'nonexclusive')) ? true : false;
+					fallback   = (found.tokens.length > 1 && (found.tokens[0].value === 'fallback'   || found.tokens[1].value === 'fallback'   || found.tokens[2].value === 'fallback'))   ? true : false;
+					exclusive  = (found.tokens.length > 1 && (found.tokens[0].value === 'exclusive'  || found.tokens[1].value === 'exclusive'  || found.tokens[2].value === 'exclusive'))  ? true : false;
+					additional = (found.tokens.length > 1 && (found.tokens[0].value === 'additional' || found.tokens[1].value === 'additional' || found.tokens[2].value === 'additional')) ? true : false;
 					condition    = found.tokens[found.tokens.length-2];
-					option       = {condition:condition,fallback:fallback,nonexclusive:nonexclusive,always:false,actions:[]};
+					option       = { condition:condition, fallback:fallback, exclusive:exclusive, additional:additional, always:false, actions:[] };
 					recognizer.options.push(option);
 					break;
 
 				case 'alwaysif':
-					fallback     = (found.tokens.length > 1 && (found.tokens[0].value === 'fallback' || found.tokens[1].value === 'fallback')) ? true : false;
-					nonexclusive = (found.tokens.length > 1 && (found.tokens[0].value === 'nonexclusive' || found.tokens[1].value === 'nonexclusive')) ? true : false;
+					fallback   = (found.tokens.length > 1 && (found.tokens[0].value === 'fallback'   || found.tokens[1].value === 'fallback'   || found.tokens[2].value === 'fallback'))   ? true : false;
+					exclusive  = (found.tokens.length > 1 && (found.tokens[0].value === 'exclusive'  || found.tokens[1].value === 'exclusive'  || found.tokens[2].value === 'exclusive'))  ? true : false;
+					additional = (found.tokens.length > 1 && (found.tokens[0].value === 'additional' || found.tokens[1].value === 'additional' || found.tokens[2].value === 'additional')) ? true : false;
 					condition    = found.tokens[found.tokens.length-2];
-					option       = {condition:condition,fallback:fallback,nonexclusive:nonexclusive,always:true,actions:[]};
+					option       = { condition:condition, fallback:fallback, exclusive:exclusive, additional:additional, always:true, actions:[] };
 					recognizer.options.push(option);
 					break;
 
@@ -262,7 +264,7 @@ class Moringa {
 				{opener:'`',escaper:'\\',closer:'`'}  // litteral text, precisely character by charactet
 			]
 		}
-		let matchers = tokenizer( string, syntax, false );
+		let matchers = tokenizer( string, syntax, {rich:false} );
 		
 		// Make variables a single token
 		for( let i = 0; i < matchers.length; i += 1 ) {
@@ -279,7 +281,10 @@ class Moringa {
 	input( message, name = this.name, callback = this.callback ) {
 		let personality  = this.personality[name];
 		let awareness    = this.interpret( message, personality );
+		//console.log( 'OPTIONS FOUND: ' + JSON.stringify(awareness.options,null,'  ') );
+
 		let preferred    = this.pickOption( awareness, personality );
+		//console.log( JSON.stringify( preferred ) );
 		var response     = this.performActions( preferred.actions, awareness, personality );
 		callback(response);
 	}
@@ -339,7 +344,7 @@ class Moringa {
 			splitters:[' ','\t','\n','~','`','!','@','#','$','%','^','&','*','(',')','-','+','_','=','{','}','[',']',':',';','"','\'','<','>',',','.','?','/','|','\\'],
 			removes:['\t','\n']
 		}
-		let actuals = tokenizer( message, syntax, false );
+		let actuals = tokenizer( message, syntax, {rich:false} );
 
 		// Check how many matchers in actuals (message tokens), in order.. 
 		var m        = 0;
@@ -447,7 +452,7 @@ class Moringa {
 		return matches;
 	}
 
-	formatOutput( pattern, variable ) {  // XXX
+	formatOutput( pattern, variable, conjugations ) {  // XXX
 		var opener;
 		var closer;
 		var p = 0;
@@ -464,9 +469,16 @@ class Moringa {
 					opener = -1;
 				}
 				else {
+					// Get variable value else variable name as the value
 					let name = pattern.substring( opener + 1, closer ).trim();
-					var value = variable[name];
-					if( value === undefined ) value = name;	
+					var value = variable[name] === undefined ? name : variable[name];
+
+					// Apply any conjugations to value
+					for( let c = 0; c < conjugations.length; c += 1 ) {
+						value = value.replace( conjugations[c].regex,'$1' + conjugations[c].to + '$2');
+						}
+
+					// Insert value into the output puttern
 					pattern = pattern.substring(0,opener) + value + pattern.substr(closer+1);
 					p    = opener + value.length + 2;
 				}
@@ -498,19 +510,22 @@ class Moringa {
 			var action = actions[a];
 			//console.log('ACTION ' + a + ' ' + JSON.stringify(action.command) + ': ' + JSON.stringify(action.param) );
 			switch( action.command.toLowerCase() ) {
-				case 'synonyms':    this.actionSynonyms( action.param, awareness, personality ); break;
-				case 'group':       this.actionGroup( action.param, awareness, personality ); break;
-				case 'conjugate':   this.actionConjugate( action.param, awareness, personality ); break;
-				case 'invert':      this.actionInvert( action.param, awareness, personality ); break;
-				case 'retain':      this.actionRetain( action.param, awareness, personality ); break;
-				case 'say':         response += this.actionSay( action.param, awareness, personality ); break;	
-				case 'remember':    this.actionRemember( action.param, awareness, personality ); break;
-				case 'recall':      this.actionRecall( action.param, awareness, personality ); break;
-				case 'forget':      this.actionForget( action.param, awareness, personality ); break;
-				case 'interpretas': response += this.actionInterpretAs( action.param, awareness, personality ); break;
-				case 'expectas':    this.actionExpectAs( action.param, awareness, personality ); break;
-				case 'enter':       this.actionEnter( action.param, awareness, personality ); break;
-				case 'exit':        this.actionExit( action.param, awareness, personality ); break;
+				case 'synonyms':      this.actionSynonyms( action.param, awareness, personality ); break;
+				case 'group':         this.actionGroup( action.param, awareness, personality ); break;
+				case 'conjugateand':  this.actionConjugateAnd( action.param, awareness, personality ); break;
+				case 'conjugateto':   this.actionConjugateTo( action.param, awareness, personality ); break;
+				case 'inverton':      this.actionInvertOn( action.param, awareness, personality ); break;
+				case 'retain':        this.actionRetain( action.param, awareness, personality ); break;
+				case 'say':           response += this.actionSay( action.param, awareness, personality ); break;	
+				case 'remember':      this.actionRemember( action.param, awareness, personality ); break;
+				case 'recall':        this.actionRecall( action.param, awareness, personality ); break;
+				case 'forget':        this.actionForget( action.param, awareness, personality ); break;
+				case 'interpretas':   response += this.actionInterpretAs( action.param, awareness, personality ); break;
+				case 'expectas':      this.actionExpectAs( action.param, awareness, personality ); break;
+				case 'enter':         this.actionEnter( action.param, awareness, personality ); break;
+				case 'exit':          this.actionExit( action.param, awareness, personality ); break;
+				case 'seek':          this.actionExit( action.param, awareness, personality ); break;
+				case 'avoid':         this.actionExit( action.param, awareness, personality ); break;
 				default:
 					console.log('Command "' + action.command + '" recognized but not supported.');
 			}
@@ -577,17 +592,48 @@ class Moringa {
 		}
 	}
 
-	actionConjugate( param, awareness, personality ) {
+	// Specify two-way conjugations
+	actionConjugateAnd( param, awareness, personality ) {
+		this.actionConjugateTo( param, awareness, personality );
+		this.actionConjugateTo( {first:param.second,second:param.first}, awareness, personality );
 	}
 
-	actionInvert( param, awareness, personality ) {
+	// Specify one-way conjugation
+	actionConjugateTo( param, awareness, personality ) {
+		let conjugations = personality.conjugations;
+
+		// See if conjugation "from" already exists
+		var found = undefined;
+		for( let i = 0; i < conjugations.length; i += 1 ) {
+			if( conjugations[i].from.toLowerCase() === param.first.toLowerCase() ) {
+				found = conjugations[i];
+				break;
+			}
+		} 
+
+		// If exists, replace conjugation "to" else append new conjugation "from" and "to"
+		if( found !== undefined ) {
+			found.context = awareness.contextName;
+			found.to      = param.second;
+		}
+		else {
+			// Add new one with "from" regex matcher for the conjugation
+			let regex = new RegExp( '([^A-Za-z])' + param.first.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') + '([^A-Za-z])', 'gim' );
+			personality.conjugations.push({ context:awareness.contextName, regex:regex, from:param.first, to:param.second });
+		}
+
+		// Resort conjugations from longest to shortest
+		personality.conjugations.sort(( a, b ) => { return b.from.length - a.from.length });
+	}
+
+	actionInvertOn( param, awareness, personality ) {
 	}
 
 	actionRetain( param, awareness, personality ) {
 	}
 
 	actionSay( param, awareness, personality ) {
-		return this.formatOutput( param.message, awareness.variable ).trim() + ' ';
+		return this.formatOutput( param.message, awareness.variable, personality.conjugations ).trim() + ' ';
 	}
 
 	actionRemember( param, awareness, personality ) {
@@ -608,7 +654,14 @@ class Moringa {
 			}
 		}
 	}
+	
 	actionForget( param, awareness, personality ) {
+		var matchers = this.formatRecognizerPattern(param.message);
+		for( var m = 0; m < personality.memories.length; m += 1 ) {
+			var memory = personality.memories[m].memory;
+			found = this.matchRecognizer( matchers, memory, personality );
+			if( found !== false ) memories[m].splice(m,1);
+		}
 	}
 
 	actionInterpretAs( param, awareness, personality ) {
@@ -621,6 +674,12 @@ class Moringa {
 	}
 
 	actionExit( param, awareness, personality ) {
+	}
+
+	actionSeek( param, awareness, personality ) {
+	}
+
+	actionAvoid( param, awareness, personality ) {
 	}
 
 
