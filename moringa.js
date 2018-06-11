@@ -29,6 +29,8 @@ class Moringa {
 			synonyms:[],            // each, e.g. { context:'general', keyword:'yes', members:['yeah','yep','yup','sure'] }
 			groups:[],              // each, e.g. { context:'general', keyword:'gender', members:['male','female'] }
 			expectations:[],        // each, e.g. { context:'general', expect:'feeling', as:'I am feeling [feeling].' }
+			retained:{},            // variable's to retain with values..  
+			scheduledActions:[]     // each, e.g., { context:'general', time:0, action:{} } 
 		};
 		this.personality[name].contexts.push({
 				name:'general',  // general context of personality (interpreted after any other active context(s))
@@ -50,8 +52,7 @@ class Moringa {
 				'recognizer','fallback','exclusive','additional','option','always','if',
 				'synonyms','group',':',',','conjugate','and','retain','invert','on',
 				'say','remember','recall','forget','interpret','expect','as',
-				'enter','exit','context',
-				'years','months','weeks','days','hours','minutes','seconds'
+				'enter','exit','context'
 			],
 			removes:[' ','\t'],
 			enclosures:[
@@ -61,7 +62,7 @@ class Moringa {
 				{ opener:':', closer:'\n' },
 			//	{ opener:'in', closer:'\n' },
 			//	{ opener:'at', closer:'\n' },
-			//	{ opener:'for', closer:'\n' }
+				{ opener:'for', closer:'\n' }
 			]
 		};
 
@@ -94,7 +95,8 @@ class Moringa {
 			{ command:'conjugateand', gram:'conjugate " * " and " * " \n',                     param:{ first:2, second:6 }                }, 
 			{ command:'conjugateto',  gram:'conjugate " * " to " * " \n',                      param:{ first:2, second:6 }                }, 
 			{ command:'inverton',     gram:'invert on " * " \n',                               param:{ term:3 }                           }, 
-			{ command:'retain',       gram:'retain * ?timing \n',                              param:{ variable:1, timing:2 }             },
+			{ command:'retain',       gram:'retain * \n',                                      param:{ variable:1 }                       },
+			{ command:'retainfor',    gram:'retain * for * \n',                                param:{ variable:1, timing:3 }             },
 			{ command:'say',          gram:'say " * " ?timing \n',                             param:{ message:2, timing:4 }              },
 			{ command:'remember',     gram:'remember " * " ?timing \n',                        param:{ message:2, timing:4 }              },
 			{ command:'recall',       gram:'recall " * " ?timing\n',                           param:{ message:2, timing:4 }              },
@@ -630,6 +632,18 @@ class Moringa {
 	}
 
 	actionRetain( param, awareness, personality ) {
+		personality[param.variable] = '';
+		if( param.for !== undefined ) { 
+			console.log('RETAIN FOR ' + JSON.stringify( param.for )); // ZZZ
+			// Translate duration to specific time
+			// TODO
+
+			// Schedule unretain for that time
+			// TODO
+		}
+	}
+
+	actionUnretain( param, awareness, personality ) {
 	}
 
 	actionSay( param, awareness, personality ) {
@@ -680,6 +694,10 @@ class Moringa {
 	}
 
 	actionAvoid( param, awareness, personality ) {
+	}
+
+	durationToTime( duration ) {
+				//'years','months','weeks','days','hours','minutes','seconds'
 	}
 
 
