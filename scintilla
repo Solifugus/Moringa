@@ -1,0 +1,25 @@
+
+// MoringaScript
+scintilla.StyleResetDefault();
+scintilla.Styles[Style.Default].Font = "Consolas";
+scintilla.Styles[Style.Default].Size = 10;
+scintilla.StyleClearAll();
+
+// Configure the MoringaScript (Pgm) lexer styles
+scintilla.Styles[Style.Pgm.Default].ForeColor = Color.Silver;
+scintilla.Styles[Style.Pgm.Comment].ForeColor = Color.FromArgb(0, 128, 0); // Green
+scintilla.Styles[Style.Pgm.CommentLine].ForeColor = Color.FromArgb(0, 128, 0); // Green
+scintilla.Styles[Style.Pgm.CommentLineDoc].ForeColor = Color.FromArgb(128, 128, 128); // Gray
+scintilla.Styles[Style.Pgm.Number].ForeColor = Color.Olive;
+scintilla.Styles[Style.Pgm.Word].ForeColor = Color.Blue;
+scintilla.Styles[Style.Pgm.Word2].ForeColor = Color.Blue;
+scintilla.Styles[Style.Pgm.String].ForeColor = Color.FromArgb(163, 21, 21); // Red
+scintilla.Styles[Style.Pgm.Character].ForeColor = Color.FromArgb(163, 21, 21); // Red
+scintilla.Styles[Style.Pgm.Verbatim].ForeColor = Color.FromArgb(163, 21, 21); // Red
+scintilla.Styles[Style.Pgm.StringEol].BackColor = Color.Pink;
+scintilla.Styles[Style.Pgm.Operator].ForeColor = Color.Purple;
+scintilla.Styles[Style.Pgm.Preprocessor].ForeColor = Color.Maroon;
+
+// Set the keywords
+scintilla.SetKeywords(0, "context recognizer option always if fallback nonexclusive");
+scintilla.SetKeywords(1, "say remember recall forget expect as interpret synonyms group conjugate invert on seek avoid % to and or not");

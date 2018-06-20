@@ -22,7 +22,8 @@
   },
   "homepage": "https://github.com/Solifugus/moringa#readme",
   "dependencies": {
+    "datejs": "^1.0.0-rc3",
     "fs": "0.0.1-security",
-    "retokenizer": "^1.2.1"
+    "retokenizer": "^1.4.1"
   }
 }

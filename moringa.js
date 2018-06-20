@@ -6,19 +6,64 @@
 // 	[ ] Condition Evaluations
 // 	[ ] Inversions -- If before or after a litteral or group, do not match
 // 	[ ] Decision logic
+// 	[ ] Retention of variables for standard fading
+// 	[ ] Add the "sequence" directive
+// 	[ ] Add the "Do" commands
 // 	[ ] Seekers and Avoiders
 // 	[ ] Inter-Personality
 
 var tokenizer = require('retokenizer');
+require('datejs');
 
 class Moringa {
 	//constructor( callback, name = 'myself', script = '' ) {
 	constructor( callback, name = 'myself', script = '' ) {
-		this.callback    = callback;  // where to send interjections
-		this.name        = name;      // name of base personality 
-		this.personality = {};        // per personality, an array of contexts; a context holds an array of recognizers; holding array of options; holding array of actions 
+		this.callback      = callback;  // where to send interjections
+		this.name          = name;      // name of base personality 
+		this.fading        = 60000;     // nanoseconds before variable values fade away
+		this.personality   = {};        // per personality, an array of contexts; a context holds an array of recognizers; holding array of options; holding array of actions 
+		this.nextScheduled = null;      // when next output or action command is scheduled
 
 		if( script !== '' ) this.importFoundation( script, name );
+
+		// Start Ticker to Check Schedule Once Per Second
+		//this.ticker = setInterval( this.checkSchedule.bind(this), 1000 );
+		//this.setInterval( () => { this.checkSchedule(); } );
+	}
+
+	checkSchedule() {
+		// Base personality outputs to callback (user); All other personalities output only to base personality
+		var when = new Date();
+		// Send scheduled outputs (messages pre-formatted by the "say" command)
+		for( var name in this.personality ) {
+			var personality = this.personality[name];
+			for( var i = 0; i < personality.outputs.length; i += 1 ) {
+				var output = personality.outputs[i];
+				// TODO: Find when next to be performed is so can set next timeout for it..
+				if( output.performed === false && when >= output.when ) {
+					// Send message to proper destination
+					if( name.toLowerCase() === this.name.toLowerCase() ) {
+						this.callback( output.message );
+					}
+					else {
+						// TODO: send output to the base personality
+					}
+					output.performed = true;
+				}
+
+				// Determine next to schedule..  UNTESTED: what sets nextScheduled back to null?
+				if( output.performed === false && ( this.nextScheduled === null || output.when < this.nextScheduled ) ) {
+					this.nextScheduled = output.when;
+					if( this.timeout !== undefined ) clearTimeout( this.timeout );
+					this.timeout = setTimeout( this.checkSchedule.bind(this), output.when - when );
+				}
+			}
+
+		}
+
+		// Execute scheduled action commands
+		// TODO
+
 	}
 
 	importFoundation( script, name = this.name ) {
@@ -30,7 +75,8 @@ class Moringa {
 			groups:[],              // each, e.g. { context:'general', keyword:'gender', members:['male','female'] }
 			expectations:[],        // each, e.g. { context:'general', expect:'feeling', as:'I am feeling [feeling].' }
 			retained:{},            // variable's to retain with values..  
-			scheduledActions:[]     // each, e.g., { context:'general', time:0, action:{} } 
+			scheduledActions:[],    // each, e.g., { context:'general', time:0, action:{} } 
+			outputs:[]              // gathers outputs to send in format { message:'hello', time:92832983, sent:false }
 		};
 		this.personality[name].contexts.push({
 				name:'general',  // general context of personality (interpreted after any other active context(s))
@@ -60,8 +106,8 @@ class Moringa {
 				{ opener:'"', escaper:'\\', closer:'"' },
 				{ opener:'if', closer:'\n' },
 				{ opener:':', closer:'\n' },
-			//	{ opener:'in', closer:'\n' },
-			//	{ opener:'at', closer:'\n' },
+				{ opener:'in', closer:'\n' },
+				{ opener:'at', closer:'\n' },
 				{ opener:'for', closer:'\n' }
 			]
 		};
@@ -90,15 +136,21 @@ class Moringa {
 			{ command:'alwaysif',     gram:'?exclusive ?additional always if * \n',            param:{}                                   },  // use logic to find params 
 			{ command:'optionif',     gram:'?fallback ?exclusive ?additional option if * \n',  param:{}                                   },  // use logic to find params 
 			{ command:'option',       gram:'?fallback ?exclusive ?additional option',          param:{}                                   }, 
+			{ command:'sequence',     gram:'sequence " * " \n'                                 param:{ sequence:2 }                       }, 
+			{ command:'do',           gram:'do " * " \n',                                      param:{ sequence:2 }                       }, 
+			{ command:'doSequenceIn', gram:'do " * " in * \n',                                 param:{ sequence:2, in:5 }                 }, 
+			{ command:'doSequenceAt', gram:'do " * " at * \n',                                 param:{ sequence:2, at:5 }                 }, 
+			{ command:'doIn',         gram:'do in * \n',                                       param:{ sequence:2, at:5 }                 }, 
+			{ command:'doAt',         gram:'do at * \n',                                       param:{ sequence:2, at:5 }                 }, 
 			{ command:'synonyms',     gram:'synonyms * : * \n',                                param:{ keyword:1, members:3 }             },
 			{ command:'group',        gram:'group * : * \n',                                   param:{ keyword:1, members:3 }             },
 			{ command:'conjugateand', gram:'conjugate " * " and " * " \n',                     param:{ first:2, second:6 }                }, 
 			{ command:'conjugateto',  gram:'conjugate " * " to " * " \n',                      param:{ first:2, second:6 }                }, 
 			{ command:'inverton',     gram:'invert on " * " \n',                               param:{ term:3 }                           }, 
-			{ command:'retain',       gram:'retain * \n',                                      param:{ variable:1 }                       },
-			{ command:'retainfor',    gram:'retain * for * \n',                                param:{ variable:1, timing:3 }             },
-			{ command:'say',          gram:'say " * " ?timing \n',                             param:{ message:2, timing:4 }              },
-			{ command:'remember',     gram:'remember " * " ?timing \n',                        param:{ message:2, timing:4 }              },
+			{ command:'say',          gram:'say " * " \n',                                     param:{ message:2, timing:4 }              },
+			{ command:'say',          gram:'say " * " at * \n',                                param:{ message:2, at:5 }                  },
+			{ command:'say',          gram:'say " * " in * \n',                                param:{ message:2, in:5 }                  },
+			{ command:'remember',     gram:'remember " * " \n',                                param:{ message:2, timing:4 }              },
 			{ command:'recall',       gram:'recall " * " ?timing\n',                           param:{ message:2, timing:4 }              },
 			{ command:'forget',       gram:'forget " * " ?timing \n',                          param:{ message:2, timing:4 }              },
 			{ command:'interpretas',  gram:'interpret as " * " ?timing \n',                    param:{ statement:3, timing:5 }            },
@@ -284,11 +336,21 @@ class Moringa {
 		let personality  = this.personality[name];
 		let awareness    = this.interpret( message, personality );
 		//console.log( 'OPTIONS FOUND: ' + JSON.stringify(awareness.options,null,'  ') );
-
 		let preferred    = this.pickOption( awareness, personality );
-		//console.log( JSON.stringify( preferred ) );
-		var response     = this.performActions( preferred.actions, awareness, personality );
-		callback(response);
+		if( preferred !== undefined ) this.performActions( preferred.actions, awareness, personality );
+
+		// Send outputs who's time has come or passed..
+		let output = '';
+		for( let i = 0; i < personality.outputs.length; i += 1 ) {
+			if( Date.now() >= personality.outputs[i].time ) {
+				let it = personality.outputs[i];
+				if( !it.sent ) {
+					output += ( output.length > 0 ? '  ' : '' ) + it.message;
+					it.sent = true;
+				}
+			}
+		}
+		if( output.length > 0 ) callback( output );
 	}
 
 	// Returns Awareness from Recogition and Deducations
@@ -518,11 +580,11 @@ class Moringa {
 				case 'conjugateto':   this.actionConjugateTo( action.param, awareness, personality ); break;
 				case 'inverton':      this.actionInvertOn( action.param, awareness, personality ); break;
 				case 'retain':        this.actionRetain( action.param, awareness, personality ); break;
-				case 'say':           response += this.actionSay( action.param, awareness, personality ); break;	
+				case 'say':           this.actionSay( action.param, awareness, personality ); break;	
 				case 'remember':      this.actionRemember( action.param, awareness, personality ); break;
 				case 'recall':        this.actionRecall( action.param, awareness, personality ); break;
 				case 'forget':        this.actionForget( action.param, awareness, personality ); break;
-				case 'interpretas':   response += this.actionInterpretAs( action.param, awareness, personality ); break;
+				case 'interpretas':   this.actionInterpretAs( action.param, awareness, personality ); break;
 				case 'expectas':      this.actionExpectAs( action.param, awareness, personality ); break;
 				case 'enter':         this.actionEnter( action.param, awareness, personality ); break;
 				case 'exit':          this.actionExit( action.param, awareness, personality ); break;
@@ -540,6 +602,9 @@ class Moringa {
 			if( name === contexts[c].name ) return c;
 		}
 		console.log('WARNING: Context unknown.');
+	}
+
+	performScheduledActions() {
 	}
 
 	// ========== Action Performances ==========
@@ -647,12 +712,19 @@ class Moringa {
 	}
 
 	actionSay( param, awareness, personality ) {
-		return this.formatOutput( param.message, awareness.variable, personality.conjugations ).trim() + ' ';
+		let message = this.formatOutput( param.message, awareness.variable, personality.conjugations );
+		let when = Date.now();
+
+		if( param.in !== undefined ) when = this.durationToDateTime( param.in );  // e.g. 3 weeks 2 hours 5 minutes
+		if( param.at !== undefined ) when.parse( param.at );                      // e.g. january 3rd, 2017  
+
+		// Schedule output (default is immediate) 
+		personality.outputs.push( { message:message, when:when, performed:false } );
+		this.checkSchedule();
 	}
 
 	actionRemember( param, awareness, personality ) {
-		// TODO: format output pattern
-		personality.memories.push( { context:'general', memory:param.message } );
+		personality.memories.push( { context:'general', memory:formatOutout( param.message, awareness.variable, personality.conjugations ) } ); 
 	}
 
 	actionRecall( param, awareness, personality ) {
@@ -696,10 +768,42 @@ class Moringa {
 	actionAvoid( param, awareness, personality ) {
 	}
 
-	durationToTime( duration ) {
-				//'years','months','weeks','days','hours','minutes','seconds'
+	// ===== Action Support Functions =====
+
+	timeToDisplay( time ) {
+		let d = new Date.setTime( time );
+		return d.toString('yyyy-MM-ddTHH:mm:ss');
 	}
 
+	durationToDateTime( duration, from ) {
+		if( from === undefined ) from = new Date();
+		let syntax = {
+			splitters:[' ','\t','\n','years', 'year', 'months', 'month', 'weeks', 'week', 'days', 'day', 'hours', 'hour', 'minutes', 'minute', 'seconds', 'second'],
+			removes:[' ','\t','\n'],
+		}
+		let tokens = tokenizer( duration, syntax, {rich:false} );
+
+		// Sum time in terms of common seconds
+		for( var t = 0; t < tokens.length; t += 2 ) {
+			let number  = Number( tokens[t] );
+			let measure = tokens[t+1].trim();
+			if( isNaN(number) ) throw( 'Syntax Error: non-number given as duration specification in ' + JSON.stringify(duration) ); 
+
+			switch( measure.toLowerCase() ) {
+				case 'year':    case 'years':    from.add(number).years();   break;
+				case 'month':   case 'months':   from.add(number).months();  break;
+				case 'week':    case 'weeks':    from.add(number).weeks();   break;
+				case 'day':     case 'days':     from.add(number).days();    break;
+				case 'hour':    case 'hours':    from.add(number).hours();   break;
+				case 'minute':  case 'minutes':  from.add(number).minutes(); break;
+				case 'second':  case 'seconds':  from.add(number).seconds;   break;
+
+				default:
+					throw( 'Syntax Error: "' + measure + '" not knonw where expecting a year, month, week, day, hour, minute, or second.');
+			}
+		}
+		return from;
+	}
 
 
 } // End of class

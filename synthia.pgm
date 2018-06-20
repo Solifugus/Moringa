@@ -1,4 +1,22 @@
+
 -- Sample Personality
+
+-- General Conjugations Between Persons
+Conjugate "are" And "am"
+Conjugate "were" And "was"
+Conjugate "I" And "you"
+Conjugate "me" And "you"
+Conjugate "my" And "your"
+Conjugate "mine" And "yours"
+Conjugate "I'm" To "you are"
+Conjugate "you're" To "I am"
+Conjugate "I've" To "you have"
+Conjugate "you've" To "I have"
+Conjugate "I'll" To "you will"
+Conjugate "you'll" To "I will"
+Conjugate "myself" And "yourself"
+Conjugate "they" And "we"
+Conjugate "them" And "us"
 
 synonyms likes: loves, wants
 group gender: male, female
@@ -10,13 +28,19 @@ recognizer "hello"
 recognizer "my name is [name]"
 	option say "Nice to meet you, [name]."
 	option say "The name \"[name]\" sounds friendly."
+	always if "I do not like [name]"
 
 recognizer "being [sex:gender] makes me feel [feeling]"
     option say "Why does being [sex] make you feel [feeling]?"
     option say "That you are [sex] is none of my business."
 
-recognizer "[someone] likes to [thing] on [day] afternoons"
-	option say "Why does [someone] like to [thing] only on [day] days?"
+recognizer "I like to [something]"
+	option say "Why do you like to [something]?"
+	option say "Is to [something] fun?"
+	option say "Is [something] something I could do?"
+
+recognizer "remind me [of] in [time]"
+	say "This is a reminder: [of]." in 3 seconds 
 
 recognizer "[anything]"
 	option say "Please elaborate on that."

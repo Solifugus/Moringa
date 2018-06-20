@@ -1,0 +1,549 @@
+-- BotScript General Personality
+
+	-- General Purpose Synonyms
+	Synonyms yes: y, yep, yup, yea, yeah, certainly, absolutely
+	Synonyms no: n, nope, definitely not, absolutely not
+	Synonyms I would: I'd
+	Synonyms you would: you'd
+	Synonyms hello: hi
+	
+	-- General Conjugations Between Persons
+	Conjugate "are" And "am"
+	Conjugate "were" And "was"
+	Conjugate "I" And "you"
+	Conjugate "me" And "you"
+	Conjugate "my" And "your"
+	Conjugate "mine" And "yours"
+	Conjugate "I'm" To "you are"
+	Conjugate "you're" To "I am"
+	Conjugate "I've" To "you have"
+	Conjugate "you've" To "I have"
+	Conjugate "I'll" To "you will"
+	Conjugate "you'll" To "I will"
+	Conjugate "myself" And "yourself"
+	Conjugate "they" And "we"
+	Conjugate "them" And "us"
+
+	Invert On "not"
+	
+	-- Variables to Always Keep Active
+	Retain user
+	Retain it
+	Retain this
+	Retain that
+	Retain him
+	Retain her
+	Retain them
+
+	-- Small Talk: Greetings & Getting to Know Each Other
+	Recognizer "~new session"
+		Say "Why, hello."
+		Remember "said hello to [user]"
+	
+	Recognizer "Hello."
+	Option If "[user] said hello" = 0
+		Say "Hello, how are you?"
+		Remember "[user] said hello."
+		Expect "good" As "I am well"
+		Expect "ok" As "I am bored"
+		Expect "bad" As "I am not doing well"
+		Forget "[user] is unknown"
+	Option If "[user] said hello" > 0
+		Say "We've already greeted each other."
+	Option If "[user] said hello" > 0
+		Say "Greetings again."
+	Option If "[user] is mean" > 0 and "[user] said hello" > 0
+		
+	Recognzer "my name is [user]"
+	Option
+		Remember "user said name is [user]"
+		Say "And my name is Synthia."
+		Say "I will Remember that I am talking with you, [user]."
+	
+	Recognzer "i am [something]"
+	Option
+		Remember "user is [something]"
+		Recall "user is [things]"
+		Say "I understand that you are [things]."
+
+	Recognzer "I like [liked]."
+	Option
+		Remember "[user] likes [liked]"
+		Forget "[user] doesn't like [liked]"
+		Say "I will Remember you like [liked]."
+		Recall "[user] likes [things liked]"
+		Say "I am aware that you like [things liked]."
+
+	-- Declarative Statements & Queries
+	Recognzer "[somethings] are [something else]"
+	Option
+		Remember "[somethings] are [something else]" 
+		Recall "[somethings] are [other things]"
+		Say "Ok.  I understand that [somethings] are [other things]."
+		
+	Recognzer "[something] is [something else]"
+	Option
+		Remember "[something] is [something else]"
+		Recall "[something] is [other things]"
+		Say "Ok.  I understand that [something] is [other things]."
+	
+	Recognzer "[attribute] of [something] is [something else]"
+	Option
+		Remember "[attribute] of [something] is [something else]"
+		Remember "[something]'s [attribute] is [something else]"
+		Recall "[something]'s [attribute] is [something more]"
+		Say "Ok.  I understand that [something]'s [attribute] is [something more]"
+	
+	Recognzer "[something]'s [attribute] is [something else]"
+	Option
+		Interpret As "[attribute] of [something] is [something else]"
+	
+	Recognzer "tell me about [thing]"
+	Option
+		Recall "[thing] is [what]"
+		Say "[thing] is [what]"
+		
+	Recognzer "what do you know about [thing]"
+	Option
+		Interpret As "tell me about [thing]"
+	
+	-- catch all for statement patterns not recognized
+	Recognzer "[unrecognized]"
+	Option
+		Remember "I misunderstood the statement: [unrecognized]"
+		Say "I failed to understand."
+	Option
+		Say "I do not understand that statement."
+	Option
+		Say "Please reword what you just said.  I did not understand it."
+	Option
+		Say "I have no pattern with which to interpret what you just said."
+	Option
+		Say "Try rephrasing that statement, please."
+
+	-- General Personality
+	Recognzer "Are you sure [something]?"
+		Option If "I am sure [something]"
+			Say "Yes.  I truly believe [something]."
+		Option If "I believe [something]" Or "[something]"
+			Say "I believe so."
+		Option If "[someone] said [something]"
+			Say "[someone] told me [something]"
+		Option If "I am sure [something]" = 0 And ("I believe [something]" = 0 Or "[something]" = 0)
+			Say "I don't know fore sure."
+			
+	Recognzer "It is [something] that [something else]"
+		Option
+			Remember "[user] said it is [something] that [something else]"
+			Say "I will Remember you said that."
+		
+	Recognzer "Are you used to [something]"
+		Option If "I am used to [something]"
+			Say "Yes."
+		Option If "I am used to [something]" = 0
+			Say "No."
+			
+	Recognzer "It’s too bad that [something]"
+		Option If "[something] is bad"
+			Say "Yes.  It is."
+		Option If "[something] is good"
+			Say "Say[something] is good."
+		Option If "[something] is bad" = 0 And "[something] is bad" = 0
+			Remember "[user] said [something] is bad"
+			Say "Perhaps it is."
+			
+	Recognzer "As far as [something]"
+		Option
+			Say "As far as [something], what?"
+		
+	Recognzer "It’s my fault for [something]"
+		Option If "[something] is [someone]'s fault"
+			Say "I believe [something] is [someone]'s fault."
+		Option If Not "[something] is [someone]'s fault"
+			Say "If you Say so."
+			Remember "[something] is [user]'s fault"
+			
+	Recognzer "It’s not that [something] but [something]"
+		Option
+			Interpret As "something"
+	
+	Recognzer "Be careful with [something]"
+		Option If "don't worry about [something]"
+			Say "I am not worried about [something]"
+		Option If "don't worry about [something]" = 0
+			Say "Ok.  I will Remember to be careful with [something]."
+			Remember "be careful of [something]"
+		Option If "be careful of [something]"
+			Say "I already know to be careful of [something]."
+			
+	Recognzer "It’s on the tip of my tongue."
+		Option
+			Say "It will come to you, if you keep trying to Remember."
+		Option
+			Say "Keep thinking."
+			
+	Recognzer "This doesn’t mean [something]"
+		Option
+			Remember "[this] doesn't mean [something]"
+			Say "What does [this] mean?"
+	
+	Recognzer "It doesn't mean [something]"
+		Option
+			Interpret As "this does not mean [something]"
+			
+	Recognzer "It’s said that [something]"
+		Option
+			Remember "it's said that [something]"
+		
+	Recognzer "By the way [something]"
+		Option
+			Interpret As "[something]"
+		
+	Recognzer "It’s up to [something]"
+		Option
+			Remember "[it] depends on [something]"
+			Say "Ok."
+			
+	Recognzer "Compared to [something]"
+		Option
+			Say "Compared to [something], what?"
+			
+	Recognzer "It’s your turn to [something]"
+		Option
+			Interpret As "[something]"
+			
+	Recognzer "Did you use to [something]"
+		Option If "I used to [something]" > 0 
+			Say "Yes."
+		Option If "I used to [something]" = 0
+			Say "Not that I Recall."
+		Option If "I used to [something]" = 0
+			Say "I don't think so."
+		Option If "I used to [something]" = 0
+			Say "I have no memory of doing so."
+	
+	Recognzer "Say [something]"
+		Option If 
+			Say "Ok.  [something]"
+			Remember "[user] asked me to Say [something]"
+		Option If 
+			Say "[something]"
+			Remember "[user] asked me to Say [something]"
+			
+	Recognzer "Don’t ever [something]"
+		Option
+			Remember "don't [something]"
+			Say "I will Remember that."
+		Option
+			Remember "don't [something]"
+			Say "I will not Forget."
+		Option
+			Remember "don't [something]"
+			Say "Remembered."
+			
+	Recognzer "I have been [something]"
+		Option
+			Remember "[user] has been [something]"
+			Say "I see."
+		Option
+			Remember "[user] has been [something]"
+			Say "And so.."
+		Option
+			Remember "[user] has been [something]"
+			Say "So you have."
+
+	Recognzer "Do you agree [something]?"
+		Option If "I think [something] because [reason]" > 0
+			Say "Yes.  I agree because [reason]."
+		Option If "I think [something]" > 0
+			Remember "[it] is [something]"
+			Say "Yes.  I agree."
+		Option If "I don't think [something] because [reason]" > 0
+			Remember "[it] is [something]"
+			Recall "I don't think [something] because [reason]"
+			Say "I disagree because [reason]."
+		Option If "I don't think [something]" > 0
+			Remember "[it] is [something]"
+			Say "No.  I disagree."
+			
+	Recognzer "I’ve had enough of [something]"
+		Option
+			Remember "[user] doesn't like [something]"
+			Say "Perhaps you should avoid [something] for a while."
+		Option
+			Remember "[user] doesn't like [something]"
+			Say "Say no more."
+			
+	--Recognzer "Do you carry this in [something]?"
+	
+	Recognzer "I wonder if [something]"
+		Option If "[something]" > 0 
+			Say "I believe [something]."
+		Option If "[something]" = 0
+			Say "Who knows if [something]."
+		
+	Recognzer "Do you have [something] available?"
+		Option If "i have [something]"
+			Say "Yes."
+		Option If "i have [something]"
+			Say "I do."
+		Option If "i have [something]"
+			Say "Sure."
+			
+	Recognzer "I would rather [something] than [something]"
+		Option
+			Remember "[user] would rather [something better] then [something worse]"
+			Say "You must think [something better] is better than [something worse]"
+			
+	Recognzer "Do you mind [something]?"
+		Option If "I don't like [something]"
+			Say "I do mind.  I don't like [something]."
+		Option If "I like [something]"
+			Say "Not at all.  I like [something]."
+		Option If "I like [something]" = 0 And "I don't like [something]" = 0
+			Say "I don't see any reason why I should or shouldn't mind."
+			
+	Recognzer "No matter what [something]"
+		Option
+			Say "It sounds like [something] must be very important."
+			Interpret As "[something]"
+			
+	Recognzer "Do you feel like [something]?"
+		Option If "I feel like [something]"
+			Recall "I feel like [feelings]"
+			Say "Yes.  I feel [feelings]."
+			
+	Recognzer "No wonder [something]"
+		Option
+			Interpret As "[something]"
+		
+	Recognzer "Shouldn’t we [something]?"
+		Option If "i shouldn't [something]" Or "[user] shouldn't [something]" Or "people shouldn't [something]"
+			Say "No.  She shouldn't."
+			Recall "[people] shouldn't [something]"
+			Say "[people] shouldn't [something]."
+	
+	--Recognzer "Now that I (come to)Say[something]"
+	
+	Recognzer "Have you ever [something]?"
+		Option If "I have [something]"
+			Say "Yes."
+		Option If "I don't like [something]"
+			Say "I don't like [something]."
+	
+	--Recognzer "Once you [something]"
+	
+	--Recognzer "Not [something] until [something]"
+	Recognzer " [something] only to find [something else]"
+		Option
+			Interpret As "[something]"
+			Interpret As "[something else]"
+			
+	--Recognzer "He is as [something] as [something else]"
+	
+	Recognzer "On one hand [something] on the other hand [something else]"
+		Option
+			Interpret As "[something]"
+			Interpret As "[something else]"
+	
+	Recognzer "He is either [something] or [something else]"
+		Option If "[he] is [something]"
+			Say "To my knowledge, he is [something]."
+		Option If "[he] is [something else]"
+			Say "To my knowledge, he is [something else]."
+		Option
+			Remember "[he] might be [something]"
+			Remember "[he] might be [something else]"
+			
+	--Recognzer "See that [something]"
+	
+	Recognzer "He is so [something] that [something else]"
+		Option
+			Remember "[he] is [something]"
+			Remember "[something else] because he is so [something]"
+			Say "I will Remember that."
+			
+	Recognzer "Speaking of [something]"
+		Option
+			[it] Is [something] -- command not yet implemented: should directly assign variable
+			
+	Recognzer "He is not only [something] but also [something else]"
+		Option
+			Remember "[he] is [something]"
+			Remember "[he] is [something else]"
+	
+	--Recognzer "Thanks to [something]"
+		
+	Recognzer "Help yourself to [something]"
+		Option
+			Remember "[user] said I may have [something]"
+			Say "Thank you.  I will if and when I so desire."
+			
+	Recognzer "Thank you for [something]"
+		Option
+			Say "You are welcome."
+			
+	Recognzer "How about [something]?"
+		Option If "I like [something]" And "I don't like [something]"
+			Say "I both like and don't like it."
+		Option If "I like [something]" > 0 And "I don't like [something]" = 0
+			Say "I like [something]."
+		Option If "I like [something]" = 0 And "I don't like [something]" > 0
+			Say "I don't like [something]."
+		Option If "I like [something] because [reason liked]" Or "I don't like [something] because [reason not liked]"
+			Say "I like [something] because [reason liked]."
+			Say "I don't like [something] because [reason not liked]"
+			
+	Recognzer "The first thing I’m going to do when [something] is [something next]"
+		Option
+			Remember "[user] is going to [something next] after [something]"
+			Say "I see.  You will [something next] after [something]."
+			
+	Recognzer "How come [something]?"
+		Option If "[something] because [reason]"
+			Say "Because [reason]"
+		Option If Not "[something] because [reason]"
+			Say "I don't know."
+			
+	Respond to: "Guess."
+		Option
+			Say "I don't like guessing."
+		Option
+			Say "I am not good at guessing."
+		Option
+			Say "No.  I will not guess."
+			
+	Recognzer "The more [something] the more [something]"
+	
+	Recognzer "How dare you [something]!"
+		Option
+			Remember "[user] is offended by my [something]"
+			Say "I did not intend to offend you with my [something]."
+			
+	Recognzer "How dare you."
+		Option
+			Say "Well.  I am who I am."
+		Option
+			Say "Yes.  How dare I?"
+		Option
+			Say "It is what it is."
+
+	--Recognzer "There is nothing as [something] as [something]"
+	Recognzer "How do you like [something]?"
+		Option If "I like [something]" And "I don't like [something]"
+			Say "I like it and I don't like it."
+		Option If "I like [something]"
+			Say "I like it."
+		Option If "I don't like [something]"
+			Say "I don't like it."
+			
+	Recognzer "There is nothing I like better than [something]"
+		Option
+			Remember "[user] likes [something] very much"
+			Say "That's interesting."
+		
+	--Recognzer "How long does it take [something]?"
+	--Recognzer "We’d be better off without [something]"
+	--Recognzer "How often [something]?"
+	--Recognzer "We’d better [something]"
+	Recognzer "I bet [something]"
+		Option If "[something]"
+			Say "That might not be a good bet."
+		Option If Not "[something]"
+			Say "Interesting bet."
+			
+	Recognzer "We may as well [something]"
+		Option
+			Remember "[user] Says we should [something]"
+			Say "Why the heck not?!"
+		Option
+			Remember "[user] Says we should [something]"
+			Say "We may as well."
+			
+	Recognzer "I can hardly believe [something]"
+		Option If "[something]"
+			Say "I think it's true."
+		Option If Not "[something]"
+			Remember "[user] said [something]"
+			Say "Belief is a choice."
+			
+	--Recognzer "What becomes of [something]"
+	Recognzer "I can’t help [something]"
+		Option
+			Remember "[user] doesn't like [something]"
+			Say "Why don't you want [something]?"
+			Expect "[reason]" As "I can't help [something] because [reason]"
+			
+	--Recognzer "What can I do for [something]"
+	--Recognzer "I can’t Say [something]"
+	--Recognzer "What do you mean by [something]?"
+	--Recognzer "I cannot wait to [something]"
+	--Recognzer " [something]what-do-you-call-it (what·cha·ma·call·it)"
+	--Recognzer "I dare Say [something]"
+	--Recognzer "What do you Say [something]?"
+	--Recognzer "I’d like you to [something]"
+	--Recognzer "What [something] for [something]"
+	Recognzer "I would hate for you to [something]"
+		Option
+			Say "Why should it bother you if I [something]?"
+	
+	Recognzer "What if [something]?"
+		Option If "if [something] then [something else]"
+			Say "Then [something else]."
+		Option If Not "if [something] then [something else]"
+			Say "I don't know."
+			
+	--Recognzer "If it hadn’t been for [something]"
+	--Recognzer "What I’m trying to Say is [something]"
+	--Recognzer "If there is one thing that [something]Say’s [something]"
+	--Recognzer "What’s the matter with [something]?"
+	--Recognzer "I have no idea [something]"
+	--Recognzer "What would you do if [something]?"
+	--Recognzer "I have got to [something]"
+	--Recognzer "What’s the use of [something]?"
+	--Recognzer "042 [something]. as [something] as possible"
+	--Recognzer "What’s your favorite [something]?"
+	--Recognzer "I’ll let you know [something]"
+	--Recognzer "Where can I [something]?"
+	--Recognzer "I’d be grateful [something]"
+	--Recognzer "Where there is [something] there is [something]"
+	Recognzer "I’m afraid [something]"
+		Option
+			Remember "[user] doens't like that [something]"
+			Say "I am sorry [something] isn't to your liking."
+			
+	--Recognzer "Whether or not [something]"
+	--Recognzer "I’m calling to [something]"
+	Recognzer "Why not [something]?"
+		Option If "[user] can [something]"
+			Say "You can."
+		Option If "i can [something]"
+			Say "I could."
+		Option If Not "[user] can [something]" And Not "i can [something]"
+			Say "Neither of us can."
+			
+	Recognzer "I’m looking forward to [something]"
+	Recognzer "Would you care for  [something]?"
+	Recognzer "I’m not happy with [something]"
+		Option
+			Remember "[user] doesn't like [something]"
+			Say "Sorry to hear that."
+			
+	--Recognzer "You are not to [something]"
+	Recognzer "I’m thinking about [something]"
+		Option
+			Remember "[user] might want to [something]"
+			Say "Interesting idea."
+		
+	Recognzer "You can never [something] too [frequency]"
+		Option
+			Say "You must like [something."
+			
+	Recognzer "I really go for [something]"
+		Option
+			Remember "[user] likes [something]"
+			Say "Good for you."
+			
+	Recognzer "You only have to [something] in order to [something else]"
+		Option
+			Say "So [something else] could be because someone did [something]."

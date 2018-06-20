@@ -17,11 +17,11 @@ agent.importFoundation( script, 'synthia' );
 
 // Test Cases
 var tests = [
-	{ type:'A', message:'Hello.' },
+	//{ type:'A', message:'Hello.' },
 	{ type:'A', message:'My name is Joe.' },
-	{ type:'A', message:'Joe likes to dance on friday afternoons.' },
-	{ type:'A', message:'Mike loves to wrestle on saturday afternoons.' },
-	{ type:'A', message:'Being female makes me feel good.' },
+	//{ type:'A', message:'I like to twidle my thumbs.' },
+	//{ type:'A', message:'Being female makes me feel good.' },
+	{ type:'A', message:'Remind me I need to go pee in 5 seconds.' },
 ];
 
 for( var t = 0; t < tests.length; t += 1 ) {
