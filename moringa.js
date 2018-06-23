@@ -1,8 +1,9 @@
-// Moringa Agent Engine Version 1.0
+
 // Copyright (C) 2018 By Matthew C. Tedder
 // All Rights Reserved
 //
 // TO DO ITEMS:
+//  [X] timed outputs..
 // 	[ ] Condition Evaluations
 // 	[ ] Inversions -- If before or after a litteral or group, do not match
 // 	[ ] Decision logic
@@ -32,38 +33,44 @@ class Moringa {
 	}
 
 	checkSchedule() {
-		// Base personality outputs to callback (user); All other personalities output only to base personality
-		var when = new Date();
-		// Send scheduled outputs (messages pre-formatted by the "say" command)
+		// Output any scheduled messages (shoudl be pre-formatted for output)
+		var currently = new Date();
+		var upcoming  = 0;
 		for( var name in this.personality ) {
 			var personality = this.personality[name];
 			for( var i = 0; i < personality.outputs.length; i += 1 ) {
 				var output = personality.outputs[i];
-				// TODO: Find when next to be performed is so can set next timeout for it..
-				if( output.performed === false && when >= output.when ) {
-					// Send message to proper destination
+
+				// If time to output then do so..
+				if( output.performed === false && currently >= output.when ) {
 					if( name.toLowerCase() === this.name.toLowerCase() ) {
+						// Sending output to callback because output is from the base model
 						this.callback( output.message );
 					}
 					else {
-						// TODO: send output to the base personality
+						// Sending to base model because output is from an internal model
+						// TODO
 					}
 					output.performed = true;
 				}
-
-				// Determine next to schedule..  UNTESTED: what sets nextScheduled back to null?
-				if( output.performed === false && ( this.nextScheduled === null || output.when < this.nextScheduled ) ) {
-					this.nextScheduled = output.when;
-					if( this.timeout !== undefined ) clearTimeout( this.timeout );
-					this.timeout = setTimeout( this.checkSchedule.bind(this), output.when - when );
+				// Determine next upcoming scheduled output (earliest after currently)
+				else {
+					if( upcoming === 0 || output.when.getTime() < upcoming ) upcoming = output.when.getTime();
 				}
+
 			}
 
 		}
 
-		// Execute scheduled action commands
+		// Execute any scheduled action sequence
 		// TODO
 
+
+		// Setup timeout for next scheduled output or action sequence..
+		let nextCheck = upcoming - currently.getTime();
+		if( upcoming > 0 ) {
+			this.timeout = setTimeout( this.checkSchedule.bind(this), upcoming - currently.getTime() );
+		}
 	}
 
 	importFoundation( script, name = this.name ) {
@@ -74,7 +81,6 @@ class Moringa {
 			synonyms:[],            // each, e.g. { context:'general', keyword:'yes', members:['yeah','yep','yup','sure'] }
 			groups:[],              // each, e.g. { context:'general', keyword:'gender', members:['male','female'] }
 			expectations:[],        // each, e.g. { context:'general', expect:'feeling', as:'I am feeling [feeling].' }
-			retained:{},            // variable's to retain with values..  
 			scheduledActions:[],    // each, e.g., { context:'general', time:0, action:{} } 
 			outputs:[]              // gathers outputs to send in format { message:'hello', time:92832983, sent:false }
 		};
@@ -136,7 +142,7 @@ class Moringa {
 			{ command:'alwaysif',     gram:'?exclusive ?additional always if * \n',            param:{}                                   },  // use logic to find params 
 			{ command:'optionif',     gram:'?fallback ?exclusive ?additional option if * \n',  param:{}                                   },  // use logic to find params 
 			{ command:'option',       gram:'?fallback ?exclusive ?additional option',          param:{}                                   }, 
-			{ command:'sequence',     gram:'sequence " * " \n'                                 param:{ sequence:2 }                       }, 
+			{ command:'sequence',     gram:'sequence " * " \n',                                param:{ sequence:2 }                       }, 
 			{ command:'do',           gram:'do " * " \n',                                      param:{ sequence:2 }                       }, 
 			{ command:'doSequenceIn', gram:'do " * " in * \n',                                 param:{ sequence:2, in:5 }                 }, 
 			{ command:'doSequenceAt', gram:'do " * " at * \n',                                 param:{ sequence:2, at:5 }                 }, 
@@ -353,7 +359,7 @@ class Moringa {
 		if( output.length > 0 ) callback( output );
 	}
 
-	// Returns Awareness from Recogition and Deducations
+	// Returns Awareness from Recognition and Deductions
 	interpret( message, personality ) {
 		// Variable to collecting options and related data in; search stops when recognizer is matched
 		var awareness = {
@@ -388,8 +394,14 @@ class Moringa {
 				let variable = this.matchRecognizer( message, recognizer.matchers, personality );
 				if( variable !== false ) {
 					awareness.recognizer = recognizer.pattern;
-					this.performActions( recognizer.actions, awareness, personality );  // perform recognized's always actions
-					for( var name in variable )                             awareness.variable[name] = variable[name];
+
+					// Add variables picked up from recognizer to awareness..
+					for( var name in variable ) awareness.variable[name] = variable[name];
+
+					// Perform recognizer's always actions
+					this.performActions( recognizer.actions, awareness, personality );
+
+					// Add recognizer's options to awareness
 					for( var i = 0; i < recognizer.options.length; i += 1 ) awareness.options.push(recognizer.options[i]);
 					break;
 				}
@@ -423,6 +435,8 @@ class Moringa {
 				// Capture variable until next matcher or end of actuals (of no more matchers)
 				var name  = matchers[m].substr(1,matchers[m].length-2);
 				var value = '';
+
+				// Collect actuals into value until we run into the next matcher in the grammar (or end of actuals if no next matcher)
 				m += 1;
 				while( a < actuals.length ) {
 					if( matchers[m] !== undefined && this.wordMatches( actuals[a], matchers[m], personality ) ) break;
@@ -431,7 +445,8 @@ class Moringa {
 				}
 				a -= 1;
 				
-				value = value.trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");  // remove all punctuation and outlaying spaces
+				// remove all punctuation and outlaying spaces
+				value = value.trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
 
 				// If variable specifies a group, the value must be a member of that group else not matched..
 				if( name.indexOf(':') !== -1 ) {
@@ -447,7 +462,7 @@ class Moringa {
 			else {
 				if( this.wordMatches( actuals[a], matcher, personality ) ) {
 					// Record any relevant implicit variables between matchers
-					if( m < matchers.length ) variable['before-' + m] = betweens.trim();
+					if( m < matchers.length ) variable['before-' + m] = betweens.trim() === '' ? undefined : betweens.trim();
 					if( m > 0 ) variable['after-' + (m-1)]            = variable['before-' + m];
 					betweens                                          = ''; 
 
@@ -461,7 +476,7 @@ class Moringa {
 			}
 		} // end of actuals for loop
 		for( a = a; a < actuals.length; a += 1 ) betweens += actuals[a];
-		variable['after-' + (m-1)] = betweens.trim();
+		variable['after-' + (m-1)] = betweens.trim() === '' ? undefined : betweens.trim();
 
 		// This Recognizer Matched, if all matchers were found in input message actuals 
 		if( m === matchers.length ) {
@@ -579,7 +594,6 @@ class Moringa {
 				case 'conjugateand':  this.actionConjugateAnd( action.param, awareness, personality ); break;
 				case 'conjugateto':   this.actionConjugateTo( action.param, awareness, personality ); break;
 				case 'inverton':      this.actionInvertOn( action.param, awareness, personality ); break;
-				case 'retain':        this.actionRetain( action.param, awareness, personality ); break;
 				case 'say':           this.actionSay( action.param, awareness, personality ); break;	
 				case 'remember':      this.actionRemember( action.param, awareness, personality ); break;
 				case 'recall':        this.actionRecall( action.param, awareness, personality ); break;
@@ -696,24 +710,12 @@ class Moringa {
 	actionInvertOn( param, awareness, personality ) {
 	}
 
-	actionRetain( param, awareness, personality ) {
-		personality[param.variable] = '';
-		if( param.for !== undefined ) { 
-			console.log('RETAIN FOR ' + JSON.stringify( param.for )); // ZZZ
-			// Translate duration to specific time
-			// TODO
-
-			// Schedule unretain for that time
-			// TODO
-		}
-	}
-
 	actionUnretain( param, awareness, personality ) {
 	}
 
 	actionSay( param, awareness, personality ) {
 		let message = this.formatOutput( param.message, awareness.variable, personality.conjugations );
-		let when = Date.now();
+		let when = new Date();
 
 		if( param.in !== undefined ) when = this.durationToDateTime( param.in );  // e.g. 3 weeks 2 hours 5 minutes
 		if( param.at !== undefined ) when.parse( param.at );                      // e.g. january 3rd, 2017  
@@ -779,7 +781,7 @@ class Moringa {
 		if( from === undefined ) from = new Date();
 		let syntax = {
 			splitters:[' ','\t','\n','years', 'year', 'months', 'month', 'weeks', 'week', 'days', 'day', 'hours', 'hour', 'minutes', 'minute', 'seconds', 'second'],
-			removes:[' ','\t','\n'],
+			removes:[' ','\t','\n']
 		}
 		let tokens = tokenizer( duration, syntax, {rich:false} );
 
@@ -796,7 +798,7 @@ class Moringa {
 				case 'day':     case 'days':     from.add(number).days();    break;
 				case 'hour':    case 'hours':    from.add(number).hours();   break;
 				case 'minute':  case 'minutes':  from.add(number).minutes(); break;
-				case 'second':  case 'seconds':  from.add(number).seconds;   break;
+				case 'second':  case 'seconds':  from.add(number).seconds(); break;
 
 				default:
 					throw( 'Syntax Error: "' + measure + '" not knonw where expecting a year, month, week, day, hour, minute, or second.');
@@ -809,3 +811,4 @@ class Moringa {
 } // End of class
 
 exports.Moringa = Moringa;
+
