@@ -11,7 +11,7 @@
 // 	[ ] Add the "sequence" directive
 // 	[ ] Add the "Do" commands
 // 	[ ] Seekers and Avoiders
-// 	[ ] Inter-Personality
+// 	[ ] Inter-Model
 
 var tokenizer = require('retokenizer');
 require('datejs');
@@ -20,9 +20,9 @@ class Moringa {
 	//constructor( callback, name = 'myself', script = '' ) {
 	constructor( callback, name = 'myself', script = '' ) {
 		this.callback      = callback;  // where to send interjections
-		this.name          = name;      // name of base personality 
+		this.name          = name;      // name of base model 
 		this.fading        = 60000;     // nanoseconds before variable values fade away
-		this.personality   = {};        // per personality, an array of contexts; a context holds an array of recognizers; holding array of options; holding array of actions 
+		this.model         = {};        // per model, an array of contexts; a context holds an array of recognizers; holding array of options; holding array of actions 
 		this.nextScheduled = null;      // when next output or action command is scheduled
 
 		if( script !== '' ) this.importFoundation( script, name );
@@ -36,10 +36,10 @@ class Moringa {
 		// Output any scheduled messages (shoudl be pre-formatted for output)
 		var currently = new Date();
 		var upcoming  = 0;
-		for( var name in this.personality ) {
-			var personality = this.personality[name];
-			for( var i = 0; i < personality.outputs.length; i += 1 ) {
-				var output = personality.outputs[i];
+		for( var name in this.model ) {
+			var model = this.model[name];
+			for( var i = 0; i < model.outputs.length; i += 1 ) {
+				var output = model.outputs[i];
 
 				// If time to output then do so..
 				if( output.performed === false && currently >= output.when ) {
@@ -74,18 +74,18 @@ class Moringa {
 	}
 
 	importFoundation( script, name = this.name ) {
-		this.personality[name] = {  // each personality is named
-			contexts:[],            // each, e.g. { name:'general', recognizers:[], active:true }
-			memories:[],            // each, e.g. { context:'general', memory:'the sky is blue' }
-			conjugations:[],        // each, e.g. { context:'general', from:'me', to:'you' }
-			synonyms:[],            // each, e.g. { context:'general', keyword:'yes', members:['yeah','yep','yup','sure'] }
-			groups:[],              // each, e.g. { context:'general', keyword:'gender', members:['male','female'] }
-			expectations:[],        // each, e.g. { context:'general', expect:'feeling', as:'I am feeling [feeling].' }
-			scheduledActions:[],    // each, e.g., { context:'general', time:0, action:{} } 
-			outputs:[]              // gathers outputs to send in format { message:'hello', time:92832983, sent:false }
+		this.model[name] = {      // each model is named
+			contexts:[],          // each, e.g. { name:'general', recognizers:[], active:true }
+			memories:[],          // each, e.g. { context:'general', memory:'the sky is blue' }
+			conjugations:[],      // each, e.g. { context:'general', from:'me', to:'you' }
+			synonyms:[],          // each, e.g. { context:'general', keyword:'yes', members:['yeah','yep','yup','sure'] }
+			groups:[],            // each, e.g. { context:'general', keyword:'gender', members:['male','female'] }
+			expectations:[],      // each, e.g. { context:'general', expect:'feeling', as:'I am feeling [feeling].' }
+			scheduledActions:[],  // each, e.g., { context:'general', time:0, action:{} } 
+			outputs:[]            // gathers outputs to send in format { message:'hello', time:92832983, sent:false }
 		};
-		this.personality[name].contexts.push({
-				name:'general',  // general context of personality (interpreted after any other active context(s))
+		this.model[name].contexts.push({
+				name:'general',  // general context of model (interpreted after any other active context(s))
 				recognizers:[],  // context's recognizers
 				active:true
 		});
@@ -93,9 +93,9 @@ class Moringa {
 	}
 
 	importSupplement( script, name ) {
-		if( this.personality[name] === undefined ) return 'Failure: Specified foundation "' + name + '" could not be supplemented because it does not exist.'; 
-		var personality = this.personality[name];   // each personality comprises an array of contexts 
-		var context     = personality.contexts[0];  // general context of personality 
+		if( this.model[name] === undefined ) return 'Failure: Specified foundation "' + name + '" could not be supplemented because it does not exist.'; 
+		var model = this.model[name];   // each model comprises an array of contexts 
+		var context     = model.contexts[0];  // general context of model 
 
 		// MoringaScript Syntax Lexicon
 		var syntax = {
@@ -253,7 +253,7 @@ class Moringa {
 					recognizer = { pattern:'', matchers:[], options:[], actions:[] };  // context's global always recognizer 
 					option     = recognizer;                                           // to collect recognizer's always actions
 					context.recognizers.push(recognizer);
-					personality.contexts.push(context);
+					model.contexts.push(context);
 					break;
 
 				case 'recognizer':
@@ -304,8 +304,8 @@ class Moringa {
 		if( err !== '' ) console.log( err );
 		
 		// For each context, sort from longest to shortest..
-		for( var c = 0; c < personality.contexts.length; c += 1 ) {
-			var context = personality.contexts[c];
+		for( var c = 0; c < model.contexts.length; c += 1 ) {
+			var context = model.contexts[c];
 			context.recognizers.sort(( a, b ) => {
 				if( a.pattern === '' ) return -1;  // ensure always recognizer is always first.. 
 				return b.matchers.length - a.matchers.length 
@@ -339,17 +339,17 @@ class Moringa {
 
 	// ===== Process an Input Message =====
 	input( message, name = this.name, callback = this.callback ) {
-		let personality  = this.personality[name];
-		let awareness    = this.interpret( message, personality );
+		let model  = this.model[name];
+		let awareness    = this.interpret( message, model );
 		//console.log( 'OPTIONS FOUND: ' + JSON.stringify(awareness.options,null,'  ') );
-		let preferred    = this.pickOption( awareness, personality );
-		if( preferred !== undefined ) this.performActions( preferred.actions, awareness, personality );
+		let preferred    = this.pickOption( awareness, model );
+		if( preferred !== undefined ) this.performActions( preferred.actions, awareness, model );
 
 		// Send outputs who's time has come or passed..
 		let output = '';
-		for( let i = 0; i < personality.outputs.length; i += 1 ) {
-			if( Date.now() >= personality.outputs[i].time ) {
-				let it = personality.outputs[i];
+		for( let i = 0; i < model.outputs.length; i += 1 ) {
+			if( Date.now() >= model.outputs[i].time ) {
+				let it = model.outputs[i];
 				if( !it.sent ) {
 					output += ( output.length > 0 ? '  ' : '' ) + it.message;
 					it.sent = true;
@@ -360,7 +360,7 @@ class Moringa {
 	}
 
 	// Returns Awareness from Recognition and Deductions
-	interpret( message, personality ) {
+	interpret( message, model ) {
 		// Variable to collecting options and related data in; search stops when recognizer is matched
 		var awareness = {
 			recognizer:false,  // recognizer matched (else undefined)
@@ -371,27 +371,27 @@ class Moringa {
 		};
 
 		// For each context..
-		for( var c = 0; c < personality.contexts.length; c += 1 ) {
-			awareness.contextName = personality.contexts[c].name; 
+		for( var c = 0; c < model.contexts.length; c += 1 ) {
+			awareness.contextName = model.contexts[c].name; 
 			awareness.contextPriority = c;
 			
 			// For each recognizer..
-			for( var r = 0; r < personality.contexts[c].recognizers.length; r += 1 ) {
-				var recognizer = personality.contexts[c].recognizers[r];
+			for( var r = 0; r < model.contexts[c].recognizers.length; r += 1 ) {
+				var recognizer = model.contexts[c].recognizers[r];
 
 				// If the context's always recognizer.. 
 				if( recognizer.pattern === '' ) {
 					// Perform always actions
-					this.performActions( recognizer.actions, awareness, personality );
+					this.performActions( recognizer.actions, awareness, model );
 					// Collect valid options
 					for( var i = 0; i < recognizer.options.length; i += 1 ) {
-						if( this.isOptionValid( option, personality ) ) awareness.options.push(recognizer.options[i]);
+						if( this.isOptionValid( option, model ) ) awareness.options.push(recognizer.options[i]);
 					}
 					continue;
 				}
 
 				// If recognizer is matched, collect all its options then stop collecting.
-				let variable = this.matchRecognizer( message, recognizer.matchers, personality );
+				let variable = this.matchRecognizer( message, recognizer.matchers, model );
 				if( variable !== false ) {
 					awareness.recognizer = recognizer.pattern;
 
@@ -399,7 +399,7 @@ class Moringa {
 					for( var name in variable ) awareness.variable[name] = variable[name];
 
 					// Perform recognizer's always actions
-					this.performActions( recognizer.actions, awareness, personality );
+					this.performActions( recognizer.actions, awareness, model );
 
 					// Add recognizer's options to awareness
 					for( var i = 0; i < recognizer.options.length; i += 1 ) awareness.options.push(recognizer.options[i]);
@@ -414,7 +414,7 @@ class Moringa {
 	}
 
 	// Returns false else object of collected variables
-	matchRecognizer( message, matchers, personality ) {
+	matchRecognizer( message, matchers, model ) {
 		// Tokenize input message
 		let syntax = {	
 			splitters:[' ','\t','\n','~','`','!','@','#','$','%','^','&','*','(',')','-','+','_','=','{','}','[',']',':',';','"','\'','<','>',',','.','?','/','|','\\'],
@@ -439,7 +439,7 @@ class Moringa {
 				// Collect actuals into value until we run into the next matcher in the grammar (or end of actuals if no next matcher)
 				m += 1;
 				while( a < actuals.length ) {
-					if( matchers[m] !== undefined && this.wordMatches( actuals[a], matchers[m], personality ) ) break;
+					if( matchers[m] !== undefined && this.wordMatches( actuals[a], matchers[m], model ) ) break;
 					value += actuals[a];
 					a += 1;
 				}
@@ -452,7 +452,7 @@ class Moringa {
 				if( name.indexOf(':') !== -1 ) {
 					let group = name.split(':')[1];
 					name      = name.split(':')[0];	
-					if( !this.wordInGroup( value, group, personality ) ) { console.log('Actual "" NOT IN GROUP ""');  return false; } 
+					if( !this.wordInGroup( value, group, model ) ) { console.log('Actual "" NOT IN GROUP ""');  return false; } 
 				}
 
 				// All is well..
@@ -460,7 +460,7 @@ class Moringa {
 			} 
 			// Else litteral
 			else {
-				if( this.wordMatches( actuals[a], matcher, personality ) ) {
+				if( this.wordMatches( actuals[a], matcher, model ) ) {
 					// Record any relevant implicit variables between matchers
 					if( m < matchers.length ) variable['before-' + m] = betweens.trim() === '' ? undefined : betweens.trim();
 					if( m > 0 ) variable['after-' + (m-1)]            = variable['before-' + m];
@@ -486,12 +486,12 @@ class Moringa {
 	}
 
 	// Does word match matcher or any synonyms thereof?
-	wordMatches( word, matcher, personality ) {
+	wordMatches( word, matcher, model ) {
 		// Collect any synonyms
 		var synonyms = [matcher];
-		for( let s = 0; s < personality.synonyms.length; s += 1 ) {
-			if( personality.synonyms[s].keyword.toLowerCase() === matcher.toLowerCase() ) {
-				for( var m = 0; m < personality.synonyms[s].members.length; m += 1 ) synonyms.push( personality.synonyms[s].members[m] );
+		for( let s = 0; s < model.synonyms.length; s += 1 ) {
+			if( model.synonyms[s].keyword.toLowerCase() === matcher.toLowerCase() ) {
+				for( var m = 0; m < model.synonyms[s].members.length; m += 1 ) synonyms.push( model.synonyms[s].members[m] );
 				break;
 			}
 		}
@@ -509,12 +509,12 @@ class Moringa {
 	}
 
 	// Is word in specified group?  (unlike synonyms, group name itself does not count)
-	wordInGroup( word, group, personality ) { 
+	wordInGroup( word, group, model ) { 
 		// Find specified group's members
 		var members;
-		for( let g = 0; g < personality.groups.length; g += 1 ) {
-			if( personality.groups[g].keyword.toLowerCase() === group.toLowerCase() ) {
-				members = personality.groups[g].members;
+		for( let g = 0; g < model.groups.length; g += 1 ) {
+			if( model.groups[g].keyword.toLowerCase() === group.toLowerCase() ) {
+				members = model.groups[g].members;
 				break;
 			}
 		}
@@ -566,11 +566,11 @@ class Moringa {
 		return pattern;
 	}
 
-	isOptionValid( option, personality ) {
+	isOptionValid( option, model ) {
 		return true;
 	}
 
-	pickOption( awareness, personality ) {
+	pickOption( awareness, model ) {
 		// TODO: build in smart algorithms
 		var preferred = awareness.options[this.randomBetween(0,awareness.options.length-1)];
 		return preferred;
@@ -580,30 +580,30 @@ class Moringa {
 		return Math.floor( Math.random() * ( max - min + 1 ) + min );
 	}
 
-	performActions( actions, awareness, personality ) {
+	performActions( actions, awareness, model ) {
 		// TODO: add contextPriority at other points in "interpret"
-		awareness.contextPriority = this.contextPriority( awareness.contextName, personality.contexts );
+		awareness.contextPriority = this.contextPriority( awareness.contextName, model.contexts );
 		//console.log('AWARE: ' + JSON.stringify( awareness, null, '  ' ) );
 		var response = '';
 		for( var a = 0; a < actions.length; a += 1 ) {
 			var action = actions[a];
 			//console.log('ACTION ' + a + ' ' + JSON.stringify(action.command) + ': ' + JSON.stringify(action.param) );
 			switch( action.command.toLowerCase() ) {
-				case 'synonyms':      this.actionSynonyms( action.param, awareness, personality ); break;
-				case 'group':         this.actionGroup( action.param, awareness, personality ); break;
-				case 'conjugateand':  this.actionConjugateAnd( action.param, awareness, personality ); break;
-				case 'conjugateto':   this.actionConjugateTo( action.param, awareness, personality ); break;
-				case 'inverton':      this.actionInvertOn( action.param, awareness, personality ); break;
-				case 'say':           this.actionSay( action.param, awareness, personality ); break;	
-				case 'remember':      this.actionRemember( action.param, awareness, personality ); break;
-				case 'recall':        this.actionRecall( action.param, awareness, personality ); break;
-				case 'forget':        this.actionForget( action.param, awareness, personality ); break;
-				case 'interpretas':   this.actionInterpretAs( action.param, awareness, personality ); break;
-				case 'expectas':      this.actionExpectAs( action.param, awareness, personality ); break;
-				case 'enter':         this.actionEnter( action.param, awareness, personality ); break;
-				case 'exit':          this.actionExit( action.param, awareness, personality ); break;
-				case 'seek':          this.actionExit( action.param, awareness, personality ); break;
-				case 'avoid':         this.actionExit( action.param, awareness, personality ); break;
+				case 'synonyms':      this.actionSynonyms( action.param, awareness, model ); break;
+				case 'group':         this.actionGroup( action.param, awareness, model ); break;
+				case 'conjugateand':  this.actionConjugateAnd( action.param, awareness, model ); break;
+				case 'conjugateto':   this.actionConjugateTo( action.param, awareness, model ); break;
+				case 'inverton':      this.actionInvertOn( action.param, awareness, model ); break;
+				case 'say':           this.actionSay( action.param, awareness, model ); break;	
+				case 'remember':      this.actionRemember( action.param, awareness, model ); break;
+				case 'recall':        this.actionRecall( action.param, awareness, model ); break;
+				case 'forget':        this.actionForget( action.param, awareness, model ); break;
+				case 'interpretas':   this.actionInterpretAs( action.param, awareness, model ); break;
+				case 'expectas':      this.actionExpectAs( action.param, awareness, model ); break;
+				case 'enter':         this.actionEnter( action.param, awareness, model ); break;
+				case 'exit':          this.actionExit( action.param, awareness, model ); break;
+				case 'seek':          this.actionExit( action.param, awareness, model ); break;
+				case 'avoid':         this.actionExit( action.param, awareness, model ); break;
 				default:
 					console.log('Command "' + action.command + '" recognized but not supported.');
 			}
@@ -624,8 +624,8 @@ class Moringa {
 	// ========== Action Performances ==========
 	
 	// Assign synonyms to a keyword to enhance recognizing, generally..
-	actionSynonyms( param, awareness, personality ) {
-		var synonyms = personality.synonyms;
+	actionSynonyms( param, awareness, model ) {
+		var synonyms = model.synonyms;
 		let members = param.members.split(',');
 		for( let i = 0; i < members.length; i += 1 ) members[i] = members[i].trim();
 
@@ -644,13 +644,13 @@ class Moringa {
 			found.members = members;
 		}
 		else {
-			personality.synonyms.push({ context:awareness.contextName, keyword:param.keyword, members:members });
+			model.synonyms.push({ context:awareness.contextName, keyword:param.keyword, members:members });
 		}
 	}
 
 	// Assign group of terms to a keyword to enhance recognizing wildcards (only matches if in group)
-	actionGroup( param, awareness, personality ) {
-		var groups = personality.groups;
+	actionGroup( param, awareness, model ) {
+		var groups = model.groups;
 		let members = param.members.split(',');
 		for( let i = 0; i < members.length; i += 1 ) members[i] = members[i].trim();
 
@@ -669,19 +669,19 @@ class Moringa {
 			found.members = members;
 		}
 		else {
-			personality.groups.push({ context:awareness.contextName, keyword:param.keyword, members:members });
+			model.groups.push({ context:awareness.contextName, keyword:param.keyword, members:members });
 		}
 	}
 
 	// Specify two-way conjugations
-	actionConjugateAnd( param, awareness, personality ) {
-		this.actionConjugateTo( param, awareness, personality );
-		this.actionConjugateTo( {first:param.second,second:param.first}, awareness, personality );
+	actionConjugateAnd( param, awareness, model ) {
+		this.actionConjugateTo( param, awareness, model );
+		this.actionConjugateTo( {first:param.second,second:param.first}, awareness, model );
 	}
 
 	// Specify one-way conjugation
-	actionConjugateTo( param, awareness, personality ) {
-		let conjugations = personality.conjugations;
+	actionConjugateTo( param, awareness, model ) {
+		let conjugations = model.conjugations;
 
 		// See if conjugation "from" already exists
 		var found = undefined;
@@ -700,40 +700,40 @@ class Moringa {
 		else {
 			// Add new one with "from" regex matcher for the conjugation
 			let regex = new RegExp( '([^A-Za-z])' + param.first.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') + '([^A-Za-z])', 'gim' );
-			personality.conjugations.push({ context:awareness.contextName, regex:regex, from:param.first, to:param.second });
+			model.conjugations.push({ context:awareness.contextName, regex:regex, from:param.first, to:param.second });
 		}
 
 		// Resort conjugations from longest to shortest
-		personality.conjugations.sort(( a, b ) => { return b.from.length - a.from.length });
+		model.conjugations.sort(( a, b ) => { return b.from.length - a.from.length });
 	}
 
-	actionInvertOn( param, awareness, personality ) {
+	actionInvertOn( param, awareness, model ) {
 	}
 
-	actionUnretain( param, awareness, personality ) {
+	actionUnretain( param, awareness, model ) {
 	}
 
-	actionSay( param, awareness, personality ) {
-		let message = this.formatOutput( param.message, awareness.variable, personality.conjugations );
+	actionSay( param, awareness, model ) {
+		let message = this.formatOutput( param.message, awareness.variable, model.conjugations );
 		let when = new Date();
 
 		if( param.in !== undefined ) when = this.durationToDateTime( param.in );  // e.g. 3 weeks 2 hours 5 minutes
 		if( param.at !== undefined ) when.parse( param.at );                      // e.g. january 3rd, 2017  
 
 		// Schedule output (default is immediate) 
-		personality.outputs.push( { message:message, when:when, performed:false } );
+		model.outputs.push( { message:message, when:when, performed:false } );
 		this.checkSchedule();
 	}
 
-	actionRemember( param, awareness, personality ) {
-		personality.memories.push( { context:'general', memory:formatOutout( param.message, awareness.variable, personality.conjugations ) } ); 
+	actionRemember( param, awareness, model ) {
+		model.memories.push( { context:'general', memory:formatOutout( param.message, awareness.variable, model.conjugations ) } ); 
 	}
 
-	actionRecall( param, awareness, personality ) {
+	actionRecall( param, awareness, model ) {
 		var matchers = this.formatRecognizerPattern(param.message);
-		for( var m = 0; m < personality.memories.length; m += 1 ) {
-			var memory = personality.memories[m].memory;
-			found = this.matchRecognizer( matchers, memory, personality );
+		for( var m = 0; m < model.memories.length; m += 1 ) {
+			var memory = model.memories[m].memory;
+			found = this.matchRecognizer( matchers, memory, model );
 			if( found !== false ) {
 				for( var name in found ) {
 					if( variable[name] !== undefined ) { variable[name] += ', ' + found[name]; }
@@ -743,31 +743,31 @@ class Moringa {
 		}
 	}
 	
-	actionForget( param, awareness, personality ) {
+	actionForget( param, awareness, model ) {
 		var matchers = this.formatRecognizerPattern(param.message);
-		for( var m = 0; m < personality.memories.length; m += 1 ) {
-			var memory = personality.memories[m].memory;
-			found = this.matchRecognizer( matchers, memory, personality );
+		for( var m = 0; m < model.memories.length; m += 1 ) {
+			var memory = model.memories[m].memory;
+			found = this.matchRecognizer( matchers, memory, model );
 			if( found !== false ) memories[m].splice(m,1);
 		}
 	}
 
-	actionInterpretAs( param, awareness, personality ) {
+	actionInterpretAs( param, awareness, model ) {
 	}
 
-	actionExpectAs( param, awareness, personality ) {
+	actionExpectAs( param, awareness, model ) {
 	}
 
-	actionEnter( param, awareness, personality ) {
+	actionEnter( param, awareness, model ) {
 	}
 
-	actionExit( param, awareness, personality ) {
+	actionExit( param, awareness, model ) {
 	}
 
-	actionSeek( param, awareness, personality ) {
+	actionSeek( param, awareness, model ) {
 	}
 
-	actionAvoid( param, awareness, personality ) {
+	actionAvoid( param, awareness, model ) {
 	}
 
 	// ===== Action Support Functions =====
