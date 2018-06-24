@@ -111,15 +111,12 @@ class Moringa {
 				{ opener:'--', closer:'\n' },
 				{ opener:'"', escaper:'\\', closer:'"' },
 				{ opener:'if', closer:'\n' },
-				{ opener:':', closer:'\n' },
-				{ opener:'in', closer:'\n' },
-				{ opener:'at', closer:'\n' },
-				{ opener:'for', closer:'\n' }
+				{ opener:':', closer:'\n' }
 			]
 		};
 
 		let tokens = tokenizer( script, syntax, {rich:true} );
-		//console.log( 'TOKENS:\n' + JSON.stringify( tokens, null, '  ' ) + '\n\n' );
+		//console.log( 'TOKENS:\n' + JSON.stringify( tokens, null, '  ' ) + '\n\n' ); 
 		
 		// If quote not closed by end of line, make error clear closing quote is missing..
 		for( let t = 0; t < tokens.length; t += 1 ) {
@@ -144,25 +141,25 @@ class Moringa {
 			{ command:'option',       gram:'?fallback ?exclusive ?additional option',          param:{}                                   }, 
 			{ command:'sequence',     gram:'sequence " * " \n',                                param:{ sequence:2 }                       }, 
 			{ command:'do',           gram:'do " * " \n',                                      param:{ sequence:2 }                       }, 
-			{ command:'doSequenceIn', gram:'do " * " in * \n',                                 param:{ sequence:2, in:5 }                 }, 
-			{ command:'doSequenceAt', gram:'do " * " at * \n',                                 param:{ sequence:2, at:5 }                 }, 
-			{ command:'doIn',         gram:'do in * \n',                                       param:{ sequence:2, at:5 }                 }, 
-			{ command:'doAt',         gram:'do at * \n',                                       param:{ sequence:2, at:5 }                 }, 
+			{ command:'doSequence',   gram:'do " * " in " * " \n',                             param:{ sequence:2, in:5 }                 }, 
+			{ command:'doSequence',   gram:'do " * " at " * " \n',                             param:{ sequence:2, at:5 }                 }, 
+			{ command:'doIn',         gram:'do in " * " \n',                                   param:{ sequence:2, at:5 }                 }, 
+			{ command:'doAt',         gram:'do at " * " \n',                                   param:{ sequence:2, at:5 }                 }, 
 			{ command:'synonyms',     gram:'synonyms * : * \n',                                param:{ keyword:1, members:3 }             },
 			{ command:'group',        gram:'group * : * \n',                                   param:{ keyword:1, members:3 }             },
-			{ command:'conjugateand', gram:'conjugate " * " and " * " \n',                     param:{ first:2, second:6 }                }, 
-			{ command:'conjugateto',  gram:'conjugate " * " to " * " \n',                      param:{ first:2, second:6 }                }, 
+			{ command:'conjugateAnd', gram:'conjugate " * " and " * " \n',                     param:{ first:2, second:6 }                }, 
+			{ command:'conjugateTo',  gram:'conjugate " * " to " * " \n',                      param:{ first:2, second:6 }                }, 
 			{ command:'inverton',     gram:'invert on " * " \n',                               param:{ term:3 }                           }, 
+			{ command:'say',          gram:'say " * " at " * " \n',                            param:{ message:2, at:6 }                  },
+			{ command:'say',          gram:'say " * " in " * " \n',                            param:{ message:2, in:6 }                  },
 			{ command:'say',          gram:'say " * " \n',                                     param:{ message:2, timing:4 }              },
-			{ command:'say',          gram:'say " * " at * \n',                                param:{ message:2, at:5 }                  },
-			{ command:'say',          gram:'say " * " in * \n',                                param:{ message:2, in:5 }                  },
 			{ command:'remember',     gram:'remember " * " \n',                                param:{ message:2, timing:4 }              },
-			{ command:'recall',       gram:'recall " * " ?timing\n',                           param:{ message:2, timing:4 }              },
-			{ command:'forget',       gram:'forget " * " ?timing \n',                          param:{ message:2, timing:4 }              },
-			{ command:'interpretas',  gram:'interpret as " * " ?timing \n',                    param:{ statement:3, timing:5 }            },
-			{ command:'expectas',     gram:'expect " * " as " * " ?timing \n',                 param:{ expecting:2, as:6, timing:8 }      },
-			{ command:'enter',        gram:'enter " * " ?timing \n',                           param:{ context:2 }                        },
-			{ command:'exit',         gram:'exit " * " ?timing \n',                            param:{ context:2 }                        },
+			{ command:'recall',       gram:'recall " * " \n',                                  param:{ message:2, timing:4 }              },
+			{ command:'forget',       gram:'forget " * " \n',                                  param:{ message:2, timing:4 }              },
+			{ command:'interpretAs',  gram:'interpret as " * " \n',                            param:{ statement:3, timing:5 }            },
+			{ command:'expectAs',     gram:'expect " * " as " * " \n',                         param:{ expecting:2, as:6, timing:8 }      },
+			{ command:'enter',        gram:'enter " * " \n',                                   param:{ context:2 }                        },
+			{ command:'exit',         gram:'exit " * " \n',                                    param:{ context:2 }                        },
 			{ command:'seek',         gram:'seek * % * \n',                                    param:{ percent:1, condition:2 }           }, 
 			{ command:'avoid',        gram:'avoid * % * \n',                                   param:{ percent:1, condition:2 }           },
 			{ command:'newline',      gram:'\n',                                               param:{}                                   }
@@ -180,35 +177,34 @@ class Moringa {
 				var matched = true;              // If a recognized command actually found
 				var tt          = t;             // Searching for command starting at t and ending at tt
 				var wildcardFinish;
+				var debugLineNo = 9999;
+				if( tokens[t].lineNo === debugLineNo ) console.log('Checking if line starting with  "' + tokens[t].value + '" Matches Command ' + JSON.stringify(gram) + '.'); 
 				for( var w = 0; w < gram.length; w += 1 ) {
 					if( gram[w] === '*' ) {
 						// One token matched by wildcard -- because we are assuming it's an enclosure
+						if( tokens[t].lineNo === debugLineNo ) console.log('\tWildcard identified (' + tokens[tt].value + ')'); 
 						tt += 1;
 						continue;
 					}
 					// Match ?Option (but if not, continue without advancing tt because this was only optional)
 					if( gram[w][0] === '?' ) {
-						// Is timing specification--check special sub-grammar
-						if( gram[w].substr(1).toLowerCase() === 'timings' ) {
+						if( gram[w].substr(1).toLowerCase() === tokens[tt].value.toLowerCase() ) {
+							if( tokens[t].lineNo === debugLineNo ) console.log('\tOption Flag identified (' + tokens[tt].value + ')');
+							// TODO: mark that flag was found..
 							tt += 1;
-							continue;
 						}
-						else {
-							if( gram[w].substr(1).toLowerCase() === tokens[tt].value.toLowerCase() ) {
-								tt += 1;
-								continue;
-							}
-							continue;
-						}
+						continue;
 					}
 
 					// Is Litteral Match?
 					if( gram[w].toLowerCase() === tokens[tt].value.toLowerCase() ) {
+						if( tokens[t].lineNo === debugLineNo ) console.log('\tLitteral identified (' + tokens[tt].value + ')');
 						tt += 1;
 						continue;
 					}
 
 					// Was No Match -- Error
+					if( tokens[t].lineNo === debugLineNo ) console.log('\tFAILED on "' + tokens[tt].value + '" found where "' + gram[w] + '" was expected.'); 
 					matched = false;
 					break;
 				} // end of gram loop (w)
@@ -229,7 +225,7 @@ class Moringa {
 			
 			// Grammar Unrecognized
 			if( found === undefined ) {
-				err = 'Malformed Statement at ' + JSON.stringify(tokens[t].value) + ', line ' + ( tokens[t].lineNo + 1 ) + '.';
+				err = 'Malformed Statement at ' + JSON.stringify(tokens[t].value) + ', line ' + tokens[t].lineNo + '.';
 				break;
 			}
 			
@@ -717,8 +713,17 @@ class Moringa {
 		let message = this.formatOutput( param.message, awareness.variable, model.conjugations );
 		let when = new Date();
 
-		if( param.in !== undefined ) when = this.durationToDateTime( param.in );  // e.g. 3 weeks 2 hours 5 minutes
-		if( param.at !== undefined ) when.parse( param.at );                      // e.g. january 3rd, 2017  
+		// Say "message" In "duration" -- where duration is similar to "3 weeks 2 hours 5 minutes"
+		if( param.in !== undefined ) {
+			let inParam = this.formatOutput( param.in, awareness.variable, model.conjugations );
+			when = this.durationToDateTime( inParam );
+		}
+
+		// Say "message" At "date/time" -- where date/time is similar to january 3rd, 2017  
+		if( param.at !== undefined ) {
+			let atParam = this.formatOutput( param.at, awareness.variable, model.conjugations );
+			when.parse( atParam );  
+		}
 
 		// Schedule output (default is immediate) 
 		model.outputs.push( { message:message, when:when, performed:false } );

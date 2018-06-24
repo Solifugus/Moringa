@@ -39,8 +39,8 @@ recognizer "I like to [something]"
 	option say "Is to [something] fun?"
 	option say "Is [something] something I could do?"
 
-recognizer "remind me [of] in [time]"
-	say "This is a reminder: [of]." in 3 seconds 
+recognizer "in [time] seconds remind me [reminder]"
+	say "Remember [reminder]." in "[time] seconds"
 
 recognizer "[anything]"
 	option say "Please elaborate on that."
