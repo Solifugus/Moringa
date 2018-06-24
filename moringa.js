@@ -11,7 +11,8 @@
 // 	[ ] Add the "sequence" directive
 // 	[ ] Add the "Do" commands
 // 	[ ] Seekers and Avoiders
-// 	[ ] Inter-Model
+// 	[ ] Inter-Model Communication (Say "message" To "model") and reception source
+// 	[ ] Create named model instances.. refer to each by name.
 
 var tokenizer = require('retokenizer');
 require('datejs');
@@ -133,36 +134,36 @@ class Moringa {
 		context.recognizers.push(recognizer);
 
 		var commands = [
-			{ command:'comment',      gram:'-- * \n',                                          param:{ message:1 }                        },  // useful to export
-			{ command:'context',      gram:'context " * "',                                    param:{ context:2 }                        },
-			{ command:'recognizer',   gram:'recognizer " * "',                                 param:{ pattern:2 }                        },
-			{ command:'alwaysif',     gram:'?exclusive ?additional always if * \n',            param:{}                                   },  // use logic to find params 
-			{ command:'optionif',     gram:'?fallback ?exclusive ?additional option if * \n',  param:{}                                   },  // use logic to find params 
-			{ command:'option',       gram:'?fallback ?exclusive ?additional option',          param:{}                                   }, 
-			{ command:'sequence',     gram:'sequence " * " \n',                                param:{ sequence:2 }                       }, 
-			{ command:'do',           gram:'do " * " \n',                                      param:{ sequence:2 }                       }, 
-			{ command:'doSequence',   gram:'do " * " in " * " \n',                             param:{ sequence:2, in:5 }                 }, 
-			{ command:'doSequence',   gram:'do " * " at " * " \n',                             param:{ sequence:2, at:5 }                 }, 
-			{ command:'doIn',         gram:'do in " * " \n',                                   param:{ sequence:2, at:5 }                 }, 
-			{ command:'doAt',         gram:'do at " * " \n',                                   param:{ sequence:2, at:5 }                 }, 
-			{ command:'synonyms',     gram:'synonyms * : * \n',                                param:{ keyword:1, members:3 }             },
-			{ command:'group',        gram:'group * : * \n',                                   param:{ keyword:1, members:3 }             },
-			{ command:'conjugateAnd', gram:'conjugate " * " and " * " \n',                     param:{ first:2, second:6 }                }, 
-			{ command:'conjugateTo',  gram:'conjugate " * " to " * " \n',                      param:{ first:2, second:6 }                }, 
-			{ command:'inverton',     gram:'invert on " * " \n',                               param:{ term:3 }                           }, 
-			{ command:'say',          gram:'say " * " at " * " \n',                            param:{ message:2, at:6 }                  },
-			{ command:'say',          gram:'say " * " in " * " \n',                            param:{ message:2, in:6 }                  },
-			{ command:'say',          gram:'say " * " \n',                                     param:{ message:2, timing:4 }              },
-			{ command:'remember',     gram:'remember " * " \n',                                param:{ message:2, timing:4 }              },
-			{ command:'recall',       gram:'recall " * " \n',                                  param:{ message:2, timing:4 }              },
-			{ command:'forget',       gram:'forget " * " \n',                                  param:{ message:2, timing:4 }              },
-			{ command:'interpretAs',  gram:'interpret as " * " \n',                            param:{ statement:3, timing:5 }            },
-			{ command:'expectAs',     gram:'expect " * " as " * " \n',                         param:{ expecting:2, as:6, timing:8 }      },
-			{ command:'enter',        gram:'enter " * " \n',                                   param:{ context:2 }                        },
-			{ command:'exit',         gram:'exit " * " \n',                                    param:{ context:2 }                        },
-			{ command:'seek',         gram:'seek * % * \n',                                    param:{ percent:1, condition:2 }           }, 
-			{ command:'avoid',        gram:'avoid * % * \n',                                   param:{ percent:1, condition:2 }           },
-			{ command:'newline',      gram:'\n',                                               param:{}                                   }
+			{ command:'comment',      gram:'-- * \n',                                          param:{ message:1 }              },  // useful to export
+			{ command:'context',      gram:'context " * "',                                    param:{ context:2 }              },
+			{ command:'recognizer',   gram:'recognizer " * "',                                 param:{ pattern:2 }              },
+			{ command:'alwaysif',     gram:'?exclusive ?additional always if * \n',            param:{}                         },  // use logic to find params 
+			{ command:'optionif',     gram:'?fallback ?exclusive ?additional option if * \n',  param:{}                         },  // use logic to find params 
+			{ command:'option',       gram:'?fallback ?exclusive ?additional option',          param:{}                         }, 
+			{ command:'sequence',     gram:'sequence " * " \n',                                param:{ sequence:2 }             }, 
+			{ command:'do',           gram:'do " * " \n',                                      param:{ sequence:2 }             }, 
+			{ command:'doSequence',   gram:'do " * " in " * " \n',                             param:{ sequence:2, in:5 }       }, 
+			{ command:'doSequence',   gram:'do " * " at " * " \n',                             param:{ sequence:2, at:5 }       }, 
+			{ command:'doIn',         gram:'do in " * " \n',                                   param:{ sequence:2, at:5 }       }, 
+			{ command:'doAt',         gram:'do at " * " \n',                                   param:{ sequence:2, at:5 }       }, 
+			{ command:'synonyms',     gram:'synonyms * : * \n',                                param:{ keyword:1, members:3 }   },
+			{ command:'group',        gram:'group * : * \n',                                   param:{ keyword:1, members:3 }   },
+			{ command:'conjugateAnd', gram:'conjugate " * " and " * " \n',                     param:{ first:2, second:6 }      }, 
+			{ command:'conjugateTo',  gram:'conjugate " * " to " * " \n',                      param:{ first:2, second:6 }      }, 
+			{ command:'inverton',     gram:'invert on " * " \n',                               param:{ term:3 }                 }, 
+			{ command:'say',          gram:'say " * " at " * " \n',                            param:{ message:2, at:6 }        },
+			{ command:'say',          gram:'say " * " in " * " \n',                            param:{ message:2, in:6 }        },
+			{ command:'say',          gram:'say " * " \n',                                     param:{ message:2 }              },
+			{ command:'remember',     gram:'remember " * " \n',                                param:{ message:2 }              },
+			{ command:'recall',       gram:'recall " * " \n',                                  param:{ message:2 }              },
+			{ command:'forget',       gram:'forget " * " \n',                                  param:{ message:2 }              },
+			{ command:'interpretAs',  gram:'interpret as " * " \n',                            param:{ statement:3 }            },
+			{ command:'expectAs',     gram:'expect " * " as " * " \n',                         param:{ expecting:2, as:6 }      },
+			{ command:'enter',        gram:'enter " * " \n',                                   param:{ context:2 }              },
+			{ command:'exit',         gram:'exit " * " \n',                                    param:{ context:2 }              },
+			{ command:'seek',         gram:'seek * % * \n',                                    param:{ percent:1, condition:2 } }, 
+			{ command:'avoid',        gram:'avoid * % * \n',                                   param:{ percent:1, condition:2 } },
+			{ command:'newline',      gram:'\n',                                               param:{}                         }
 		];
 
 		// Loop through Code Tokens
@@ -758,15 +759,19 @@ class Moringa {
 	}
 
 	actionInterpretAs( param, awareness, model ) {
+		this.input( param.message );
 	}
 
 	actionExpectAs( param, awareness, model ) {
+		// TODO: Add expectation to model + checking them first, as if recognizers..
 	}
 
 	actionEnter( param, awareness, model ) {
+		// TODO: Activate context and move to top priority
 	}
 
 	actionExit( param, awareness, model ) {
+		// TODO: deactivate specified context else deactivate all contexts 
 	}
 
 	actionSeek( param, awareness, model ) {
