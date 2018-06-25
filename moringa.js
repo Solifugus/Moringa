@@ -27,10 +27,6 @@ class Moringa {
 		this.nextScheduled = null;      // when next output or action command is scheduled
 
 		if( script !== '' ) this.importFoundation( script, name );
-
-		// Start Ticker to Check Schedule Once Per Second
-		//this.ticker = setInterval( this.checkSchedule.bind(this), 1000 );
-		//this.setInterval( () => { this.checkSchedule(); } );
 	}
 
 	checkSchedule() {
@@ -43,7 +39,7 @@ class Moringa {
 				var output = model.outputs[i];
 
 				// If time to output then do so..
-				if( output.performed === false && currently >= output.when ) {
+				if( output.performed === false && currently.getTime() >= output.when.getTime() ) {
 					if( name.toLowerCase() === this.name.toLowerCase() ) {
 						// Sending output to callback because output is from the base model
 						this.callback( output.message );
@@ -55,10 +51,7 @@ class Moringa {
 					output.performed = true;
 				}
 				// Determine next upcoming scheduled output (earliest after currently)
-				else {
-					if( upcoming === 0 || output.when.getTime() < upcoming ) upcoming = output.when.getTime();
-				}
-
+				else if( output.performed === false && ( upcoming === 0 || output.when.getTime() < upcoming) ) upcoming = output.when.getTime();
 			}
 
 		}
@@ -68,9 +61,12 @@ class Moringa {
 
 
 		// Setup timeout for next scheduled output or action sequence..
-		let nextCheck = upcoming - currently.getTime();
 		if( upcoming > 0 ) {
-			this.timeout = setTimeout( this.checkSchedule.bind(this), upcoming - currently.getTime() );
+			let nextCheck = upcoming - currently.getTime();
+			if( nextCheck > 0 ) {
+				console.log( 'Waiting For ' + (nextCheck) + ' milliseconds.' );
+				this.timeout = setTimeout( this.checkSchedule.bind(this), nextCheck );
+			}
 		}
 	}
 
@@ -134,11 +130,11 @@ class Moringa {
 		context.recognizers.push(recognizer);
 
 		var commands = [
-			{ command:'comment',      gram:'-- * \n',                                          param:{ message:1 }              },  // useful to export
+			{ command:'comment',      gram:'-- * \n',                                          param:{ message:1 }              },  // useful to export with comments
 			{ command:'context',      gram:'context " * "',                                    param:{ context:2 }              },
 			{ command:'recognizer',   gram:'recognizer " * "',                                 param:{ pattern:2 }              },
-			{ command:'alwaysif',     gram:'?exclusive ?additional always if * \n',            param:{}                         },  // use logic to find params 
-			{ command:'optionif',     gram:'?fallback ?exclusive ?additional option if * \n',  param:{}                         },  // use logic to find params 
+			{ command:'alwaysif',     gram:'?exclusive ?additional always if * \n',            param:{ condition:2 }            },  
+			{ command:'optionif',     gram:'?fallback ?exclusive ?additional option if * \n',  param:{ condition:2 }            },  
 			{ command:'option',       gram:'?fallback ?exclusive ?additional option',          param:{}                         }, 
 			{ command:'sequence',     gram:'sequence " * " \n',                                param:{ sequence:2 }             }, 
 			{ command:'do',           gram:'do " * " \n',                                      param:{ sequence:2 }             }, 
@@ -176,6 +172,7 @@ class Moringa {
 				var cmd  = commands[c];
 				var gram = cmd.gram.split(' ');  // command grammars are defined space-separated ("?" prefixes optionals; "timings" is a sub-grammar)
 				var matched = true;              // If a recognized command actually found
+				var flags   = [];                // any flags found
 				var tt          = t;             // Searching for command starting at t and ending at tt
 				var wildcardFinish;
 				var debugLineNo = 9999;
@@ -191,7 +188,7 @@ class Moringa {
 					if( gram[w][0] === '?' ) {
 						if( gram[w].substr(1).toLowerCase() === tokens[tt].value.toLowerCase() ) {
 							if( tokens[t].lineNo === debugLineNo ) console.log('\tOption Flag identified (' + tokens[tt].value + ')');
-							// TODO: mark that flag was found..
+							flags.push(gram[w].substr(1));  // case preserved as per grammer, although matched caselessly (might be useful)
 							tt += 1;
 						}
 						continue;
@@ -211,13 +208,12 @@ class Moringa {
 				} // end of gram loop (w)
 				if( matched ) {
 					// Consolidate what was found
-					found = { command:cmd.command, begins:t, ends:tt-1, tokens:tokens.slice(t,tt-1), param:{} };
+					found = { command:cmd.command, begins:t, ends:tt-1, tokens:tokens.slice(t,tt-1), flags:flags, param:{} };
 
 					// Isolate found parameters -- NOTE: positions can change if preceded by ?optionals; undefine check is for ?timings 
 					for( var param in cmd.param ) {
-						// If ZZZ
-						let position = cmd.param[param];
-						if( found.tokens[position] !== undefined ) found.param[param] = found.tokens[position].value;	
+						let position = cmd.param[param] + found.flags.length;
+						if( found.tokens[position] !== undefined ) found.param[param] = found.tokens[ position ].value;	
 					}
 					break;
 				}
@@ -261,28 +257,19 @@ class Moringa {
 					break;
 
 				case 'option':
-					fallback   = (found.tokens.length > 1 && (found.tokens[0].value === 'fallback'   || found.tokens[1].value === 'fallback'   || found.tokens[2].value === 'fallback'))   ? true : false;
-					exclusive  = (found.tokens.length > 1 && (found.tokens[0].value === 'exclusive'  || found.tokens[1].value === 'exclusive'  || found.tokens[2].value === 'exclusive'))  ? true : false;
-					additional = (found.tokens.length > 1 && (found.tokens[0].value === 'additional' || found.tokens[1].value === 'additional' || found.tokens[2].value === 'additional')) ? true : false;
-					option       = { condition:'', fallback:fallback, exclusive:exclusive, additional:additional, always:false, actions:[] };
+					option       = { condition:'', flags:found.flags, always:false, actions:[] };
 					recognizer.options.push(option);
 					break;
 
 				case 'optionif':
-					fallback   = (found.tokens.length > 1 && (found.tokens[0].value === 'fallback'   || found.tokens[1].value === 'fallback'   || found.tokens[2].value === 'fallback'))   ? true : false;
-					exclusive  = (found.tokens.length > 1 && (found.tokens[0].value === 'exclusive'  || found.tokens[1].value === 'exclusive'  || found.tokens[2].value === 'exclusive'))  ? true : false;
-					additional = (found.tokens.length > 1 && (found.tokens[0].value === 'additional' || found.tokens[1].value === 'additional' || found.tokens[2].value === 'additional')) ? true : false;
 					condition    = found.tokens[found.tokens.length-2];
-					option       = { condition:condition, fallback:fallback, exclusive:exclusive, additional:additional, always:false, actions:[] };
+					option       = { condition:condition, flags:found.flags, always:false, actions:[] };
 					recognizer.options.push(option);
 					break;
 
 				case 'alwaysif':
-					fallback   = (found.tokens.length > 1 && (found.tokens[0].value === 'fallback'   || found.tokens[1].value === 'fallback'   || found.tokens[2].value === 'fallback'))   ? true : false;
-					exclusive  = (found.tokens.length > 1 && (found.tokens[0].value === 'exclusive'  || found.tokens[1].value === 'exclusive'  || found.tokens[2].value === 'exclusive'))  ? true : false;
-					additional = (found.tokens.length > 1 && (found.tokens[0].value === 'additional' || found.tokens[1].value === 'additional' || found.tokens[2].value === 'additional')) ? true : false;
 					condition    = found.tokens[found.tokens.length-2];
-					option       = { condition:condition, fallback:fallback, exclusive:exclusive, additional:additional, always:true, actions:[] };
+					option       = { condition:condition, flags:found.flags, always:true, actions:[] }; 
 					recognizer.options.push(option);
 					break;
 
@@ -336,8 +323,8 @@ class Moringa {
 
 	// ===== Process an Input Message =====
 	input( message, name = this.name, callback = this.callback ) {
-		let model  = this.model[name];
-		let awareness    = this.interpret( message, model );
+		let model     = this.model[name];
+		let awareness = this.interpret( message, model );
 		//console.log( 'OPTIONS FOUND: ' + JSON.stringify(awareness.options,null,'  ') );
 		let preferred    = this.pickOption( awareness, model );
 		if( preferred !== undefined ) this.performActions( preferred.actions, awareness, model );
