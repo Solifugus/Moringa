@@ -73,7 +73,7 @@ class Moringa {
 	importFoundation( script, name = this.name ) {
 		this.model[name] = {      // each model is named
 			contexts:[],          // each, e.g. { name:'general', recognizers:[], active:true }
-			memories:[],          // each, e.g. { context:'general', memory:'the sky is blue' }
+			memories:[],          // each, e.g. { context:'general', memory:'the sky is blue', postedAt:Date() }
 			conjugations:[],      // each, e.g. { context:'general', from:'me', to:'you' }
 			synonyms:[],          // each, e.g. { context:'general', keyword:'yes', members:['yeah','yep','yup','sure'] }
 			groups:[],            // each, e.g. { context:'general', keyword:'gender', members:['male','female'] }
@@ -227,13 +227,6 @@ class Moringa {
 			}
 			
 
-			// ----------------------
-			// Grammar was Recognized
-			let fallback;
-			let exclusive;
-			let additional;
-			let condition;
-			
 			switch( found.command ) {
 				// Things to ignore..
 				case 'newline':
@@ -262,14 +255,12 @@ class Moringa {
 					break;
 
 				case 'optionif':
-					condition    = found.tokens[found.tokens.length-2];
-					option       = { condition:condition, flags:found.flags, always:false, actions:[] };
+					option       = { condition:found.param.condition, flags:found.flags, always:false, actions:[] };
 					recognizer.options.push(option);
 					break;
 
 				case 'alwaysif':
-					condition    = found.tokens[found.tokens.length-2];
-					option       = { condition:condition, flags:found.flags, always:true, actions:[] }; 
+					option       = { condition:found.param.condition, flags:found.flags, always:true, actions:[] }; 
 					recognizer.options.push(option);
 					break;
 
@@ -328,19 +319,6 @@ class Moringa {
 		//console.log( 'OPTIONS FOUND: ' + JSON.stringify(awareness.options,null,'  ') );
 		let preferred    = this.pickOption( awareness, model );
 		if( preferred !== undefined ) this.performActions( preferred.actions, awareness, model );
-
-		// Send outputs who's time has come or passed..
-		let output = '';
-		for( let i = 0; i < model.outputs.length; i += 1 ) {
-			if( Date.now() >= model.outputs[i].time ) {
-				let it = model.outputs[i];
-				if( !it.sent ) {
-					output += ( output.length > 0 ? '  ' : '' ) + it.message;
-					it.sent = true;
-				}
-			}
-		}
-		if( output.length > 0 ) callback( output );
 	}
 
 	// Returns Awareness from Recognition and Deductions
@@ -555,8 +533,19 @@ class Moringa {
 	}
 
 	pickOption( awareness, model ) {
-		// TODO: build in smart algorithms
-		var preferred = awareness.options[this.randomBetween(0,awareness.options.length-1)];
+		// Determine which options are currently valid
+		awareness.validOptions = [];
+		for( var c = 0; c < awareness.options.length; c += 1 ) {
+			var option = awareness.options[c];
+			console.log('OPTION: ' + JSON.stringify(option));
+			if( this.isConditionTrue( option.condition, awareness.variable, model.memories ) ) awareness.validOptions.push(option);
+		}
+	
+		// Determine option preferrabilities and which is highest..
+		// TODO: Do properly (by seeks and avoids else human) -- think of intuitive way to add random or round robin options
+		var preferred = awareness.options[this.randomBetween(0,awareness.validOptions.length-1)];
+		
+		// TODO: build pathfinding articulation -- contemplation 
 		return preferred;
 	}
 
@@ -564,8 +553,32 @@ class Moringa {
 		return Math.floor( Math.random() * ( max - min + 1 ) + min );
 	}
 
+	isConditionTrue( condition, variable, memories ) {  // WORKING ZZZ
+		// If no condition given, assume it's true..
+		if( condition.trim() === '' ) return true;
+
+		// Tokenize condition
+		var syntax = {
+			splitters:[
+				' ','\t','\n',
+				'<>','>=','<=','=','>','<',
+				'not','includes','excludes',
+				'(',')'
+			],
+			removes:[' ','\t'],
+			enclosures:[
+				{ opener:'"', escaper:'\\', closer:'"' },
+				{ opener:'--', closer:'\n' }
+			]
+		};
+		let tokens = tokenizer( condition.trim(), syntax, { rich:true, condense:true, betweens:'throw' } );
+		console.log( 'CONDITION TOKENS:\n' + JSON.stringify( tokens, null, '  ' ) + '\n\n' ); 
+		
+		// TODO: Evaluate
+	}
+
 	performActions( actions, awareness, model ) {
-		// TODO: add contextPriority at other points in "interpret"
+		// TODO: add contextPriority at other points in "interpret" - modify priority when recognized in that priority
 		awareness.contextPriority = this.contextPriority( awareness.contextName, model.contexts );
 		//console.log('AWARE: ' + JSON.stringify( awareness, null, '  ' ) );
 		var response = '';
@@ -719,7 +732,8 @@ class Moringa {
 	}
 
 	actionRemember( param, awareness, model ) {
-		model.memories.push( { context:'general', memory:formatOutout( param.message, awareness.variable, model.conjugations ) } ); 
+		// Note: could calculate LTM (slowness of fading), as median time between writes and (when performing option) reads.
+		model.memories.push( { context:'general', memory:formatOutput( param.message, awareness.variable, model.conjugations ), postedAt:new Date() } ); 
 	}
 
 	actionRecall( param, awareness, model ) {
