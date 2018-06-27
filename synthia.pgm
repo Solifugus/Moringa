@@ -31,6 +31,9 @@ recognizer "my name is [name]"
 	exclusive additional always if "I do not like [name]"
 		say "You should know I don't like, [name]."
 
+recognizer "what do you think of [something]"
+	option if "abc" > "def" or ("xyz" <> "pqr")
+
 recognizer "being [sex:gender] makes me feel [feeling]"
     option say "Why does being [sex] make you feel [feeling]?"
     option say "That you are [sex] is none of my business."

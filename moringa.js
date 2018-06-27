@@ -553,7 +553,7 @@ class Moringa {
 		return Math.floor( Math.random() * ( max - min + 1 ) + min );
 	}
 
-	isConditionTrue( condition, variable, memories ) {  // WORKING ZZZ
+	isConditionTrue( condition, variable, memories ) { 
 		// If no condition given, assume it's true..
 		if( condition.trim() === '' ) return true;
 
@@ -562,8 +562,9 @@ class Moringa {
 			splitters:[
 				' ','\t','\n',
 				'<>','>=','<=','=','>','<',
-				'not','includes','excludes',
-				'(',')'
+				'not','and','or',
+				'+','-',
+				{type:'number',regex:'[0-9]+'}
 			],
 			removes:[' ','\t'],
 			enclosures:[
@@ -571,10 +572,69 @@ class Moringa {
 				{ opener:'--', closer:'\n' }
 			]
 		};
-		let tokens = tokenizer( condition.trim(), syntax, { rich:true, condense:true, betweens:'throw' } );
+		syntax.enclosures.push( { opener:'(', closer:')', syntax:syntax } );
+
+		var tokens = tokenizer( condition.trim(), syntax, { rich:true, condense:true, betweens:'throw' } );
 		console.log( 'CONDITION TOKENS:\n' + JSON.stringify( tokens, null, '  ' ) + '\n\n' ); 
-		
-		// TODO: Evaluate
+
+		var grammars = [
+			{ gram:['(',     '@any', ')'], type:'()',       output:'@any' },
+			{ gram:['@numb', '+',     '@numb'], type:'+',   output:'@numb' },
+			{ gram:['@numb', '-',     '@numb'], type:'-',   output:'@numb' },
+			{ gram:['@numb', '<>',    '@numb'], type:'<>',  output:'@bool' },
+			{ gram:['@numb', '>=',    '@numb'], type:'>=',  output:'@bool' },
+			{ gram:['@numb', '<=',    '@numb'], type:'<=',  output:'@bool' },
+			{ gram:['@numb', '>',     '@numb'], type:'>',   output:'@bool' },
+			{ gram:['@numb', '<',     '@numb'], type:'>',   output:'@bool' },
+			{ gram:['@numb', '=',     '@numb'], type:'=',   output:'@bool' },
+			{ gram:['not',   '@bool'         ], type:'not', output:'@bool' },
+			{ gram:['@bool', 'and',   '@bool'], type:'and', output:'@bool' },
+			{ gram:['@bool', 'or',    '@bool'], type:'or',  output:'@bool' },
+		];
+
+		let result = this.evaluateCondition( 0, tokens, variable, memories );
+
+		// If numeric results, zero is false otherwise true
+		if( typeof result === 'number' ) typeof result = result === 0 ? false : true;
+
+		// Return only boolean result
+		return result;
+	}
+
+	// Returns boolean or number (check by typeof operator); recurses for any parenthesis..
+	evaluateCondition( t, tokens, variable, memories ) {  // ZZZ
+		found = false;
+		while( t < tokens.length ) {
+
+			// If parenthesis, recurse to convert to result of sub-evaluation
+			if( tokens[t].type === 'enclosed' && tokens[t].opener === '(' ) {
+				tokens[t] = { type:'number', value:this.evaluate( 0, tokens, variable, memories ) };
+				continue;
+			}
+
+			// If pattern, convert token to number of matches found in memory
+			if( tokens[t].type === 'enclosed'  && tokens[t].opener === '"' ) {
+				tokens[t] = { type:'number', value:this.countMemories( tokens[t].value, variable, memories ) };
+				continue;
+			}
+
+			// If number + something..  evaluate something (recursing) and replace three tokens with the sum
+			if( tokens[t].type === 'number' && tokens[t+1].value === '+' ) {
+				let nextValue = this.evaluateCondition( t+2, tokens, variable, memories );
+				if( typeof nextValue === 'number' ) { /* TODO: replace t, t+1, and t+3 with { type:'number', value:nextValue } */ }
+				else { /* TODO: error -- cannot add number to boolean */ }
+			}
+	
+
+		} // end while 
+	} 
+
+	countMemories( pattern, variable, memories ) {
+		// TODO: Apply variables to pattern, leaving blank [] as wildcards
+	
+		// TODO: Loop through memories, counting matches
+
+		return 1;
 	}
 
 	performActions( actions, awareness, model ) {
