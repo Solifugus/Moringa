@@ -585,8 +585,7 @@ class Moringa {
 	}
 
 	// Returns boolean or number (check by typeof operator); recurses for any parenthesis..
-	// TODO: [ ] add litteral numbers; [ ] add litteral booleans
-	evaluateCondition( t, tokens, variable, memories ) {  // ZZZ
+	evaluateCondition( t, tokens, variable, memories ) {
 		while( t < tokens.length ) {
 			var operator;
 			var leftValue;
@@ -604,10 +603,10 @@ class Moringa {
 				tokens[t].value = false;
 			}
 
-
 			// If parenthesis, recurse to convert to result of sub-evaluation
 			if( tokens[t].type === 'enclosed' && tokens[t].opener === '(' ) {
-				tokens[t] = { type:'number', value:this.evaluate( 0, tokens, variable, memories ) };
+				newValue  = this.evaluate( 0, tokens[t].value, variable, memories );
+				tokens[t] = { type:typeof newValue, value:newValue };
 				continue;
 			}
 
@@ -665,7 +664,6 @@ class Moringa {
 		} // end while 
 
 		// By the time processing reaches here, the expression should be reduced to a single value
-		console.log('EVAL Returning: ' + tokens[t].value); // ZZZ
 		return tokens[t].value;
 
 	} 
