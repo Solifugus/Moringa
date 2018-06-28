@@ -561,7 +561,8 @@ class Moringa {
 		var syntax = {
 			splitters:[
 				' ','\t','\n',
-				'<>','>=','<=','=','>','<',
+				'true', 'false',
+				'!=','<>','>=','<=','=','>','<',
 				'not','and','or',
 				'+','-',
 				{type:'number',regex:'[0-9]+'}
@@ -575,36 +576,34 @@ class Moringa {
 		syntax.enclosures.push( { opener:'(', closer:')', syntax:syntax } );
 
 		var tokens = tokenizer( condition.trim(), syntax, { rich:true, condense:true, betweens:'throw' } );
-		console.log( 'CONDITION TOKENS:\n' + JSON.stringify( tokens, null, '  ' ) + '\n\n' ); 
-
-		var grammars = [
-			{ gram:['(',     '@any', ')'], type:'()',       output:'@any' },
-			{ gram:['@numb', '+',     '@numb'], type:'+',   output:'@numb' },
-			{ gram:['@numb', '-',     '@numb'], type:'-',   output:'@numb' },
-			{ gram:['@numb', '<>',    '@numb'], type:'<>',  output:'@bool' },
-			{ gram:['@numb', '>=',    '@numb'], type:'>=',  output:'@bool' },
-			{ gram:['@numb', '<=',    '@numb'], type:'<=',  output:'@bool' },
-			{ gram:['@numb', '>',     '@numb'], type:'>',   output:'@bool' },
-			{ gram:['@numb', '<',     '@numb'], type:'>',   output:'@bool' },
-			{ gram:['@numb', '=',     '@numb'], type:'=',   output:'@bool' },
-			{ gram:['not',   '@bool'         ], type:'not', output:'@bool' },
-			{ gram:['@bool', 'and',   '@bool'], type:'and', output:'@bool' },
-			{ gram:['@bool', 'or',    '@bool'], type:'or',  output:'@bool' },
-		];
+		//console.log( 'CONDITION TOKENS:\n' + JSON.stringify( tokens, null, '  ' ) + '\n\n' ); 
 
 		let result = this.evaluateCondition( 0, tokens, variable, memories );
 
-		// If numeric results, zero is false otherwise true
-		if( typeof result === 'number' ) typeof result = result === 0 ? false : true;
-
 		// Return only boolean result
-		return result;
+		return this.makeBoolean( result );
 	}
 
 	// Returns boolean or number (check by typeof operator); recurses for any parenthesis..
+	// TODO: [ ] add litteral numbers; [ ] add litteral booleans
 	evaluateCondition( t, tokens, variable, memories ) {  // ZZZ
-		found = false;
 		while( t < tokens.length ) {
+			var operator;
+			var leftValue;
+			var rightValue;
+			var newValue;
+
+			// Litteral numbers and booleans come in string form -- so we need to translate to a real numbers or booleans
+			if( tokens[t].type === 'number' && typeof tokens[t].value !== 'number' ) tokens[t].value = Number(tokens[t].value);
+			if( tokens[t].type === 'splitter' && tokens[t].value.toLowerCase() === 'true' ) {
+				tokens[t].type  = 'boolean';
+				tokens[t].value = true;
+			}
+			if( tokens[t].type === 'splitter' && tokens[t].value.toLowerCase() === 'false' ) {
+				tokens[t].type  = 'boolean';
+				tokens[t].value = false;
+			}
+
 
 			// If parenthesis, recurse to convert to result of sub-evaluation
 			if( tokens[t].type === 'enclosed' && tokens[t].opener === '(' ) {
@@ -618,16 +617,68 @@ class Moringa {
 				continue;
 			}
 
-			// If number + something..  evaluate something (recursing) and replace three tokens with the sum
-			if( tokens[t].type === 'number' && tokens[t+1].value === '+' ) {
-				let nextValue = this.evaluateCondition( t+2, tokens, variable, memories );
-				if( typeof nextValue === 'number' ) { /* TODO: replace t, t+1, and t+3 with { type:'number', value:nextValue } */ }
-				else { /* TODO: error -- cannot add number to boolean */ }
+			// Evaluate any 2 part operations (not), right value evaluated recursively..
+			if( tokens[t].type === 'splitter' && tokens[t].value.toLowerCase() === 'not' ) {
+				// Since blank is considered true, "not" + blank should be false..
+				if( tokens[t+1] === undefined ) {
+					tokens[t] = { type:'boolean', value:false };
+					continue;
+				}
+				leftValue  = this.makeBoolean( tokens[t].value );
+				rightValue = this.makeBoolean( this.evaluateCondition( t+2, tokens, variable, memories ) );
+				newValue   = leftValue || rightValue;
+				tokens.splice(t,3,{ type:'boolean', value:newValue });
+				continue;
 			}
-	
 
+			// Evaluate any 3 part operations, right value evaluated recursively..
+			if( (tokens[t].type === 'number' || tokens[t].type === 'boolean') && tokens[t+1] !== undefined ) {
+				operator = tokens[t+1].value;
+				if( tokens[t+2] === undefined ) throw 'In if condition, cannot compare a number with nothing.';
+				leftValue  = tokens[t].value;
+				rightValue = this.evaluateCondition( t+2, tokens, variable, memories );
+				newValue = null;
+				switch( operator.toLowerCase() ) {
+					case '+':   newValue = (this.makeNumber(leftValue)  +  this.makeNumber(rightValue)); break;
+					case '-':   newValue = (this.makeNumber(leftValue)  -  this.makeNumber(rightValue)); break;
+					case '>=':  newValue = (this.makeNumber(leftValue)  >= this.makeNumber(rightValue)); break;
+					case '<=':  newValue = (this.makeNumber(leftValue)  <= this.makeNumber(rightValue)); break;
+					case '>':   newValue = (this.makeNumber(leftValue)  >  this.makeNumber(rightValue)); break;
+					case '<':   newValue = (this.makeNumber(leftValue)  <  this.makeNumber(rightValue)); break;
+					case 'and': newValue = (this.makeBoolean(leftValue) && this.makeBoolean(rightValue)); break;
+					case 'or':  newValue = (this.makeBoolean(leftValue) || this.makeBoolean(rightValue)); break;
+					case '=':
+						if( typeof leftValue === 'boolean' || typeof rightValue === 'boolean' ) { newValue = (this.makeBoolean(leftValue) == this.makeBoolean(rightValue)); }
+						else { newValue = ( leftValue == rightValue ); }
+						break;
+					case '<>':
+					case '!=':
+						if( typeof leftValue === 'boolean' || typeof rightValue === 'boolean' ) { newValue = (this.makeBoolean(leftValue) != this.makeBoolean(rightValue)); }
+						else { newValue = ( leftValue != rightValue ); }
+						break;
+				}
+				if( newValue !== null ) tokens.splice(t,3,{ type:'number', value:newValue });
+				continue;
+			}
+
+			break;
 		} // end while 
+
+		// By the time processing reaches here, the expression should be reduced to a single value
+		console.log('EVAL Returning: ' + tokens[t].value); // ZZZ
+		return tokens[t].value;
+
 	} 
+
+	makeNumber( value ) {
+		if( typeof value === 'boolean' ) return (value === true ? 1 : 0);
+		if( typeof value === 'number' ) return value;
+	}
+
+	makeBoolean( value ) {
+		if( typeof value === 'boolean' ) return value;
+		if( typeof value === 'number' ) return (value === 0 ? false : true);
+	}
 
 	countMemories( pattern, variable, memories ) {
 		// TODO: Apply variables to pattern, leaving blank [] as wildcards
