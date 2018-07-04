@@ -4,7 +4,8 @@
 //
 // TO DO ITEMS:
 //  [X] timed outputs..
-// 	[ ] Condition Evaluations
+// 	[X] Condition Evaluations
+// 	[ ] Convert so each variable may hold an array of values, each timestamped
 // 	[ ] Inversions -- If before or after a litteral or group, do not match
 // 	[ ] Decision logic
 // 	[ ] Retention of variables for standard fading
@@ -73,7 +74,7 @@ class Moringa {
 	importFoundation( script, name = this.name ) {
 		this.model[name] = {      // each model is named
 			contexts:[],          // each, e.g. { name:'general', recognizers:[], active:true }
-			memories:[],          // each, e.g. { context:'general', memory:'the sky is blue', postedAt:Date() }
+			memories:[],          // each, e.g. { context:'general', memory:'the sky is blue', timeStamp:Date() }
 			conjugations:[],      // each, e.g. { context:'general', from:'me', to:'you' }
 			synonyms:[],          // each, e.g. { context:'general', keyword:'yes', members:['yeah','yep','yup','sure'] }
 			groups:[],            // each, e.g. { context:'general', keyword:'gender', members:['male','female'] }
@@ -151,7 +152,7 @@ class Moringa {
 			{ command:'say',          gram:'say " * " in " * " \n',                            param:{ message:2, in:6 }        },
 			{ command:'say',          gram:'say " * " \n',                                     param:{ message:2 }              },
 			{ command:'remember',     gram:'remember " * " \n',                                param:{ message:2 }              },
-			{ command:'recall',       gram:'recall " * " \n',                                  param:{ message:2 }              },
+			{ command:'recall',       gram:'recall ?more " * " \n',                            param:{ message:2 }              },
 			{ command:'forget',       gram:'forget " * " \n',                                  param:{ message:2 }              },
 			{ command:'interpretAs',  gram:'interpret as " * " \n',                            param:{ statement:3 }            },
 			{ command:'expectAs',     gram:'expect " * " as " * " \n',                         param:{ expecting:2, as:6 }      },
@@ -267,7 +268,7 @@ class Moringa {
 				// Action Commands 
 				default:
 					//console.log('Known but unsupported command "' + found.command + '".');
-					let action = { command:found.command, param:found.param, lineNo:found.tokens[0].lineNo };
+					let action = { command:found.command, param:found.param, flags:found.flags, lineNo:found.tokens[0].lineNo };
 					option.actions.push(action);
 			}
 
@@ -323,12 +324,14 @@ class Moringa {
 
 	// Returns Awareness from Recognition and Deductions
 	interpret( message, model ) {
+		var timeStamp = new Date();  // to give each variable collected in this interpretation, a common timeStamp from which to group, distinguish, and fade
+
 		// Variable to collecting options and related data in; search stops when recognizer is matched
 		var awareness = {
 			recognizer:false,  // recognizer matched (else undefined)
 			contextName:'',    // context of matched recognizer
 			contextPriority:0, // current order of context, to be interpreted
-			variable:{},       // variables collected
+			variable:{},       // variables collected -- e.g, 'name':[{value:'xx',timeStamp:'xx'},..]; Note TODO: per interpret, overwrite else retain 
 			options:[],        // valid options collected
 		};
 
@@ -352,13 +355,15 @@ class Moringa {
 					continue;
 				}
 
-				// If recognizer is matched, collect all its options then stop collecting.
+				// If recognizer is matched, collect all its options then stop collecting any further options.
 				let variable = this.matchRecognizer( message, recognizer.matchers, model );
 				if( variable !== false ) {
 					awareness.recognizer = recognizer.pattern;
 
 					// Add variables picked up from recognizer to awareness..
-					for( var name in variable ) awareness.variable[name] = variable[name];
+					for( var name in variable ) awareness.variable[name] = variable[name]; // TODO: implement following lines in place of this one
+					//if( awareness.variable[name] === undefined ) awareness.variable[name] = [];
+					//for( var name in variable ) awareness.variable[name].push({value:variable[name],timeStamp:timeStamp});
 
 					// Perform recognizer's always actions
 					this.performActions( recognizer.actions, awareness, model );
@@ -375,8 +380,8 @@ class Moringa {
 		return awareness;
 	}
 
-	// Returns false else object of collected variables
-	matchRecognizer( message, matchers, model ) {
+	// Returns false else object of collected variables ( useKnown means, if variable already holds value, use to match -- not collect ) // ZZZ ??
+	matchRecognizer( message, matchers, model, useKnown = false ) {
 		// Tokenize input message
 		let syntax = {	
 			splitters:[' ','\t','\n','~','`','!','@','#','$','%','^','&','*','(',')','-','+','_','=','{','}','[',']',':',';','"','\'','<','>',',','.','?','/','|','\\'],
@@ -394,39 +399,48 @@ class Moringa {
 			var matcher = matchers[m];
 			// If variable..
 			if( matcher[0] === '[' && matcher[matcher.length-1] === ']' ) {
-				// Capture variable until next matcher or end of actuals (of no more matchers)
 				var name  = matchers[m].substr(1,matchers[m].length-2);
-				var value = '';
-
-				// Collect actuals into value until we run into the next matcher in the grammar (or end of actuals if no next matcher)
-				m += 1;
-				while( a < actuals.length ) {
-					if( matchers[m] !== undefined && this.wordMatches( actuals[a], matchers[m], model ) ) break;
-					value += actuals[a];
-					a += 1;
+				if( useKnown && model.variable[name] !== undefined ) {
+					// Validate that actuals match any of the varaible's values..
+					// TODO
 				}
-				a -= 1;
+				else {
+					// Capture variable until next matcher or end of actuals (of no more matchers)
+					var value = '';
+
+					// Collect actuals into value until we run into the next matcher in the grammar (or end of actuals if no next matcher)
+					m += 1;
+					while( a < actuals.length ) {
+						if( matchers[m] !== undefined && this.wordMatches( actuals[a], matchers[m], model ) ) break;
+						value += actuals[a];
+						a += 1;
+					}
+					a -= 1;
 				
-				// remove all punctuation and outlaying spaces
-				value = value.trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+					// remove all punctuation and outlaying spaces
+					value = value.trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
 
-				// If variable specifies a group, the value must be a member of that group else not matched..
-				if( name.indexOf(':') !== -1 ) {
-					let group = name.split(':')[1];
-					name      = name.split(':')[0];	
-					if( !this.wordInGroup( value, group, model ) ) { console.log('Actual "" NOT IN GROUP ""');  return false; } 
+					// If variable specifies a group, the value must be a member of that group else not matched..
+					if( name.indexOf(':') !== -1 ) {
+						let group = name.split(':')[1];
+						name      = name.split(':')[0];	
+						if( !this.wordInGroup( value, group, model ) ) { console.log('Actual "" NOT IN GROUP ""');  return false; } 
+					}
+
+					// All is well.. assign variable to collection (singular overwrite, as opposed to Recall command that may collect multipe values)
+					variable[name] = [{value:value}];  // TODO: add date/time to value for fading
 				}
-
-				// All is well..
-				variable[name] = value;
 			} 
 			// Else litteral
 			else {
 				if( this.wordMatches( actuals[a], matcher, model ) ) {
 					// Record any relevant implicit variables between matchers
-					if( m < matchers.length ) variable['before-' + m] = betweens.trim() === '' ? undefined : betweens.trim();
-					if( m > 0 ) variable['after-' + (m-1)]            = variable['before-' + m];
-					betweens                                          = ''; 
+					betweens = betweens.trim();
+					if( betweens !== '' ) {
+						if( m < matchers.length ) variable['before-' + m] = [{value:betweens}];  // TODO: add date/time to value for fading     
+						if( m > 0 ) variable['after-' + (m-1)]            = [{value:betweens}];  // TODO: add date/time to value for fading
+						betweens                                          = ''; 
+					}
 
 					// Advance to seek next matcher
 					m += 1;
@@ -438,7 +452,8 @@ class Moringa {
 			}
 		} // end of actuals for loop
 		for( a = a; a < actuals.length; a += 1 ) betweens += actuals[a];
-		variable['after-' + (m-1)] = betweens.trim() === '' ? undefined : betweens.trim();
+		betweens = betweens.trim();
+		if( betweens !== '' ) variable['after-' + (m-1)] = [{value:betweens}];  // TODO: add date/time to value for fading
 
 		// This Recognizer Matched, if all matchers were found in input message actuals 
 		if( m === matchers.length ) {
@@ -493,7 +508,8 @@ class Moringa {
 		return matches;
 	}
 
-	formatOutput( pattern, variable, conjugations ) {  // XXX
+	// Put translate pattern variables to patterns, apply conjugations, convert any blank (unnamed) variables to something else nothing (default).
+	formatOutput( pattern, variable, conjugations, blankTo = '' ) {
 		var opener;
 		var closer;
 		var p = 0;
@@ -510,35 +526,48 @@ class Moringa {
 					opener = -1;
 				}
 				else {
-					// Get variable value else variable name as the value
-					let name = pattern.substring( opener + 1, closer ).trim();
-					var value = variable[name] === undefined ? name : variable[name];
+					var name = pattern.substring( opener + 1, closer ).trim();
+					if( name === '' ) {
+						// Empty variable specifiers ([]) are retained in the pattern as wildcards
+						value = blankTo;
+						pattern = pattern.substring(0,opener) + value + pattern.substr(closer+1);
+						p    = opener + value.length + 2;
+					} 
+					else {
+						// Get variable value else variable name as the value
+						//var value = variable[name] === undefined ? name : variable[name];  // TODO VVV: replace this line with following commented out lines
+						var value = this.valuesToCommaList(variable[name],'and');  // TODO: add ability in notation to specify "and", "or", or "and/or"
 
-					// Apply any conjugations to value
-					for( let c = 0; c < conjugations.length; c += 1 ) {
-						value = value.replace( conjugations[c].regex,'$1' + conjugations[c].to + '$2');
-						}
+						// Insert value into the output puttern
+						pattern = pattern.substring(0,opener) + value + pattern.substr(closer+1);
+						p    = opener + value.length + 2;
+					}
 
-					// Insert value into the output puttern
-					pattern = pattern.substring(0,opener) + value + pattern.substr(closer+1);
-					p    = opener + value.length + 2;
 				}
 			}
 		} while( opener !== -1 );
 		return pattern;
 	}
 
-	isOptionValid( option, model ) {
-		return true;
+	valuesToCommaList( values, relation = 'and/or' ) {
+		var commaList = '';
+		var comma     = '';
+		for( let v = 0; v < values.length; v += 1 ) {
+			if( values.length > 1 && v === values.length-1 ) { commaList += comma + relation.trim() + ' ' + values[v].value; }
+			else { commaList += comma + values[v].value; }
+			comma = ', ';
+		}
+		return commaList;
 	}
+
 
 	pickOption( awareness, model ) {
 		// Determine which options are currently valid
 		awareness.validOptions = [];
 		for( var c = 0; c < awareness.options.length; c += 1 ) {
 			var option = awareness.options[c];
-			console.log('OPTION: ' + JSON.stringify(option));
-			if( this.isConditionTrue( option.condition, awareness.variable, model.memories ) ) awareness.validOptions.push(option);
+			//console.log('OPTION: ' + JSON.stringify(option));
+			if( this.isConditionTrue( option.condition, awareness.variable, model ) ) awareness.validOptions.push(option);
 		}
 	
 		// Determine option preferrabilities and which is highest..
@@ -553,7 +582,7 @@ class Moringa {
 		return Math.floor( Math.random() * ( max - min + 1 ) + min );
 	}
 
-	isConditionTrue( condition, variable, memories ) { 
+	isConditionTrue( condition, variable, model ) { 
 		// If no condition given, assume it's true..
 		if( condition.trim() === '' ) return true;
 
@@ -578,14 +607,14 @@ class Moringa {
 		var tokens = tokenizer( condition.trim(), syntax, { rich:true, condense:true, betweens:'throw' } );
 		//console.log( 'CONDITION TOKENS:\n' + JSON.stringify( tokens, null, '  ' ) + '\n\n' ); 
 
-		let result = this.evaluateCondition( 0, tokens, variable, memories );
+		let result = this.evaluateCondition( 0, tokens, variable, model );
 
 		// Return only boolean result
 		return this.makeBoolean( result );
 	}
 
 	// Returns boolean or number (check by typeof operator); recurses for any parenthesis..
-	evaluateCondition( t, tokens, variable, memories ) {
+	evaluateCondition( t, tokens, variable, model ) {
 		while( t < tokens.length ) {
 			var operator;
 			var leftValue;
@@ -612,7 +641,7 @@ class Moringa {
 
 			// If pattern, convert token to number of matches found in memory
 			if( tokens[t].type === 'enclosed'  && tokens[t].opener === '"' ) {
-				tokens[t] = { type:'number', value:this.countMemories( tokens[t].value, variable, memories ) };
+				tokens[t] = { type:'number', value:this.countMemories( tokens[t].value, variable, model ) };
 				continue;
 			}
 
@@ -678,12 +707,27 @@ class Moringa {
 		if( typeof value === 'number' ) return (value === 0 ? false : true);
 	}
 
-	countMemories( pattern, variable, memories ) {
-		// TODO: Apply variables to pattern, leaving blank [] as wildcards
+	countMemories( pattern, variable, model ) {
+		/* OLD WAY
+		// Apply variables to pattern, leaving blank [] as wildcards
+		pattern = this.formatOutput( pattern, variable, [], '[anything]' );
 	
-		// TODO: Loop through memories, counting matches
+		// Loop through memories, counting matches
+		var count = 0;
+		for( var m = 0; m < model.memories.length; m += 1 ) {
+			var matchers = this.formatRecognizerPattern( pattern );
+			if( this.matchRecognizer( model.memories[m].memory, matchers, model ) !== false ) count += 1;
+		}
+		*/
 
-		return 1;
+		var count = 0;
+		for( var m = 0; m < model.memories.length; m += 1 ) {
+			var matchers = this.formatRecognizerPattern( pattern );
+			// TODO ZZZ: replace variables with array of options.. enhance matchRecognizer() to check for each
+			if( this.matchRecognizer( model.memories[m].memory, matchers, model ) !== false ) count += 1;
+		}
+	
+		return count;
 	}
 
 	performActions( actions, awareness, model ) {
@@ -693,7 +737,7 @@ class Moringa {
 		var response = '';
 		for( var a = 0; a < actions.length; a += 1 ) {
 			var action = actions[a];
-			//console.log('ACTION ' + a + ' ' + JSON.stringify(action.command) + ': ' + JSON.stringify(action.param) );
+			//console.log('ACTION ' + a + ' ' + JSON.stringify(action.command) + ': ' + JSON.stringify(action) );
 			switch( action.command.toLowerCase() ) {
 				case 'synonyms':      this.actionSynonyms( action.param, awareness, model ); break;
 				case 'group':         this.actionGroup( action.param, awareness, model ); break;
@@ -702,7 +746,7 @@ class Moringa {
 				case 'inverton':      this.actionInvertOn( action.param, awareness, model ); break;
 				case 'say':           this.actionSay( action.param, awareness, model ); break;	
 				case 'remember':      this.actionRemember( action.param, awareness, model ); break;
-				case 'recall':        this.actionRecall( action.param, awareness, model ); break;
+				case 'recall':        this.actionRecall( action.param, awareness, model, action.flags ); break;  // added flags, in case "more" flag
 				case 'forget':        this.actionForget( action.param, awareness, model ); break;
 				case 'interpretas':   this.actionInterpretAs( action.param, awareness, model ); break;
 				case 'expectas':      this.actionExpectAs( action.param, awareness, model ); break;
@@ -842,18 +886,21 @@ class Moringa {
 
 	actionRemember( param, awareness, model ) {
 		// Note: could calculate LTM (slowness of fading), as median time between writes and (when performing option) reads.
-		model.memories.push( { context:'general', memory:formatOutput( param.message, awareness.variable, model.conjugations ), postedAt:new Date() } ); 
+		model.memories.push( { context:'general', memory:this.formatOutput( param.message, awareness.variable, model.conjugations ), timeStamp:new Date() } ); 
 	}
 
-	actionRecall( param, awareness, model ) {
+	actionRecall( param, awareness, model, flags ) {
+		var variable = awareness.variable;
 		var matchers = this.formatRecognizerPattern(param.message);
 		for( var m = 0; m < model.memories.length; m += 1 ) {
 			var memory = model.memories[m].memory;
-			found = this.matchRecognizer( matchers, memory, model );
+			var found  = this.matchRecognizer( memory, matchers, model );
 			if( found !== false ) {
 				for( var name in found ) {
-					if( variable[name] !== undefined ) { variable[name] += ', ' + found[name]; }
-					else                               { variable[name] = found[name]; }
+					for( var v = 0; v < found[name].length; v += 1 ) {
+						if( variable[name] === undefined || flags.indexOf('more') !== -1 ) variable[name] = [];
+						variable[name].push(found[name][v]);
+					}
 				}
 			}
 		}

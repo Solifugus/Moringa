@@ -26,13 +26,24 @@ recognizer "hello"
 	option say "Nice to meet you."
 
 recognizer "my name is [name]"
+	remember "user's name is [name]"
 	option say "Nice to meet you, [name]."
 	option say "The name \"[name]\" sounds friendly."
 	exclusive additional always if "I do not like [name]"
 		say "You should know I don't like, [name]."
 
+recognizer "i like [thing]"
+	remember "user likes [thing]"
+	recall more "user likes [everything]"
+	say "I am glad you like [everything]."
+
 recognizer "what do you think of [something]"
-	option if "abc" > "def" or ("xyz" <> "pqr")
+	remember "I like fish"
+	remember "I like popcorn"
+	remember "I like movies"
+	option if "I like popcorn"
+	--option if "abc" + "def" + "hij" - "klm" and "nop"
+	--option if "abc" > "def" or ("xyz" <> "pqr")
 
 recognizer "being [sex:gender] makes me feel [feeling]"
     option say "Why does being [sex] make you feel [feeling]?"
