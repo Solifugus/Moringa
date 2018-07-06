@@ -21,6 +21,12 @@ Conjugate "them" And "us"
 synonyms likes: loves, wants
 group gender: male, female
 
+sequence "poem"
+	say "Roses are red."
+	say "Violets are blue."
+	say "I can sequence things."
+	say "Better than you knew."
+
 recognizer "hello"
 	option say "Hi."
 	option say "Nice to meet you."
@@ -34,7 +40,7 @@ recognizer "my name is [name]"
 
 recognizer "i like [thing]"
 	remember "user likes [thing]"
-	recall more "user likes [everything]"
+	recall "user likes [everything]"
 	say "I am glad you like [everything]."
 
 recognizer "what do you think of [something]"
@@ -56,6 +62,10 @@ recognizer "I like to [something]"
 
 recognizer "in [time] seconds remind me [reminder]"
 	say "Remember [reminder]." in "[time] seconds"
+
+recognizer "recite poetry"
+	say "Ok.. Sure:"
+	do "poem"
 
 recognizer "[anything]"
 	option say "Please elaborate on that."

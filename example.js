@@ -18,10 +18,15 @@ agent.importFoundation( script, 'synthia' );
 // Test Cases
 var tests = [
 	//{ type:'A', message:'Hello.' },
-	{ type:'A', message:'My name is Joe.' },
+	//{ type:'A', message:'My name is Joe.' },
+	//{ type:'A', message:'I like bananas' },
+	//{ type:'A', message:'I like apples' },
+	//{ type:'A', message:'I like oranges' },
+	{ type:'A', message:'recite poetry' },
+	//{ type:'A', message:'What do you think of bananas?' },
 	//{ type:'A', message:'I like to twidle my thumbs.' },
 	//{ type:'A', message:'Being female makes me feel good.' },
-	{ type:'A', message:'Remind me I need to go pee in 5 seconds.' },
+	//{ type:'A', message:'In 2 seconds, remind me that 2 seconds have passed.' },
 ];
 
 for( var t = 0; t < tests.length; t += 1 ) {

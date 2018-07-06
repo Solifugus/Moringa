@@ -3,9 +3,6 @@
 // All Rights Reserved
 //
 // TO DO ITEMS:
-//  [X] timed outputs..
-// 	[X] Condition Evaluations
-// 	[ ] Convert so each variable may hold an array of values, each timestamped
 // 	[ ] Inversions -- If before or after a litteral or group, do not match
 // 	[ ] Decision logic
 // 	[ ] Retention of variables for standard fading
@@ -14,6 +11,8 @@
 // 	[ ] Seekers and Avoiders
 // 	[ ] Inter-Model Communication (Say "message" To "model") and reception source
 // 	[ ] Create named model instances.. refer to each by name.
+// 	[ ] Add ">" variable functionality in recognizers
+// 	[ ] Change model.outputs to model.schedules (also add say commands to this) 
 
 var tokenizer = require('retokenizer');
 require('datejs');
@@ -79,12 +78,13 @@ class Moringa {
 			synonyms:[],          // each, e.g. { context:'general', keyword:'yes', members:['yeah','yep','yup','sure'] }
 			groups:[],            // each, e.g. { context:'general', keyword:'gender', members:['male','female'] }
 			expectations:[],      // each, e.g. { context:'general', expect:'feeling', as:'I am feeling [feeling].' }
-			scheduledActions:[],  // each, e.g., { context:'general', time:0, action:{} } 
+			schedules:[],         // each, e.g., { context:'general', time:0, actions:{} } 
 			outputs:[]            // gathers outputs to send in format { message:'hello', time:92832983, sent:false }
 		};
 		this.model[name].contexts.push({
 				name:'general',  // general context of model (interpreted after any other active context(s))
 				recognizers:[],  // context's recognizers
+				sequences:[],    // context's sequences, e.g. { name:'..', actions:[] } 
 				active:true
 		});
 		this.importSupplement( script, name );
@@ -137,12 +137,12 @@ class Moringa {
 			{ command:'alwaysif',     gram:'?exclusive ?additional always if * \n',            param:{ condition:2 }            },  
 			{ command:'optionif',     gram:'?fallback ?exclusive ?additional option if * \n',  param:{ condition:2 }            },  
 			{ command:'option',       gram:'?fallback ?exclusive ?additional option',          param:{}                         }, 
-			{ command:'sequence',     gram:'sequence " * " \n',                                param:{ sequence:2 }             }, 
-			{ command:'do',           gram:'do " * " \n',                                      param:{ sequence:2 }             }, 
-			{ command:'doSequence',   gram:'do " * " in " * " \n',                             param:{ sequence:2, in:5 }       }, 
-			{ command:'doSequence',   gram:'do " * " at " * " \n',                             param:{ sequence:2, at:5 }       }, 
-			{ command:'doIn',         gram:'do in " * " \n',                                   param:{ sequence:2, at:5 }       }, 
-			{ command:'doAt',         gram:'do at " * " \n',                                   param:{ sequence:2, at:5 }       }, 
+			{ command:'sequence',     gram:'sequence " * " \n',                                param:{ seqname:2 }              }, 
+			{ command:'doSequence',   gram:'do " * " in " * " \n',                             param:{ seqname:2, in:5 }        }, 
+			{ command:'doSequence',   gram:'do " * " at " * " \n',                             param:{ seqname:2, at:5 }        }, 
+			{ command:'doSequence',   gram:'do " * " \n',                                      param:{ seqname:2 }              }, 
+			{ command:'doIn',         gram:'do in " * " \n',                                   param:{ seqname:2, at:5 }        }, 
+			{ command:'doAt',         gram:'do at " * " \n',                                   param:{ seqname:2, at:5 }        }, 
 			{ command:'synonyms',     gram:'synonyms * : * \n',                                param:{ keyword:1, members:3 }   },
 			{ command:'group',        gram:'group * : * \n',                                   param:{ keyword:1, members:3 }   },
 			{ command:'conjugateAnd', gram:'conjugate " * " and " * " \n',                     param:{ first:2, second:6 }      }, 
@@ -152,7 +152,7 @@ class Moringa {
 			{ command:'say',          gram:'say " * " in " * " \n',                            param:{ message:2, in:6 }        },
 			{ command:'say',          gram:'say " * " \n',                                     param:{ message:2 }              },
 			{ command:'remember',     gram:'remember " * " \n',                                param:{ message:2 }              },
-			{ command:'recall',       gram:'recall ?more " * " \n',                            param:{ message:2 }              },
+			{ command:'recall',       gram:'recall " * " \n',                                  param:{ message:2 }              },
 			{ command:'forget',       gram:'forget " * " \n',                                  param:{ message:2 }              },
 			{ command:'interpretAs',  gram:'interpret as " * " \n',                            param:{ statement:3 }            },
 			{ command:'expectAs',     gram:'expect " * " as " * " \n',                         param:{ expecting:2, as:6 }      },
@@ -263,6 +263,11 @@ class Moringa {
 				case 'alwaysif':
 					option       = { condition:found.param.condition, flags:found.flags, always:true, actions:[] }; 
 					recognizer.options.push(option);
+					break;
+
+				case 'sequence':
+					option       = { name:found.param.seqname.trim(), actions:[] };
+					context.sequences.push(option);
 					break;
 
 				// Action Commands 
@@ -380,8 +385,8 @@ class Moringa {
 		return awareness;
 	}
 
-	// Returns false else object of collected variables ( useKnown means, if variable already holds value, use to match -- not collect ) // ZZZ ??
-	matchRecognizer( message, matchers, model, useKnown = false ) {
+	// Returns false else object of collected variables
+	matchRecognizer( message, matchers, model ) {
 		// Tokenize input message
 		let syntax = {	
 			splitters:[' ','\t','\n','~','`','!','@','#','$','%','^','&','*','(',')','-','+','_','=','{','}','[',']',':',';','"','\'','<','>',',','.','?','/','|','\\'],
@@ -399,10 +404,13 @@ class Moringa {
 			var matcher = matchers[m];
 			// If variable..
 			if( matcher[0] === '[' && matcher[matcher.length-1] === ']' ) {
-				var name  = matchers[m].substr(1,matchers[m].length-2);
-				if( useKnown && model.variable[name] !== undefined ) {
+				var name  = matchers[m].substr(1,matchers[m].length-2).trim();
+
+				// If variable a constrain (preceeded with '>') else to be collected (default)? 
+				if( name[0] === '>' ) {
+					name = name.substr(1);
 					// Validate that actuals match any of the varaible's values..
-					// TODO
+					// TODO ZZZ WORKING..
 				}
 				else {
 					// Capture variable until next matcher or end of actuals (of no more matchers)
@@ -708,22 +716,9 @@ class Moringa {
 	}
 
 	countMemories( pattern, variable, model ) {
-		/* OLD WAY
-		// Apply variables to pattern, leaving blank [] as wildcards
-		pattern = this.formatOutput( pattern, variable, [], '[anything]' );
-	
-		// Loop through memories, counting matches
 		var count = 0;
 		for( var m = 0; m < model.memories.length; m += 1 ) {
 			var matchers = this.formatRecognizerPattern( pattern );
-			if( this.matchRecognizer( model.memories[m].memory, matchers, model ) !== false ) count += 1;
-		}
-		*/
-
-		var count = 0;
-		for( var m = 0; m < model.memories.length; m += 1 ) {
-			var matchers = this.formatRecognizerPattern( pattern );
-			// TODO ZZZ: replace variables with array of options.. enhance matchRecognizer() to check for each
 			if( this.matchRecognizer( model.memories[m].memory, matchers, model ) !== false ) count += 1;
 		}
 	
@@ -746,10 +741,11 @@ class Moringa {
 				case 'inverton':      this.actionInvertOn( action.param, awareness, model ); break;
 				case 'say':           this.actionSay( action.param, awareness, model ); break;	
 				case 'remember':      this.actionRemember( action.param, awareness, model ); break;
-				case 'recall':        this.actionRecall( action.param, awareness, model, action.flags ); break;  // added flags, in case "more" flag
+				case 'recall':        this.actionRecall( action.param, awareness, model ); break;
 				case 'forget':        this.actionForget( action.param, awareness, model ); break;
 				case 'interpretas':   this.actionInterpretAs( action.param, awareness, model ); break;
 				case 'expectas':      this.actionExpectAs( action.param, awareness, model ); break;
+				case 'dosequence':    this.actionDoSequence( action.param, awareness, model ); break;
 				case 'enter':         this.actionEnter( action.param, awareness, model ); break;
 				case 'exit':          this.actionExit( action.param, awareness, model ); break;
 				case 'seek':          this.actionExit( action.param, awareness, model ); break;
@@ -890,17 +886,15 @@ class Moringa {
 	}
 
 	actionRecall( param, awareness, model, flags ) {
-		var variable = awareness.variable;
 		var matchers = this.formatRecognizerPattern(param.message);
 		for( var m = 0; m < model.memories.length; m += 1 ) {
 			var memory = model.memories[m].memory;
 			var found  = this.matchRecognizer( memory, matchers, model );
 			if( found !== false ) {
+				// For each variable name, remove all previous values and reload, accoridng to what was found
 				for( var name in found ) {
-					for( var v = 0; v < found[name].length; v += 1 ) {
-						if( variable[name] === undefined || flags.indexOf('more') !== -1 ) variable[name] = [];
-						variable[name].push(found[name][v]);
-					}
+					if( awareness.variable[name] === undefined ) awareness.variable[name] = []; 
+					for( var v = 0; v < found[name].length; v += 1 ) awareness.variable[name].push(found[name][v]);
 				}
 			}
 		}
@@ -921,6 +915,25 @@ class Moringa {
 
 	actionExpectAs( param, awareness, model ) {
 		// TODO: Add expectation to model + checking them first, as if recognizers..
+	}
+
+	actionDoSequence( param, awareness, model ) {
+		// Find named sequence
+		var sequence = null;
+		for( var c = 0; c < model.contexts.length; c += 1 ) {
+			var context = model.contexts[c];
+			for( let s = 0; s < context.sequences.length; s += 1 ) {
+				if( context.sequences[s].name === param.seqname ) {
+					sequence = context.sequences[s];
+					break;
+				}
+			}
+			if( sequence !== null ) break;
+		}
+
+		// Schedule the sequence (default in now)
+		// TODO
+		console.log('SEQUENCE: ' + JSON.stringify(sequence,null,'  '));
 	}
 
 	actionEnter( param, awareness, model ) {
