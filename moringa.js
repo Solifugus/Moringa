@@ -33,32 +33,22 @@ class Moringa {
 		// Output any scheduled messages (shoudl be pre-formatted for output)
 		var currently = new Date();
 		var upcoming  = 0;
+
+		// Execute any scheduled action sequence
 		for( var name in this.model ) {
 			var model = this.model[name];
-			for( var i = 0; i < model.outputs.length; i += 1 ) {
-				var output = model.outputs[i];
+			for( var i = 0; i < model.schedules.length; i += 1 ) {
+				var scheduled = model.schedules[i];
 
-				// If time to output then do so..
-				if( output.performed === false && currently.getTime() >= output.when.getTime() ) {
-					if( name.toLowerCase() === this.name.toLowerCase() ) {
-						// Sending output to callback because output is from the base model
-						this.callback( output.message );
-					}
-					else {
-						// Sending to base model because output is from an internal model
-						// TODO
-					}
-					output.performed = true;
+				// If time to perform output or action(s) then do so Else determine next time to schedule for..
+				if( scheduled.performed === false && currently.getTime() >= scheduled.when.getTime() ) {
+					this.performActions( scheduled.actions, model );
+					scheduled.performed = true;
 				}
-				// Determine next upcoming scheduled output (earliest after currently)
-				else if( output.performed === false && ( upcoming === 0 || output.when.getTime() < upcoming) ) upcoming = output.when.getTime();
+				else if( scheduled.performed === false && ( upcoming === 0 || scheduled.when.getTime() < upcoming) ) upcoming = scheduled.when.getTime();
 			}
 
 		}
-
-		// Execute any scheduled action sequence
-		// TODO
-
 
 		// Setup timeout for next scheduled output or action sequence..
 		if( upcoming > 0 ) {
@@ -78,8 +68,8 @@ class Moringa {
 			synonyms:[],          // each, e.g. { context:'general', keyword:'yes', members:['yeah','yep','yup','sure'] }
 			groups:[],            // each, e.g. { context:'general', keyword:'gender', members:['male','female'] }
 			expectations:[],      // each, e.g. { context:'general', expect:'feeling', as:'I am feeling [feeling].' }
-			schedules:[],         // each, e.g., { context:'general', time:0, actions:{} } 
-			outputs:[]            // gathers outputs to send in format { message:'hello', time:92832983, sent:false }
+			schedules:[],         // each, e.g., { context:'general', when:0, performed:false, actions:{} } 
+			//outputs:[]            // gathers outputs to send in format { message:'hello', time:92832983, sent:false }
 		};
 		this.model[name].contexts.push({
 				name:'general',  // general context of model (interpreted after any other active context(s))
@@ -320,11 +310,11 @@ class Moringa {
 
 	// ===== Process an Input Message =====
 	input( message, name = this.name, callback = this.callback ) {
-		let model     = this.model[name];
-		let awareness = this.interpret( message, model );
-		//console.log( 'OPTIONS FOUND: ' + JSON.stringify(awareness.options,null,'  ') );
-		let preferred    = this.pickOption( awareness, model );
-		if( preferred !== undefined ) this.performActions( preferred.actions, awareness, model );
+		let model = this.model[name];
+		this.interpret( message, model );
+		//console.log( 'OPTIONS FOUND: ' + JSON.stringify(model.awareness.options,null,'  ') );
+		let preferred    = this.pickOption( model );
+		if( preferred !== undefined ) this.performActions( preferred.actions, model );
 	}
 
 	// Returns Awareness from Recognition and Deductions
@@ -340,6 +330,8 @@ class Moringa {
 			options:[],        // valid options collected
 		};
 
+		model.awareness = awareness;
+
 		// For each context..
 		for( var c = 0; c < model.contexts.length; c += 1 ) {
 			awareness.contextName = model.contexts[c].name; 
@@ -352,7 +344,7 @@ class Moringa {
 				// If the context's always recognizer.. 
 				if( recognizer.pattern === '' ) {
 					// Perform always actions
-					this.performActions( recognizer.actions, awareness, model );
+					this.performActions( recognizer.actions, model );
 					// Collect valid options
 					for( var i = 0; i < recognizer.options.length; i += 1 ) {
 						if( this.isOptionValid( option, model ) ) awareness.options.push(recognizer.options[i]);
@@ -371,7 +363,7 @@ class Moringa {
 					//for( var name in variable ) awareness.variable[name].push({value:variable[name],timeStamp:timeStamp});
 
 					// Perform recognizer's always actions
-					this.performActions( recognizer.actions, awareness, model );
+					this.performActions( recognizer.actions, model );
 
 					// Add recognizer's options to awareness
 					for( var i = 0; i < recognizer.options.length; i += 1 ) awareness.options.push(recognizer.options[i]);
@@ -569,7 +561,8 @@ class Moringa {
 	}
 
 
-	pickOption( awareness, model ) {
+	pickOption( model ) {
+		var awareness = model.awareness;
 		// Determine which options are currently valid
 		awareness.validOptions = [];
 		for( var c = 0; c < awareness.options.length; c += 1 ) {
@@ -725,31 +718,31 @@ class Moringa {
 		return count;
 	}
 
-	performActions( actions, awareness, model ) {
+	performActions( actions, model ) {
 		// TODO: add contextPriority at other points in "interpret" - modify priority when recognized in that priority
-		awareness.contextPriority = this.contextPriority( awareness.contextName, model.contexts );
-		//console.log('AWARE: ' + JSON.stringify( awareness, null, '  ' ) );
+		model.awareness.contextPriority = this.contextPriority( model.awareness.contextName, model.contexts );
+		//console.log('AWARE: ' + JSON.stringify( model.awareness, null, '  ' ) );
 		var response = '';
 		for( var a = 0; a < actions.length; a += 1 ) {
 			var action = actions[a];
 			//console.log('ACTION ' + a + ' ' + JSON.stringify(action.command) + ': ' + JSON.stringify(action) );
 			switch( action.command.toLowerCase() ) {
-				case 'synonyms':      this.actionSynonyms( action.param, awareness, model ); break;
-				case 'group':         this.actionGroup( action.param, awareness, model ); break;
-				case 'conjugateand':  this.actionConjugateAnd( action.param, awareness, model ); break;
-				case 'conjugateto':   this.actionConjugateTo( action.param, awareness, model ); break;
-				case 'inverton':      this.actionInvertOn( action.param, awareness, model ); break;
-				case 'say':           this.actionSay( action.param, awareness, model ); break;	
-				case 'remember':      this.actionRemember( action.param, awareness, model ); break;
-				case 'recall':        this.actionRecall( action.param, awareness, model ); break;
-				case 'forget':        this.actionForget( action.param, awareness, model ); break;
-				case 'interpretas':   this.actionInterpretAs( action.param, awareness, model ); break;
-				case 'expectas':      this.actionExpectAs( action.param, awareness, model ); break;
-				case 'dosequence':    this.actionDoSequence( action.param, awareness, model ); break;
-				case 'enter':         this.actionEnter( action.param, awareness, model ); break;
-				case 'exit':          this.actionExit( action.param, awareness, model ); break;
-				case 'seek':          this.actionExit( action.param, awareness, model ); break;
-				case 'avoid':         this.actionExit( action.param, awareness, model ); break;
+				case 'synonyms':      this.actionSynonyms( action.param, model ); break;
+				case 'group':         this.actionGroup( action.param, model ); break;
+				case 'conjugateand':  this.actionConjugateAnd( action.param, model ); break;
+				case 'conjugateto':   this.actionConjugateTo( action.param, model ); break;
+				case 'inverton':      this.actionInvertOn( action.param, model ); break;
+				case 'say':           this.actionSay( action.param, model ); break;	
+				case 'remember':      this.actionRemember( action.param, model ); break;
+				case 'recall':        this.actionRecall( action.param, model ); break;
+				case 'forget':        this.actionForget( action.param, model ); break;
+				case 'interpretas':   this.actionInterpretAs( action.param, model ); break;
+				case 'expectas':      this.actionExpectAs( action.param, model ); break;
+				case 'dosequence':    this.actionDoSequence( action.param, model ); break;
+				case 'enter':         this.actionEnter( action.param, model ); break;
+				case 'exit':          this.actionExit( action.param, model ); break;
+				case 'seek':          this.actionExit( action.param, model ); break;
+				case 'avoid':         this.actionExit( action.param, model ); break;
 				default:
 					console.log('Command "' + action.command + '" recognized but not supported.');
 			}
@@ -770,7 +763,7 @@ class Moringa {
 	// ========== Action Performances ==========
 	
 	// Assign synonyms to a keyword to enhance recognizing, generally..
-	actionSynonyms( param, awareness, model ) {
+	actionSynonyms( param, model ) {
 		var synonyms = model.synonyms;
 		let members = param.members.split(',');
 		for( let i = 0; i < members.length; i += 1 ) members[i] = members[i].trim();
@@ -786,16 +779,16 @@ class Moringa {
 
 		// If exists, replace else append
 		if( found !== undefined ) {
-			found.context = awareness.contextName;
+			found.context = model.awareness.contextName;
 			found.members = members;
 		}
 		else {
-			model.synonyms.push({ context:awareness.contextName, keyword:param.keyword, members:members });
+			model.synonyms.push({ context:model.awareness.contextName, keyword:param.keyword, members:members });
 		}
 	}
 
 	// Assign group of terms to a keyword to enhance recognizing wildcards (only matches if in group)
-	actionGroup( param, awareness, model ) {
+	actionGroup( param, model ) {
 		var groups = model.groups;
 		let members = param.members.split(',');
 		for( let i = 0; i < members.length; i += 1 ) members[i] = members[i].trim();
@@ -811,22 +804,22 @@ class Moringa {
 
 		// If exists, replace else append
 		if( found !== undefined ) {
-			found.context = awareness.contextName;
+			found.context = model.awareness.contextName;
 			found.members = members;
 		}
 		else {
-			model.groups.push({ context:awareness.contextName, keyword:param.keyword, members:members });
+			model.groups.push({ context:model.awareness.contextName, keyword:param.keyword, members:members });
 		}
 	}
 
 	// Specify two-way conjugations
-	actionConjugateAnd( param, awareness, model ) {
-		this.actionConjugateTo( param, awareness, model );
-		this.actionConjugateTo( {first:param.second,second:param.first}, awareness, model );
+	actionConjugateAnd( param, model ) {
+		this.actionConjugateTo( param, model );
+		this.actionConjugateTo( {first:param.second,second:param.first}, model );
 	}
 
 	// Specify one-way conjugation
-	actionConjugateTo( param, awareness, model ) {
+	actionConjugateTo( param, model ) {
 		let conjugations = model.conjugations;
 
 		// See if conjugation "from" already exists
@@ -840,52 +833,58 @@ class Moringa {
 
 		// If exists, replace conjugation "to" else append new conjugation "from" and "to"
 		if( found !== undefined ) {
-			found.context = awareness.contextName;
+			found.context = model.awareness.contextName;
 			found.to      = param.second;
 		}
 		else {
 			// Add new one with "from" regex matcher for the conjugation
 			let regex = new RegExp( '([^A-Za-z])' + param.first.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') + '([^A-Za-z])', 'gim' );
-			model.conjugations.push({ context:awareness.contextName, regex:regex, from:param.first, to:param.second });
+			model.conjugations.push({ context:model.awareness.contextName, regex:regex, from:param.first, to:param.second });
 		}
 
 		// Resort conjugations from longest to shortest
 		model.conjugations.sort(( a, b ) => { return b.from.length - a.from.length });
 	}
 
-	actionInvertOn( param, awareness, model ) {
+	actionInvertOn( param, model ) {
 	}
 
-	actionUnretain( param, awareness, model ) {
+	actionUnretain( param, model ) {
 	}
 
-	actionSay( param, awareness, model ) {
-		let message = this.formatOutput( param.message, awareness.variable, model.conjugations );
-		let when = new Date();
+	actionSay( param, model ) {
+		let message = this.formatOutput( param.message, model.awareness.variable, model.conjugations );
+		var when    = null;
 
 		// Say "message" In "duration" -- where duration is similar to "3 weeks 2 hours 5 minutes"
 		if( param.in !== undefined ) {
-			let inParam = this.formatOutput( param.in, awareness.variable, model.conjugations );
+			let inParam = this.formatOutput( param.in, model.awareness.variable, model.conjugations );
 			when = this.durationToDateTime( inParam );
 		}
 
 		// Say "message" At "date/time" -- where date/time is similar to january 3rd, 2017  
 		if( param.at !== undefined ) {
-			let atParam = this.formatOutput( param.at, awareness.variable, model.conjugations );
+			let atParam = this.formatOutput( param.at, model.awareness.variable, model.conjugations );
+			when = new Date();
 			when.parse( atParam );  
 		}
 
-		// Schedule output (default is immediate) 
-		model.outputs.push( { message:message, when:when, performed:false } );
-		this.checkSchedule();
+		if( when !== null ) {
+		    model.schedules.push( { when:when, performed:false, actions:[{command:'say',param:{message:message}}] } );
+			this.checkSchedule();
+		}
+		else {
+			// TODO: route to callback, if foundation model, else to model from.
+			this.callback( message );
+		}
 	}
 
-	actionRemember( param, awareness, model ) {
+	actionRemember( param, model ) {
 		// Note: could calculate LTM (slowness of fading), as median time between writes and (when performing option) reads.
-		model.memories.push( { context:'general', memory:this.formatOutput( param.message, awareness.variable, model.conjugations ), timeStamp:new Date() } ); 
+		model.memories.push( { context:'general', memory:this.formatOutput( param.message, model.awareness.variable, model.conjugations ), timeStamp:new Date() } ); 
 	}
 
-	actionRecall( param, awareness, model, flags ) {
+	actionRecall( param, model, flags ) {
 		var matchers = this.formatRecognizerPattern(param.message);
 		for( var m = 0; m < model.memories.length; m += 1 ) {
 			var memory = model.memories[m].memory;
@@ -893,14 +892,14 @@ class Moringa {
 			if( found !== false ) {
 				// For each variable name, remove all previous values and reload, accoridng to what was found
 				for( var name in found ) {
-					if( awareness.variable[name] === undefined ) awareness.variable[name] = []; 
-					for( var v = 0; v < found[name].length; v += 1 ) awareness.variable[name].push(found[name][v]);
+					if( model.awareness.variable[name] === undefined ) model.awareness.variable[name] = []; 
+					for( var v = 0; v < found[name].length; v += 1 ) model.awareness.variable[name].push(found[name][v]);
 				}
 			}
 		}
 	}
 	
-	actionForget( param, awareness, model ) {
+	actionForget( param, model ) {
 		var matchers = this.formatRecognizerPattern(param.message);
 		for( var m = 0; m < model.memories.length; m += 1 ) {
 			var memory = model.memories[m].memory;
@@ -909,15 +908,15 @@ class Moringa {
 		}
 	}
 
-	actionInterpretAs( param, awareness, model ) {
+	actionInterpretAs( param, model ) {
 		this.input( param.message );
 	}
 
-	actionExpectAs( param, awareness, model ) {
+	actionExpectAs( param, model ) {
 		// TODO: Add expectation to model + checking them first, as if recognizers..
 	}
 
-	actionDoSequence( param, awareness, model ) {
+	actionDoSequence( param, model ) {
 		// Find named sequence
 		var sequence = null;
 		for( var c = 0; c < model.contexts.length; c += 1 ) {
@@ -930,24 +929,40 @@ class Moringa {
 			}
 			if( sequence !== null ) break;
 		}
+		if( sequence === null ) throw 'Cannot do sequence "' + param.seqname + '" because it does not exist.';
 
-		// Schedule the sequence (default in now)
-		// TODO
-		console.log('SEQUENCE: ' + JSON.stringify(sequence,null,'  '));
+		var when = null;
+		// Perform after a specified amount of time has passed? 
+		if( param.in !== undefined ) {
+			when = this.durationToDateTime( inParam );
+		}
+
+		// Perform when a specified date/time arrives? 
+		if( param.at !== undefined ) {
+			when = new Date();
+			when.parse( atParam );  
+		}
+
+		// If immediate, perform now else schedule to perform later..
+		if( when === null ) { this.performActions( sequence.actions, model ); }
+		else {
+			model.schedules.push({ when:when, performed:false, actions:sequence.actions }); 
+			this.checkSchedule();
+		}
 	}
 
-	actionEnter( param, awareness, model ) {
+	actionEnter( param, model ) {
 		// TODO: Activate context and move to top priority
 	}
 
-	actionExit( param, awareness, model ) {
+	actionExit( param, model ) {
 		// TODO: deactivate specified context else deactivate all contexts 
 	}
 
-	actionSeek( param, awareness, model ) {
+	actionSeek( param, model ) {
 	}
 
-	actionAvoid( param, awareness, model ) {
+	actionAvoid( param, model ) {
 	}
 
 	// ===== Action Support Functions =====

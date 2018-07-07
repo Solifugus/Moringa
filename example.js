@@ -17,7 +17,7 @@ agent.importFoundation( script, 'synthia' );
 
 // Test Cases
 var tests = [
-	//{ type:'A', message:'Hello.' },
+	{ type:'A', message:'Hello.' },
 	//{ type:'A', message:'My name is Joe.' },
 	//{ type:'A', message:'I like bananas' },
 	//{ type:'A', message:'I like apples' },
