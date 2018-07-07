@@ -54,7 +54,7 @@ class Moringa {
 		if( upcoming > 0 ) {
 			let nextCheck = upcoming - currently.getTime();
 			if( nextCheck > 0 ) {
-				console.log( 'Waiting For ' + (nextCheck) + ' milliseconds.' );
+				//console.log( 'Waiting For ' + (nextCheck) + ' milliseconds.' );
 				this.timeout = setTimeout( this.checkSchedule.bind(this), nextCheck );
 			}
 		}
@@ -69,7 +69,6 @@ class Moringa {
 			groups:[],            // each, e.g. { context:'general', keyword:'gender', members:['male','female'] }
 			expectations:[],      // each, e.g. { context:'general', expect:'feeling', as:'I am feeling [feeling].' }
 			schedules:[],         // each, e.g., { context:'general', when:0, performed:false, actions:{} } 
-			//outputs:[]            // gathers outputs to send in format { message:'hello', time:92832983, sent:false }
 		};
 		this.model[name].contexts.push({
 				name:'general',  // general context of model (interpreted after any other active context(s))
@@ -128,8 +127,8 @@ class Moringa {
 			{ command:'optionif',     gram:'?fallback ?exclusive ?additional option if * \n',  param:{ condition:2 }            },  
 			{ command:'option',       gram:'?fallback ?exclusive ?additional option',          param:{}                         }, 
 			{ command:'sequence',     gram:'sequence " * " \n',                                param:{ seqname:2 }              }, 
-			{ command:'doSequence',   gram:'do " * " in " * " \n',                             param:{ seqname:2, in:5 }        }, 
-			{ command:'doSequence',   gram:'do " * " at " * " \n',                             param:{ seqname:2, at:5 }        }, 
+			{ command:'doSequence',   gram:'do " * " in " * " \n',                             param:{ seqname:2, in:6 }        }, 
+			{ command:'doSequence',   gram:'do " * " at " * " \n',                             param:{ seqname:2, at:6 }        }, 
 			{ command:'doSequence',   gram:'do " * " \n',                                      param:{ seqname:2 }              }, 
 			{ command:'doIn',         gram:'do in " * " \n',                                   param:{ seqname:2, at:5 }        }, 
 			{ command:'doAt',         gram:'do at " * " \n',                                   param:{ seqname:2, at:5 }        }, 
@@ -934,11 +933,13 @@ class Moringa {
 		var when = null;
 		// Perform after a specified amount of time has passed? 
 		if( param.in !== undefined ) {
+			let inParam = this.formatOutput( param.in, model.awareness.variable, model.conjugations );
 			when = this.durationToDateTime( inParam );
 		}
 
 		// Perform when a specified date/time arrives? 
 		if( param.at !== undefined ) {
+			let atParam = this.formatOutput( param.at, model.awareness.variable, model.conjugations );
 			when = new Date();
 			when.parse( atParam );  
 		}

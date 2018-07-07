@@ -65,7 +65,7 @@ recognizer "in [time] seconds remind me [reminder]"
 
 recognizer "recite poetry"
 	say "Ok.. Sure:"
-	do "poem"
+	do "poem" in "5 seconds"
 
 recognizer "[anything]"
 	option say "Please elaborate on that."
