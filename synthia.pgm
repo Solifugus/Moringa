@@ -85,6 +85,12 @@ recognizer "recite poetry"
 	say "Ok.. Sure.. I'll need half a minute or so to think of a good peom."
 	do "poem" in "30 seconds"
 
+recognizer "slap me in [number] seconds"
+	say "Ok."
+	do in "[number] seconds"
+		say "SLAP!"
+		say "Did you like that?!"
+
 recognizer "in [seconds] seconds tell me [something]"
 	say "sure.  I will."
 	say "As request, I am telling you [something]." in "[seconds] seconds"

@@ -17,15 +17,18 @@ agent.importFoundation( script, 'synthia' );
 
 // Test Cases
 var tests = [
-	{ type:'A', message:'Hello.' },
+	//{ type:'A', message:'Hello.' },
 	//{ type:'A', message:'My name is Joe.' },
+	//{ type:'A', message:'recite poetry' },
+	//{ type:'A', message:'In 15 seconds tell me the timer is working.' },
+	{ type:'A', message:'Slap me in 3 seconds.' },
 	//{ type:'A', message:'I like bananas' },
 	//{ type:'A', message:'I like apples' },
 	//{ type:'A', message:'I like oranges' },
-	{ type:'A', message:'recite poetry' },
 	//{ type:'A', message:'What do you think of bananas?' },
+	//{ type:'A', message:'What kinds of food do I like to eat?' },
+	//{ type:'A', message:'I was a sgt in the Army.' },
 	//{ type:'A', message:'I like to twidle my thumbs.' },
-	//{ type:'A', message:'Being female makes me feel good.' },
 	//{ type:'A', message:'In 2 seconds, remind me that 2 seconds have passed.' },
 ];
 

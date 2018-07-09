@@ -3,16 +3,16 @@
 // All Rights Reserved
 //
 // TO DO ITEMS:
+//  [ ] Make send MoringaScript errors to self.. 
 // 	[ ] Inversions -- If before or after a litteral, do not match
 // 	[ ] Decision logic
 // 	[ ] Retention of variables for standard fading
-// 	[ ] Add the "sequence" directive
 // 	[ ] Add the "Do" commands
 // 	[ ] Seekers and Avoiders
+// 	[ ] expectations inherent Seekers
+// 	[ ] Moringa errors inherent Avoiders
 // 	[ ] Inter-Model Communication (Say "message" To "model") and reception source
 // 	[ ] Create named model instances.. refer to each by name.
-// 	[ ] Add ">" variable functionality in recognizers
-// 	[ ] Change model.outputs to model.schedules (also add say commands to this) 
 
 var tokenizer = require('retokenizer');
 require('datejs');
@@ -129,8 +129,8 @@ class Moringa {
 			{ command:'doSequence',   gram:'do " * " in " * " \n',                             param:{ seqname:2, in:6 }        }, 
 			{ command:'doSequence',   gram:'do " * " at " * " \n',                             param:{ seqname:2, at:6 }        }, 
 			{ command:'doSequence',   gram:'do " * " \n',                                      param:{ seqname:2 }              }, 
-			{ command:'doIn',         gram:'do in " * " \n',                                   param:{ seqname:2, at:5 }        }, 
-			{ command:'doAt',         gram:'do at " * " \n',                                   param:{ seqname:2, at:5 }        }, 
+			{ command:'do',           gram:'do in " * " \n',                                   param:{ in:3 }                   }, 
+			{ command:'do',           gram:'do at " * " \n',                                   param:{ at:3 }                   }, 
 			{ command:'synonyms',     gram:'synonyms * : * \n',                                param:{ keyword:1, members:3 }   },
 			{ command:'conjugateAnd', gram:'conjugate " * " and " * " \n',                     param:{ first:2, second:6 }      }, 
 			{ command:'conjugateTo',  gram:'conjugate " * " to " * " \n',                      param:{ first:2, second:6 }      }, 
@@ -702,9 +702,18 @@ class Moringa {
 		model.awareness.contextPriority = this.contextPriority( model.awareness.contextName, model.contexts );
 		//console.log('AWARE: ' + JSON.stringify( model.awareness, null, '  ' ) );
 		var response = '';
+		var toSchedule = { when:null, performed:false, actions:[] };
 		for( var a = 0; a < actions.length; a += 1 ) {
 			var action = actions[a];
-			//console.log('ACTION ' + a + ' ' + JSON.stringify(action.command) + ': ' + JSON.stringify(action) );
+			//if( action.command.substr(0,6) !== 'conjug' ) console.log('ACTION ' + a + ' ' + JSON.stringify(action.command) + ': ' + JSON.stringify(action) );
+
+			// If other than inline "do" command after inline "do" command, just collect actions to schedule..
+			if( action.command.toLowerCase() !== 'do' && toSchedule.when !== null ) {
+				toSchedule.actions.push(action);
+				continue;
+			}
+
+			// Perform as per each command..
 			switch( action.command.toLowerCase() ) {
 				case 'synonyms':      this.actionSynonyms( action.param, model ); break;
 				case 'conjugateand':  this.actionConjugateAnd( action.param, model ); break;
@@ -716,16 +725,52 @@ class Moringa {
 				case 'forget':        this.actionForget( action.param, model ); break;
 				case 'interpretas':   this.actionInterpretAs( action.param, model ); break;
 				case 'expectas':      this.actionExpectAs( action.param, model ); break;
-				case 'dosequence':    this.actionDoSequence( action.param, model ); break;
 				case 'enter':         this.actionEnter( action.param, model ); break;
 				case 'exit':          this.actionExit( action.param, model ); break;
 				case 'seek':          this.actionExit( action.param, model ); break;
 				case 'avoid':         this.actionExit( action.param, model ); break;
+				case 'dosequence':    this.actionDoSequence( action.param, model ); break;
+				case 'do':
+					if( toSchedule.when !== null ) {
+						model.schedules.push( toSchedule ); 
+						this.checkSchedule();
+					}
+					else {
+						toSchedule = { when:this.getSpecifiedTime( action.param, new Date(), model), performed:false, actions:[] };
+					}
+					break;
 				default:
 					console.log('Command "' + action.command + '" recognized but not supported.');
 			}
 		}
+
+		// if any actions left to be scheduled, schedule them.. 
+		if( toSchedule.when !== null ) {
+			model.schedules.push( toSchedule ); 
+			this.checkSchedule();
+		}
 		return response;	
+	}
+
+	// TODO: make "actionSay" and "actionDoSequence" also use this function
+	getSpecifiedTime( param, defaultTo, model ) {
+		var when = null;
+		// Perform after a specified amount of time has passed? 
+		if( param.in !== undefined ) {
+			let inParam = this.formatOutput( param.in, model.awareness.variable, model.conjugations );
+			when = this.durationToDateTime( inParam );
+		}
+
+		// Perform when a specified date/time arrives? 
+		if( param.at !== undefined ) {
+			let atParam = this.formatOutput( param.at, model.awareness.variable, model.conjugations );
+			when = new Date();
+			when.parse( atParam );  
+		}
+
+		// If when not specified, assume now..
+		if( when === null ) when = defaultTo;
+		return when;
 	}
 
 	contextPriority( name, contexts ) {
@@ -802,12 +847,9 @@ class Moringa {
 	actionInvertOn( param, model ) {
 	}
 
-	actionUnretain( param, model ) {
-	}
-
 	actionSay( param, model ) {
 		let message = this.formatOutput( param.message, model.awareness.variable, model.conjugations );
-		var when    = null;
+/*		var when    = null;
 
 		// Say "message" In "duration" -- where duration is similar to "3 weeks 2 hours 5 minutes"
 		if( param.in !== undefined ) {
@@ -821,8 +863,9 @@ class Moringa {
 			when = new Date();
 			when.parse( atParam );  
 		}
-
-		if( when !== null ) {
+*/
+		let when = this.getSpecifiedTime( param, undefined, model ); 
+		if( when !== undefined ) {
 		    model.schedules.push( { when:when, performed:false, actions:[{command:'say',param:{message:message}}] } );
 			this.checkSchedule();
 		}
