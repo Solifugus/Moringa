@@ -7,7 +7,7 @@
 // 	[ ] Inversions -- If before or after a litteral, do not match
 // 	[ ] Decision logic
 // 	[ ] Retention of variables for standard fading
-// 	[ ] Add the "Do" commands
+// 	[ ] Expectations should last until faded or one input since expected
 // 	[ ] Seekers and Avoiders
 // 	[ ] expectations inherent Seekers
 // 	[ ] Moringa errors inherent Avoiders
@@ -22,6 +22,7 @@ class Moringa {
 		this.callback      = callback;  // where to send interjections
 		this.name          = name;      // name of base model 
 		this.fading        = 60000;     // nanoseconds before variable values fade away
+		this.inputCount    = 0;         // number of inputs since awakening
 		this.model         = {};        // per model, an array of contexts; a context holds an array of recognizers; holding array of options; holding array of actions 
 		this.nextScheduled = null;      // when next output or action command is scheduled
 
@@ -29,7 +30,7 @@ class Moringa {
 	}
 
 	checkSchedule() {
-		// Output any scheduled messages (shoudl be pre-formatted for output)
+		// Output any scheduled messages (should be pre-formatted for output)
 		var currently = new Date();
 		var upcoming  = 0;
 
@@ -61,6 +62,7 @@ class Moringa {
 
 	importFoundation( script, name = this.name ) {
 		this.model[name] = {      // each model is named
+			fading:60,            // number of seconds before short term memories fade -- TODO: add option for custom fading
 			contexts:[],          // each, e.g. { name:'general', recognizers:[], active:true }
 			memories:[],          // each, e.g. { context:'general', memory:'the sky is blue', timeStamp:new Date() }
 			conjugations:[],      // each, e.g. { context:'general', from:'me', to:'you' }
@@ -306,6 +308,7 @@ class Moringa {
 
 	// ===== Process an Input Message =====
 	input( message, name = this.name, callback = this.callback ) {
+		this.inputCount += 1;
 		let model = this.model[name];
 		this.interpret( message, model );
 		//console.log( 'OPTIONS FOUND: ' + JSON.stringify(model.awareness.options,null,'  ') );
@@ -324,7 +327,7 @@ class Moringa {
 				recognizer:false,  // recognizer matched (else undefined)
 				contextName:'',    // context of matched recognizer
 				contextPriority:0, // current order of context, to be interpreted
-				variable:{},       // variables collected -- e.g, 'name':[{value:'xx',timeStamp:'xx'},..]; Note TODO: per interpret, overwrite else retain 
+				variable:{},       // variables collected -- e.g, 'name':[{value:'xx',timeStamp:'xx'},..];
 				options:[],        // valid options collected
 			};
 	
@@ -334,6 +337,13 @@ class Moringa {
 
 		// First check if anything particularly expected at this time -- and convert to explicit meaning.. 
 		for( var x = 0; x < model.expects.length; x += 1 ) {
+			// If expect is not user's next input and is too old, remove and check next..
+			if( this.inputCount > (model.expects[x].inputCount + 1) && timeStamp > model.expects[x].until ) {
+				model.expects.splice(x,1);
+				continue;
+			}
+
+			// Does message match expect?  Then change message to "as"
 			if( this.matchRecognizer( message, model.expects[x].matchers, model ) ) {
 				message = this.formatOutput( model.expects[x].as, awareness.variable, [] );
 				break;
@@ -883,7 +893,9 @@ class Moringa {
 		let expect   = this.formatOutput( param.expecting, model.awareness.variable, [] );
 		let matchers = this.formatRecognizerPattern( expect );
 		let as       = this.formatOutput( param.as, model.awareness.variable, [] );
-		model.expects.push({ expect:expect, matchers:matchers, as:as, timeStamp:new Date()});
+		let until    = new Date();
+		until.setSeconds( until.getSeconds() + model.fading );
+		model.expects.push({ expect:expect, matchers:matchers, as:as, inputCount:this.inputCount, until:until}); 
 		
 		// sort longest to shortest matcher..
 		model.expects.sort(( a, b ) => { return b.matchers.length - a.matchers.length });
