@@ -17,8 +17,13 @@ agent.importFoundation( script, 'synthia' );
 
 // Test Cases
 var tests = [
-	//{ type:'A', message:'Hello.' },
-	//{ type:'A', message:'My name is Joe.' },
+	// Responses
+	//{ type:'R', message:'Hello.' },
+	//{ type:'R', message:'My name is Joe.' },
+	//{ type:'R', message:'I like to twidle my thumbs.' },
+	
+	// Conditions
+	//{ type:'A', message:'What kinds of food do I like to eat?' },
 	
 	// Timings
 	//{ type:'T', message:'recite poetry' },
@@ -31,12 +36,16 @@ var tests = [
 	//{ type:'V', message:'I like apples' },
 	//{ type:'V', message:'I like oranges' },
 	//{ type:'V', message:'What do you think of bananas?' },
+	//{ type:'V', message:'I was a sgt in the Army.' },
 	
 	// Interpret As
-	{ type:'I', message:'A kitten is something I like.' },
-	//{ type:'A', message:'What kinds of food do I like to eat?' },
-	//{ type:'A', message:'I was a sgt in the Army.' },
-	//{ type:'A', message:'I like to twidle my thumbs.' },
+	//{ type:'I', message:'A kitten is something I like.' },
+	
+	// Expect As
+	{ type:'X', message:'Do you have any bananas today?' },
+	{ type:'X', message:'yes' },
+	{ type:'X', message:'no' },
+
 ];
 
 for( var t = 0; t < tests.length; t += 1 ) {

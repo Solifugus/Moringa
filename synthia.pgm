@@ -98,6 +98,17 @@ recognizer "in [seconds] seconds tell me [something]"
 	say "I will."
 	say "As requested to do after [seconds] seconds, I am telling you [something]." in "[seconds] seconds"
 
+recognizer "do you have any [something] today"
+	say "I have no [something] today.  Do you need some?"
+	expect "yes" as "I need [something]."
+	expect "no" as "I do not need [something]."
+
+recognizer "i need [something]"
+	say "well, I hope you get [something].'"
+
+recognizer "i do not need [something]."
+	say "I will be sure not to give you [something]."
+
 recognizer "[anything]"
 	option say "Please elaborate on that."
 	option say "Could you rephrase that, please."

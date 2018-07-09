@@ -62,11 +62,11 @@ class Moringa {
 	importFoundation( script, name = this.name ) {
 		this.model[name] = {      // each model is named
 			contexts:[],          // each, e.g. { name:'general', recognizers:[], active:true }
-			memories:[],          // each, e.g. { context:'general', memory:'the sky is blue', timeStamp:Date() }
+			memories:[],          // each, e.g. { context:'general', memory:'the sky is blue', timeStamp:new Date() }
 			conjugations:[],      // each, e.g. { context:'general', from:'me', to:'you' }
 			synonyms:[],          // each, e.g. { context:'general', keyword:'yes', members:['yeah','yep','yup','sure'] }
-			expectations:[],      // each, e.g. { context:'general', expect:'feeling', as:'I am feeling [feeling].' }
 			schedules:[],         // each, e.g., { context:'general', when:0, performed:false, actions:{} } 
+			expects:[],           // each, e.g., { expect:'yes', matchers:[], as:'I would like to kiss you.', timeStamp:new Date() }
 		};
 		this.model[name].contexts.push({
 				name:'general',  // general context of model (interpreted after any other active context(s))
@@ -331,6 +331,14 @@ class Moringa {
 			model.awareness = awareness;
 		}
 		else { awareness = model.awareness; }
+
+		// First check if anything particularly expected at this time -- and convert to explicit meaning.. 
+		for( var x = 0; x < model.expects.length; x += 1 ) {
+			if( this.matchRecognizer( message, model.expects[x].matchers, model ) ) {
+				message = this.formatOutput( model.expects[x].as, awareness.variable, [] );
+				break;
+			} 
+		}
 
 		// For each context..
 		for( var c = 0; c < model.contexts.length; c += 1 ) {
@@ -864,7 +872,7 @@ class Moringa {
 		}
 	}
 
-	actionInterpretAs( param, model ) { // WORKING ZZZ
+	actionInterpretAs( param, model ) {
 		let statement = this.formatOutput( param.statement, model.awareness.variable, [] );
 		this.interpret( statement, model, false );
 		let preferred = this.pickOption( model );
@@ -872,7 +880,13 @@ class Moringa {
 	}
 
 	actionExpectAs( param, model ) {
-		// TODO: Add expectation to model + checking them first, as if recognizers..
+		let expect   = this.formatOutput( param.expecting, model.awareness.variable, [] );
+		let matchers = this.formatRecognizerPattern( expect );
+		let as       = this.formatOutput( param.as, model.awareness.variable, [] );
+		model.expects.push({ expect:expect, matchers:matchers, as:as, timeStamp:new Date()});
+		
+		// sort longest to shortest matcher..
+		model.expects.sort(( a, b ) => { return b.matchers.length - a.matchers.length });
 	}
 
 	actionDoSequence( param, model ) {
