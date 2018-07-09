@@ -48,6 +48,9 @@ recognizer "i like [thing]"
 	recall "user likes [everything]"
 	say "I am glad you like [everything]."
 
+recognizer "a [thing] is something i like"
+	interpret as "I like [thing]."
+
 recognizer "what do you think of [something]"
 	remember "I like fish"
 	remember "I like popcorn"
@@ -79,10 +82,10 @@ recognizer "I like to [something]"
 	option say "Is [something] something I could do?"
 
 recognizer "in [time] seconds remind me [reminder]"
-	say "Remember [reminder]." in "[time] seconds"
+	say "[time] seconds have past, so I mean to remind you [reminder]." in "[time] seconds"
 
 recognizer "recite poetry"
-	say "Ok.. Sure.. I'll need half a minute or so to think of a good peom."
+	say "Ok.. Sure.. I'll need half a minute or so to think of a good poem."
 	do "poem" in "30 seconds"
 
 recognizer "slap me in [number] seconds"
@@ -92,8 +95,8 @@ recognizer "slap me in [number] seconds"
 		say "Did you like that?!"
 
 recognizer "in [seconds] seconds tell me [something]"
-	say "sure.  I will."
-	say "As request, I am telling you [something]." in "[seconds] seconds"
+	say "I will."
+	say "As requested to do after [seconds] seconds, I am telling you [something]." in "[seconds] seconds"
 
 recognizer "[anything]"
 	option say "Please elaborate on that."

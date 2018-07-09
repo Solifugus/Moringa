@@ -3,7 +3,7 @@
 // All Rights Reserved
 //
 // TO DO ITEMS:
-//  [ ] Make send MoringaScript errors to self.. 
+//  [ ] Make send MoringaScript errors to self..  (for self-error handling and also making self-diagnostics possible)
 // 	[ ] Inversions -- If before or after a litteral, do not match
 // 	[ ] Decision logic
 // 	[ ] Retention of variables for standard fading
@@ -18,7 +18,6 @@ var tokenizer = require('retokenizer');
 require('datejs');
 
 class Moringa {
-	//constructor( callback, name = 'myself', script = '' ) {
 	constructor( callback, name = 'myself', script = '' ) {
 		this.callback      = callback;  // where to send interjections
 		this.name          = name;      // name of base model 
@@ -315,19 +314,23 @@ class Moringa {
 	}
 
 	// Returns Awareness from Recognition and Deductions
-	interpret( message, model ) {
+	interpret( message, model, refresh = true ) {
 		var timeStamp = new Date();  // to give each variable collected in this interpretation, a common timeStamp from which to group, distinguish, and fade
 
 		// Variable to collecting options and related data in; search stops when recognizer is matched
-		var awareness = {
-			recognizer:false,  // recognizer matched (else undefined)
-			contextName:'',    // context of matched recognizer
-			contextPriority:0, // current order of context, to be interpreted
-			variable:{},       // variables collected -- e.g, 'name':[{value:'xx',timeStamp:'xx'},..]; Note TODO: per interpret, overwrite else retain 
-			options:[],        // valid options collected
-		};
-
-		model.awareness = awareness;
+		var awareness;
+		if( refresh ) {
+			awareness = {
+				recognizer:false,  // recognizer matched (else undefined)
+				contextName:'',    // context of matched recognizer
+				contextPriority:0, // current order of context, to be interpreted
+				variable:{},       // variables collected -- e.g, 'name':[{value:'xx',timeStamp:'xx'},..]; Note TODO: per interpret, overwrite else retain 
+				options:[],        // valid options collected
+			};
+	
+			model.awareness = awareness;
+		}
+		else { awareness = model.awareness; }
 
 		// For each context..
 		for( var c = 0; c < model.contexts.length; c += 1 ) {
@@ -752,34 +755,6 @@ class Moringa {
 		return response;	
 	}
 
-	// TODO: make "actionSay" and "actionDoSequence" also use this function
-	getSpecifiedTime( param, defaultTo, model ) {
-		var when = null;
-		// Perform after a specified amount of time has passed? 
-		if( param.in !== undefined ) {
-			let inParam = this.formatOutput( param.in, model.awareness.variable, model.conjugations );
-			when = this.durationToDateTime( inParam );
-		}
-
-		// Perform when a specified date/time arrives? 
-		if( param.at !== undefined ) {
-			let atParam = this.formatOutput( param.at, model.awareness.variable, model.conjugations );
-			when = new Date();
-			when.parse( atParam );  
-		}
-
-		// If when not specified, assume now..
-		if( when === null ) when = defaultTo;
-		return when;
-	}
-
-	contextPriority( name, contexts ) {
-		for( let c = 0; c < contexts.length; c += 1 ) {
-			if( name === contexts[c].name ) return c;
-		}
-		console.log('WARNING: Context unknown.');
-	}
-
 	performScheduledActions() {
 	}
 
@@ -849,22 +824,7 @@ class Moringa {
 
 	actionSay( param, model ) {
 		let message = this.formatOutput( param.message, model.awareness.variable, model.conjugations );
-/*		var when    = null;
-
-		// Say "message" In "duration" -- where duration is similar to "3 weeks 2 hours 5 minutes"
-		if( param.in !== undefined ) {
-			let inParam = this.formatOutput( param.in, model.awareness.variable, model.conjugations );
-			when = this.durationToDateTime( inParam );
-		}
-
-		// Say "message" At "date/time" -- where date/time is similar to january 3rd, 2017  
-		if( param.at !== undefined ) {
-			let atParam = this.formatOutput( param.at, model.awareness.variable, model.conjugations );
-			when = new Date();
-			when.parse( atParam );  
-		}
-*/
-		let when = this.getSpecifiedTime( param, undefined, model ); 
+		let when    = this.getSpecifiedTime( param, undefined, model ); 
 		if( when !== undefined ) {
 		    model.schedules.push( { when:when, performed:false, actions:[{command:'say',param:{message:message}}] } );
 			this.checkSchedule();
@@ -904,8 +864,11 @@ class Moringa {
 		}
 	}
 
-	actionInterpretAs( param, model ) {
-		this.input( param.message );
+	actionInterpretAs( param, model ) { // WORKING ZZZ
+		let statement = this.formatOutput( param.statement, model.awareness.variable, [] );
+		this.interpret( statement, model, false );
+		let preferred = this.pickOption( model );
+		if( preferred !== undefined ) this.performActions( preferred.actions, model );
 	}
 
 	actionExpectAs( param, model ) {
@@ -927,25 +890,13 @@ class Moringa {
 		}
 		if( sequence === null ) throw 'Cannot do sequence "' + param.seqname + '" because it does not exist.';
 
-		var when = null;
-		// Perform after a specified amount of time has passed? 
-		if( param.in !== undefined ) {
-			let inParam = this.formatOutput( param.in, model.awareness.variable, model.conjugations );
-			when = this.durationToDateTime( inParam );
-		}
-
-		// Perform when a specified date/time arrives? 
-		if( param.at !== undefined ) {
-			let atParam = this.formatOutput( param.at, model.awareness.variable, model.conjugations );
-			when = new Date();
-			when.parse( atParam );  
-		}
-
-		// If immediate, perform now else schedule to perform later..
-		if( when === null ) { this.performActions( sequence.actions, model ); }
-		else {
+		let when    = this.getSpecifiedTime( param, undefined, model ); 
+		if( when !== undefined ) {
 			model.schedules.push({ when:when, performed:false, actions:sequence.actions }); 
 			this.checkSchedule();
+		}
+		else {
+			this.performActions( sequence.actions, model );
 		}
 	}
 
@@ -964,6 +915,27 @@ class Moringa {
 	}
 
 	// ===== Action Support Functions =====
+
+	// Translate MoringaScript time specification to JavaScript Date/Time
+	getSpecifiedTime( param, defaultTo, model ) {
+		var when = null;
+		// Perform after a specified amount of time has passed? 
+		if( param.in !== undefined ) {
+			let inParam = this.formatOutput( param.in, model.awareness.variable, model.conjugations );
+			when = this.durationToDateTime( inParam );
+		}
+
+		// Perform when a specified date/time arrives? 
+		if( param.at !== undefined ) {
+			let atParam = this.formatOutput( param.at, model.awareness.variable, model.conjugations );
+			when = new Date();
+			when.parse( atParam );  
+		}
+
+		// If when not specified, assume now..
+		if( when === null ) when = defaultTo;
+		return when;
+	}
 
 	timeToDisplay( time ) {
 		let d = new Date.setTime( time );
@@ -998,6 +970,13 @@ class Moringa {
 			}
 		}
 		return from;
+	}
+
+	contextPriority( name, contexts ) {
+		for( let c = 0; c < contexts.length; c += 1 ) {
+			if( name === contexts[c].name ) return c;
+		}
+		console.log('WARNING: Context unknown.');
 	}
 
 

@@ -19,17 +19,24 @@ agent.importFoundation( script, 'synthia' );
 var tests = [
 	//{ type:'A', message:'Hello.' },
 	//{ type:'A', message:'My name is Joe.' },
-	//{ type:'A', message:'recite poetry' },
-	//{ type:'A', message:'In 15 seconds tell me the timer is working.' },
-	{ type:'A', message:'Slap me in 3 seconds.' },
-	//{ type:'A', message:'I like bananas' },
-	//{ type:'A', message:'I like apples' },
-	//{ type:'A', message:'I like oranges' },
-	//{ type:'A', message:'What do you think of bananas?' },
+	
+	// Timings
+	//{ type:'T', message:'recite poetry' },
+	//{ type:'T', message:'In 15 seconds tell me the timer is working.' },
+	//{ type:'T', message:'Slap me in 3 seconds.' },
+	//{ type:'T', message:'In 2 seconds, remind me that 2 seconds have passed.' },
+	
+	// Value arrays
+	//{ type:'V', message:'I like bananas' },
+	//{ type:'V', message:'I like apples' },
+	//{ type:'V', message:'I like oranges' },
+	//{ type:'V', message:'What do you think of bananas?' },
+	
+	// Interpret As
+	{ type:'I', message:'A kitten is something I like.' },
 	//{ type:'A', message:'What kinds of food do I like to eat?' },
 	//{ type:'A', message:'I was a sgt in the Army.' },
 	//{ type:'A', message:'I like to twidle my thumbs.' },
-	//{ type:'A', message:'In 2 seconds, remind me that 2 seconds have passed.' },
 ];
 
 for( var t = 0; t < tests.length; t += 1 ) {
