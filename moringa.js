@@ -3,7 +3,7 @@
 // All Rights Reserved
 //
 // TO DO ITEMS:
-// 	[ ] Inversions -- If before or after a litteral or group, do not match
+// 	[ ] Inversions -- If before or after a litteral, do not match
 // 	[ ] Decision logic
 // 	[ ] Retention of variables for standard fading
 // 	[ ] Add the "sequence" directive
@@ -66,7 +66,6 @@ class Moringa {
 			memories:[],          // each, e.g. { context:'general', memory:'the sky is blue', timeStamp:Date() }
 			conjugations:[],      // each, e.g. { context:'general', from:'me', to:'you' }
 			synonyms:[],          // each, e.g. { context:'general', keyword:'yes', members:['yeah','yep','yup','sure'] }
-			groups:[],            // each, e.g. { context:'general', keyword:'gender', members:['male','female'] }
 			expectations:[],      // each, e.g. { context:'general', expect:'feeling', as:'I am feeling [feeling].' }
 			schedules:[],         // each, e.g., { context:'general', when:0, performed:false, actions:{} } 
 		};
@@ -89,7 +88,7 @@ class Moringa {
 			splitters:[
 				' ','\t','\n','--',
 				'recognizer','fallback','exclusive','additional','option','always','if',
-				'synonyms','group',':',',','conjugate','and','retain','invert','on',
+				'synonyms',':',',','conjugate','and','retain','invert','on',
 				'say','remember','recall','forget','interpret','expect','as',
 				'enter','exit','context'
 			],
@@ -133,7 +132,6 @@ class Moringa {
 			{ command:'doIn',         gram:'do in " * " \n',                                   param:{ seqname:2, at:5 }        }, 
 			{ command:'doAt',         gram:'do at " * " \n',                                   param:{ seqname:2, at:5 }        }, 
 			{ command:'synonyms',     gram:'synonyms * : * \n',                                param:{ keyword:1, members:3 }   },
-			{ command:'group',        gram:'group * : * \n',                                   param:{ keyword:1, members:3 }   },
 			{ command:'conjugateAnd', gram:'conjugate " * " and " * " \n',                     param:{ first:2, second:6 }      }, 
 			{ command:'conjugateTo',  gram:'conjugate " * " to " * " \n',                      param:{ first:2, second:6 }      }, 
 			{ command:'inverton',     gram:'invert on " * " \n',                               param:{ term:3 }                 }, 
@@ -290,7 +288,7 @@ class Moringa {
 			splitters:[' ','\t','\n','~','`','!','@','#','$','%','^','&','*','(',')','-','+','_','=','{','}','[',']',':',';','"','\'','<','>',',','.','?','/','|','\\'],
 			removes:[' ','\t','\n'],
 			enclosures:[
-				{opener:'[',closer:']'},              // [abc] = variable "abc"; [abc:barf] variable "abc" if any value in the "barf" group
+				{opener:'[',closer:']'},              // [abc] = variable "abc"; [abc<<def] = only if value among "def", assign to "abc"
 				{opener:'`',escaper:'\\',closer:'`'}  // litteral text, precisely character by charactet
 			]
 		}
@@ -397,38 +395,30 @@ class Moringa {
 			if( matcher[0] === '[' && matcher[matcher.length-1] === ']' ) {
 				var name  = matchers[m].substr(1,matchers[m].length-2).trim();
 
-				// If variable a constrain (preceeded with '>') else to be collected (default)? 
-				if( name[0] === '>' ) {
-					name = name.substr(1);
-					// Validate that actuals match any of the varaible's values..
-					// TODO ZZZ WORKING..
-				}
-				else {
-					// Capture variable until next matcher or end of actuals (of no more matchers)
-					var value = '';
+				// Capture variable until next matcher or end of actuals (of no more matchers)
+				var value = '';
 
-					// Collect actuals into value until we run into the next matcher in the grammar (or end of actuals if no next matcher)
-					m += 1;
-					while( a < actuals.length ) {
-						if( matchers[m] !== undefined && this.wordMatches( actuals[a], matchers[m], model ) ) break;
-						value += actuals[a];
-						a += 1;
-					}
-					a -= 1;
+				// Collect actuals into value until we run into the next matcher in the grammar (or end of actuals if no next matcher)
+				m += 1;
+				while( a < actuals.length ) {
+					if( matchers[m] !== undefined && this.wordMatches( actuals[a], matchers[m], model ) ) break;
+					value += actuals[a];
+					a += 1;
+				}
+				a -= 1;
 				
-					// remove all punctuation and outlaying spaces
-					value = value.trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+				// remove all punctuation and outlaying spaces
+				value = value.trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
 
-					// If variable specifies a group, the value must be a member of that group else not matched..
-					if( name.indexOf(':') !== -1 ) {
-						let group = name.split(':')[1];
-						name      = name.split(':')[0];	
-						if( !this.wordInGroup( value, group, model ) ) { console.log('Actual "" NOT IN GROUP ""');  return false; } 
-					}
-
-					// All is well.. assign variable to collection (singular overwrite, as opposed to Recall command that may collect multipe values)
-					variable[name] = [{value:value}];  // TODO: add date/time to value for fading
+				if( name.indexOf('<<') !== -1 ) {
+					let group = name.split('<<')[1];
+					name      = name.split('<<')[0];
+					//console.log( 'Constrain "' + value + '" from "' + group + '": ' + JSON.stringify( model.awareness.variable[group]) );
+					if( !this.valueInVariable( model.awareness.variable[group], value ) ) return false;
 				}
+
+				// All is well.. assign variable to collection (singular overwrite, as opposed to Recall command that may collect multipe values)
+				if( name !== '' ) variable[name] = [{value:value}];  // TODO: add date/time to value for fading
 			} 
 			// Else litteral
 			else {
@@ -484,26 +474,16 @@ class Moringa {
 		return matches;
 	}
 
-	// Is word in specified group?  (unlike synonyms, group name itself does not count)
-	wordInGroup( word, group, model ) { 
-		// Find specified group's members
-		var members;
-		for( let g = 0; g < model.groups.length; g += 1 ) {
-			if( model.groups[g].keyword.toLowerCase() === group.toLowerCase() ) {
-				members = model.groups[g].members;
-				break;
-			}
-		}
-
-		// Check for match against any synonyms, caselessly
+	// Is value among any values from variable given? 
+	valueInVariable( values, value ) { 
+		if( values === undefined ) return false; // variable didn't exist will come in as undefined.. so view as not found
 		var matches = false;
-		for( var m = 0; m < members.length; m +=1 ) {
-			if( members[m].toLowerCase() === word.toLowerCase() ) {
+		for( var v = 0; v < values.length; v +=1 ) {
+			if( values[v].value.toLowerCase() === value.toLowerCase() ) {
 				matches = true;
 				break;
 			}
 		}
-
 		return matches;
 	}
 
@@ -727,7 +707,6 @@ class Moringa {
 			//console.log('ACTION ' + a + ' ' + JSON.stringify(action.command) + ': ' + JSON.stringify(action) );
 			switch( action.command.toLowerCase() ) {
 				case 'synonyms':      this.actionSynonyms( action.param, model ); break;
-				case 'group':         this.actionGroup( action.param, model ); break;
 				case 'conjugateand':  this.actionConjugateAnd( action.param, model ); break;
 				case 'conjugateto':   this.actionConjugateTo( action.param, model ); break;
 				case 'inverton':      this.actionInvertOn( action.param, model ); break;
@@ -783,31 +762,6 @@ class Moringa {
 		}
 		else {
 			model.synonyms.push({ context:model.awareness.contextName, keyword:param.keyword, members:members });
-		}
-	}
-
-	// Assign group of terms to a keyword to enhance recognizing wildcards (only matches if in group)
-	actionGroup( param, model ) {
-		var groups = model.groups;
-		let members = param.members.split(',');
-		for( let i = 0; i < members.length; i += 1 ) members[i] = members[i].trim();
-
-		// See if group already exists
-		var found = undefined;
-		for( let i = 0; i < groups.length; i += 1 ) {
-			if( groups[i].keyword.toLowerCase() === param.keyword.toLowerCase() ) {
-				found = groups[i];
-				break;
-			}
-		} 
-
-		// If exists, replace else append
-		if( found !== undefined ) {
-			found.context = model.awareness.contextName;
-			found.members = members;
-		}
-		else {
-			model.groups.push({ context:model.awareness.contextName, keyword:param.keyword, members:members });
 		}
 	}
 
