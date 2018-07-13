@@ -1,5 +1,11 @@
 
 -- Sample Personality
+Memories
+	"good is a feeling"
+	"good is positive"
+	"ok is a feeling"
+	"bad is a feeling"
+	"bad is negative"
 
 -- General Conjugations Between Persons
 Conjugate "are" And "am"
@@ -32,9 +38,31 @@ sequence "poem"
 	say "I can sequence things."
 	say "Better than you knew."
 
+recognizer "i am [something]"
+	option if "[something] is a feeling"
+		interpret as "I am feeling [something]."
+	option if Not "[something] is a feeling"
+		Remember "user is [something]"
+		say "I will remember that."
+
+Recognizer "i am feeling [feeling]"
+	remember "[feeling] is a feeling"
+	option if "[feeling] is positive"
+		say "Well that is great."
+	option if "[feeling] is negative"
+		say "That is too bad.  I would feel bad for you, if I could."
+	option if Not "[feeling] is positive" and not "[feeling] is negative"
+		say "Is feeling [feeling] positive or negative?"
+		expect "positive" as "[feeling] is positive"
+		expect "negative" as "[feeling] is negative"
+
+recognizer "[something] is [other]"
+	remember "[something] is [other]"
+	say "I will remember that."
+
 recognizer "hello"
-	option say "Hi."
 	option say "Nice to meet you."
+	option say "Hi."
 
 recognizer "my name is [name]"
 	remember "user's name is [name]"

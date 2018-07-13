@@ -4,13 +4,13 @@
 //
 // TO DO ITEMS:
 //  [ ] Make send MoringaScript errors to self..  (for self-error handling and also making self-diagnostics possible)
-// 	[ ] Inversions -- If before or after a litteral, do not match
 // 	[ ] Decision logic
 // 	[ ] Retention of variables for standard fading
-// 	[ ] Expectations should last until faded or one input since expected
 // 	[ ] Seekers and Avoiders
 // 	[ ] expectations inherent Seekers
 // 	[ ] Moringa errors inherent Avoiders
+// 	[ ] Multi-Channel Communication Support..
+// 	    Multiple models of "self" with shared memory and @chnnel differentiator.
 // 	[ ] Inter-Model Communication (Say "message" To "model") and reception source
 // 	[ ] Create named model instances.. refer to each by name.
 
@@ -88,8 +88,9 @@ class Moringa {
 		var syntax = {
 			splitters:[
 				' ','\t','\n','--',
+				'memories',
 				'recognizer','fallback','exclusive','additional','option','always','if',
-				'synonyms',':',',','conjugate','and','retain','invert','on',
+				'synonyms',':',',','conjugate','and',
 				'say','remember','recall','forget','interpret','expect','as',
 				'enter','exit','context'
 			],
@@ -102,11 +103,33 @@ class Moringa {
 			]
 		};
 
-		let tokens = tokenizer( script, syntax, {rich:true} );
+		var tokens = tokenizer( script, syntax, {rich:true} );
+		var t;
 		//console.log( 'TOKENS:\n' + JSON.stringify( tokens, null, '  ' ) + '\n\n' ); 
-		
+
+		// Extract Any Memory Declarations
+		t = 0;
+		var timeStamp = new Date();
+		while( t < tokens.length ) {
+			if( tokens[t].type === 'splitter' && tokens[t].value.toLowerCase() === 'memories' ) {
+				let cutFrom = t;
+				t += 1;
+				while( t < tokens.length && (tokens[t].value === '\n' || tokens[t].value === ',' || tokens[t].value === '"') ) {
+					if( tokens[t].value === '\n' || tokens[t].value === ',' ) {
+						t += 1;
+						continue;
+					}
+					model.memories.push({ context:'predefined', memory:tokens[t+1].value, timeStamp:timeStamp });
+					t += 3;
+				}
+				tokens.splice( cutFrom, (t - cutFrom) );
+				t = cutFrom - 1;
+			}
+			t += 1;
+		}
+
 		// If quote not closed by end of line, make error clear closing quote is missing..
-		for( let t = 0; t < tokens.length; t += 1 ) {
+		for( t = 0; t < tokens.length; t += 1 ) {
 			if( tokens[t].type === 'opener' && tokens[t].value === '"' && tokens[t+1] !== undefined && tokens[t+1].value.indexOf('\n') !== -1 ) {
 				throw('Syntax Error: quote on line ' + tokens[t].lineNo + ' not closed.');
 			}
@@ -135,7 +158,6 @@ class Moringa {
 			{ command:'synonyms',     gram:'synonyms * : * \n',                                param:{ keyword:1, members:3 }   },
 			{ command:'conjugateAnd', gram:'conjugate " * " and " * " \n',                     param:{ first:2, second:6 }      }, 
 			{ command:'conjugateTo',  gram:'conjugate " * " to " * " \n',                      param:{ first:2, second:6 }      }, 
-			{ command:'inverton',     gram:'invert on " * " \n',                               param:{ term:3 }                 }, 
 			{ command:'say',          gram:'say " * " at " * " \n',                            param:{ message:2, at:6 }        },
 			{ command:'say',          gram:'say " * " in " * " \n',                            param:{ message:2, in:6 }        },
 			{ command:'say',          gram:'say " * " \n',                                     param:{ message:2 }              },
@@ -164,7 +186,7 @@ class Moringa {
 				var flags   = [];                // any flags found
 				var tt          = t;             // Searching for command starting at t and ending at tt
 				var wildcardFinish;
-				var debugLineNo = 9999;
+				var debugLineNo = 99999;
 				if( tokens[t].lineNo === debugLineNo ) console.log('Checking if line starting with  "' + tokens[t].value + '" Matches Command ' + JSON.stringify(gram) + '.'); 
 				for( var w = 0; w < gram.length; w += 1 ) {
 					if( gram[w] === '*' ) {
@@ -350,8 +372,8 @@ class Moringa {
 			} 
 		}
 
-		// For each context..
-		for( var c = 0; c < model.contexts.length; c += 1 ) {
+		// For each context (0 is always general; higher to lower priority)..
+		for( var c = model.contexts.length-1; c >= 0; c -= 1 ) {
 			awareness.contextName = model.contexts[c].name; 
 			awareness.contextPriority = c;
 			
@@ -432,10 +454,10 @@ class Moringa {
 				value = value.trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
 
 				if( name.indexOf('<<') !== -1 ) {
-					let group = name.split('<<')[1];
-					name      = name.split('<<')[0];
+					let group = name.split('<<')[1].trim();
+					name      = name.split('<<')[0].trim();
 					//console.log( 'Constrain "' + value + '" from "' + group + '": ' + JSON.stringify( model.awareness.variable[group]) );
-					if( !this.valueInVariable( model.awareness.variable[group], value ) ) return false;
+					if( group !== '' && !this.valueInVariable( model.awareness.variable[group], value ) ) return false;
 				}
 
 				// All is well.. assign variable to collection (singular overwrite, as opposed to Recall command that may collect multipe values)
@@ -611,6 +633,7 @@ class Moringa {
 		let result = this.evaluateCondition( 0, tokens, variable, model );
 
 		// Return only boolean result
+		//console.log('CONDITION {' + condition + '} RESOLVED TO ' + this.makeBoolean( result ));  // DEBUG
 		return this.makeBoolean( result );
 	}
 
@@ -635,7 +658,7 @@ class Moringa {
 
 			// If parenthesis, recurse to convert to result of sub-evaluation
 			if( tokens[t].type === 'enclosed' && tokens[t].opener === '(' ) {
-				newValue  = this.evaluate( 0, tokens[t].value, variable, memories );
+				newValue  = this.evaluateCondition( 0, tokens[t].value, variable, model );
 				tokens[t] = { type:typeof newValue, value:newValue };
 				continue;
 			}
@@ -653,10 +676,8 @@ class Moringa {
 					tokens[t] = { type:'boolean', value:false };
 					continue;
 				}
-				leftValue  = this.makeBoolean( tokens[t].value );
-				rightValue = this.makeBoolean( this.evaluateCondition( t+2, tokens, variable, memories ) );
-				newValue   = leftValue || rightValue;
-				tokens.splice(t,3,{ type:'boolean', value:newValue });
+				rightValue = !this.makeBoolean( this.evaluateCondition( t+1, tokens, variable, model ) );
+				tokens.splice(t,2,{ type:'boolean', value:rightValue });
 				continue;
 			}
 
@@ -665,7 +686,7 @@ class Moringa {
 				operator = tokens[t+1].value;
 				if( tokens[t+2] === undefined ) throw 'In if condition, cannot compare a number with nothing.';
 				leftValue  = tokens[t].value;
-				rightValue = this.evaluateCondition( t+2, tokens, variable, memories );
+				rightValue = this.evaluateCondition( t+2, tokens, variable, model );
 				newValue = null;
 				switch( operator.toLowerCase() ) {
 					case '+':   newValue = (this.makeNumber(leftValue)  +  this.makeNumber(rightValue)); break;
@@ -726,6 +747,8 @@ class Moringa {
 		var toSchedule = { when:null, performed:false, actions:[] };
 		for( var a = 0; a < actions.length; a += 1 ) {
 			var action = actions[a];
+
+			// DEBUG
 			//if( action.command.substr(0,6) !== 'conjug' ) console.log('ACTION ' + a + ' ' + JSON.stringify(action.command) + ': ' + JSON.stringify(action) );
 
 			// If other than inline "do" command after inline "do" command, just collect actions to schedule..
@@ -739,17 +762,16 @@ class Moringa {
 				case 'synonyms':      this.actionSynonyms( action.param, model ); break;
 				case 'conjugateand':  this.actionConjugateAnd( action.param, model ); break;
 				case 'conjugateto':   this.actionConjugateTo( action.param, model ); break;
-				case 'inverton':      this.actionInvertOn( action.param, model ); break;
 				case 'say':           this.actionSay( action.param, model ); break;	
 				case 'remember':      this.actionRemember( action.param, model ); break;
 				case 'recall':        this.actionRecall( action.param, model ); break;
 				case 'forget':        this.actionForget( action.param, model ); break;
 				case 'interpretas':   this.actionInterpretAs( action.param, model ); break;
 				case 'expectas':      this.actionExpectAs( action.param, model ); break;
-				case 'enter':         this.actionEnter( action.param, model ); break;
-				case 'exit':          this.actionExit( action.param, model ); break;
-				case 'seek':          this.actionExit( action.param, model ); break;
-				case 'avoid':         this.actionExit( action.param, model ); break;
+				case 'enter':         this.actionEnter( action.param, model ); break;  // TODO
+				case 'exit':          this.actionExit( action.param, model ); break;  // TODO
+				case 'seek':          this.actionExit( action.param, model ); break;  // TODO
+				case 'avoid':         this.actionExit( action.param, model ); break;  // TODO
 				case 'dosequence':    this.actionDoSequence( action.param, model ); break;
 				case 'do':
 					if( toSchedule.when !== null ) {
@@ -926,12 +948,31 @@ class Moringa {
 		}
 	}
 
-	actionEnter( param, model ) {
-		// TODO: Activate context and move to top priority
+	actionEnter( param, model ) { // ZZZ
+		for(var c = 0; c < model.contexts.length; c += 1 ) {
+			if( param.context.toLowerCase().trim() === model.contexts[c].name.toLowerCase().trim() ) {
+				mode.contexts[c].active = true;
+				this.prioritizeContext( model.contexts, c );
+				break;
+			}
+		}
+	}
+
+	// Except for 0 ("general"), if not at end of list, move context to end of list 
+	prioritizeContext( contexts, contextNo ) {
+		if( contextNo !== 0 && contextNo !== model.contexts.length - 1 ) {
+			model.contexts.push( model.contexts[contextNo] );
+			model.contexts.splice(contextNo,1);
+		}
 	}
 
 	actionExit( param, model ) {
-		// TODO: deactivate specified context else deactivate all contexts 
+		for(var c = 0; c < model.contexts.length; c += 1 ) {
+			if( param.context.toLowerCase().trim() === model.contexts[c].name.toLowerCase().trim() ) {
+				mode.contexts[c].active = false;
+				break;
+			}
+		}
 	}
 
 	actionSeek( param, model ) {
