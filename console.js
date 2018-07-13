@@ -1,21 +1,42 @@
 #!/usr/bin/node
+
+if( process.argv.length < 3 ) {
+	console.error('One or more script files are required.');
+	return;
+}
+
 var fs = require('fs');
 var {Moringa} = require('./moringa.js');
 var agent = new Moringa( reception, 'synthia' );
 
+for( var f = 2; f < process.argv.length; f += 1 ) {
+	let script = fs.readFileSync( process.argv[f] ).toString();
+	console.log('Importing ' + process.argv[f] + '..');
+	agent.importFoundation( script, 'synthia' );
+}
+
 console.log('\nStarting Cybernetic Synthia..');
 console.log('=============================');
-let script = fs.readFileSync('./synthia.pgm').toString();
-
-agent.importFoundation( script, 'synthia' );
 
 // Setup Listener for User Input
 var stdin = process.openStdin();
 
 stdin.addListener("data", function( received ) {
 	let statement = received.toString().trim();
-	console.log( 'User: ' + statement );
-	agent.input( statement, 'synthia' );
+	if( statement[0] === '/' ) {
+		switch(statement.substr(1).toLowerCase()) {
+			case 'memory':
+				console.log( agent.memory, null, '  ' );
+				break;
+			case 'expects':
+				console.log( agent.expects, null, '  ' );
+				break;
+		}
+	}
+	else {
+		console.log( 'User: ' + statement );
+		agent.input( statement, 'synthia' );
+	}
   });
 
 function reception( message ) {

@@ -22,11 +22,18 @@ class Moringa {
 		this.callback      = callback;  // where to send interjections
 		this.name          = name;      // name of base model 
 		this.fading        = 60000;     // nanoseconds before variable values fade away
+		this.energy        = 5;         // standard energy -- limits looping through re-interpretations
 		this.inputCount    = 0;         // number of inputs since awakening
 		this.model         = {};        // per model, an array of contexts; a context holds an array of recognizers; holding array of options; holding array of actions 
 		this.nextScheduled = null;      // when next output or action command is scheduled
+		this.logEntries    = [];        // for debugging purposes
 
 		if( script !== '' ) this.importFoundation( script, name );
+	}
+
+	log( message ) {
+		this.logEntries.push( message );
+		//console.log( ' => ' + message );
 	}
 
 	checkSchedule() {
@@ -331,6 +338,7 @@ class Moringa {
 	// ===== Process an Input Message =====
 	input( message, name = this.name, callback = this.callback ) {
 		this.inputCount += 1;
+		this.log('User Input (' + this.inputCount + '): ' + message);
 		let model = this.model[name];
 		this.interpret( message, model );
 		//console.log( 'OPTIONS FOUND: ' + JSON.stringify(model.awareness.options,null,'  ') );
@@ -346,16 +354,21 @@ class Moringa {
 		var awareness;
 		if( refresh ) {
 			awareness = {
-				recognizer:false,  // recognizer matched (else undefined)
-				contextName:'',    // context of matched recognizer
-				contextPriority:0, // current order of context, to be interpreted
-				variable:{},       // variables collected -- e.g, 'name':[{value:'xx',timeStamp:'xx'},..];
-				options:[],        // valid options collected
+				energy:this.energy, // maximum re-interpretations allowed..
+				recognizer:false,   // recognizer matched (else undefined)
+				contextName:'',     // context of matched recognizer
+				contextPriority:0,  // current order of context, to be interpreted
+				variable:{},        // variables collected -- e.g, 'name':[{value:'xx',timeStamp:'xx'},..];
+				options:[],         // valid options collected
 			};
 	
 			model.awareness = awareness;
 		}
-		else { awareness = model.awareness; }
+		else {
+			awareness = model.awareness;
+			awareness.energy -= 1;
+			if( awareness.energy < 1 ) return awareness;  // TODO: some indicator? maybe Remember "i am exhausted"
+			}
 
 		// First check if anything particularly expected at this time -- and convert to explicit meaning.. 
 		for( var x = 0; x < model.expects.length; x += 1 ) {
@@ -368,6 +381,7 @@ class Moringa {
 			// Does message match expect?  Then change message to "as"
 			if( this.matchRecognizer( message, model.expects[x].matchers, model ) ) {
 				message = this.formatOutput( model.expects[x].as, awareness.variable, [] );
+				this.log('Matched expectation (""), so changing to: ' + message);
 				break;
 			} 
 		}
@@ -397,6 +411,9 @@ class Moringa {
 				if( variable !== false ) {
 					awareness.recognizer = recognizer.pattern;
 
+					// Add to log
+					this.log('Matched recognizer "' + JSON.stringify(recognizer.pattern) + '" with variables:' + this.listVariables(variable));
+
 					// Add variables picked up from recognizer to awareness..
 					for( var name in variable ) awareness.variable[name] = variable[name]; // TODO: implement following lines in place of this one
 					//if( awareness.variable[name] === undefined ) awareness.variable[name] = [];
@@ -415,6 +432,19 @@ class Moringa {
 		} // end of context (c) for loop
 
 		return awareness;
+	}
+
+	listVariables( variable ) {
+		var listing = '';
+		for( let name in variable ) {
+			listing += '\n\t' + name + ' = ';
+			for( var v = 0; v < variable[name].length; v += 1 ) {
+				if( v > 0 ) listing += ' ,';
+				listing += JSON.stringify(variable[name][v].value);
+			}
+		}
+		if( listing === '' ) listing = '\n\t(No variables)';
+		return listing;
 	}
 
 	// Returns false else object of collected variables
@@ -633,7 +663,8 @@ class Moringa {
 		let result = this.evaluateCondition( 0, tokens, variable, model );
 
 		// Return only boolean result
-		//console.log('CONDITION {' + condition + '} RESOLVED TO ' + this.makeBoolean( result ));  // DEBUG
+		for( let name in variable ) condition = condition.replace(name,variable[name][0].value);
+		this.log('condition {' + condition + '} resolved to ' + this.makeBoolean( result ) + ' with variables:' + this.listVariables(variable) );  // DEBUG
 		return this.makeBoolean( result );
 	}
 
@@ -675,7 +706,7 @@ class Moringa {
 				if( tokens[t+1] === undefined ) {
 					tokens[t] = { type:'boolean', value:false };
 					continue;
-				}
+				} 
 				rightValue = !this.makeBoolean( this.evaluateCondition( t+1, tokens, variable, model ) );
 				tokens.splice(t,2,{ type:'boolean', value:rightValue });
 				continue;
@@ -731,8 +762,9 @@ class Moringa {
 
 	countMemories( pattern, variable, model ) {
 		var count = 0;
+		pattern = this.formatOutput( pattern, model.awareness.variable, model.conjugations );
+		var matchers = this.formatRecognizerPattern( pattern );
 		for( var m = 0; m < model.memories.length; m += 1 ) {
-			var matchers = this.formatRecognizerPattern( pattern );
 			if( this.matchRecognizer( model.memories[m].memory, matchers, model ) !== false ) count += 1;
 		}
 	
@@ -748,8 +780,8 @@ class Moringa {
 		for( var a = 0; a < actions.length; a += 1 ) {
 			var action = actions[a];
 
-			// DEBUG
-			//if( action.command.substr(0,6) !== 'conjug' ) console.log('ACTION ' + a + ' ' + JSON.stringify(action.command) + ': ' + JSON.stringify(action) );
+			// Add to log.. 
+			if( action.command.substr(0,6) !== 'conjug' ) this.log('Performing action "' + action.command + '": ' + JSON.stringify(action) );
 
 			// If other than inline "do" command after inline "do" command, just collect actions to schedule..
 			if( action.command.toLowerCase() !== 'do' && toSchedule.when !== null ) {
@@ -906,6 +938,7 @@ class Moringa {
 
 	actionInterpretAs( param, model ) {
 		let statement = this.formatOutput( param.statement, model.awareness.variable, [] );
+		this.log('Interpreting As ' + JSON.stringify(statement));
 		this.interpret( statement, model, false );
 		let preferred = this.pickOption( model );
 		if( preferred !== undefined ) this.performActions( preferred.actions, model );
