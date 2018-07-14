@@ -3,6 +3,7 @@
 // All Rights Reserved
 //
 // TO DO ITEMS:
+//  [ ] Directives not working case-sensitive
 //  [ ] Make send MoringaScript errors to self..  (for self-error handling and also making self-diagnostics possible)
 // 	[ ] Decision logic
 // 	[ ] Retention of variables for standard fading
@@ -126,7 +127,7 @@ class Moringa {
 						t += 1;
 						continue;
 					}
-					model.memories.push({ context:'predefined', memory:tokens[t+1].value, timeStamp:timeStamp });
+					this.setMemory( 'predefined', tokens[t+1].value, model );
 					t += 3;
 				}
 				tokens.splice( cutFrom, (t - cutFrom) );
@@ -311,6 +312,21 @@ class Moringa {
 		}
 	} // end of importSupplement()
 
+	// Ensure memory is written
+	setMemory( context, memory, model ) {
+		var found = false;
+		for( var m = 0; m < model.memories.length; m += 1 ) {
+			if( model.memories[m].memory === memory ) {
+				model.memories[m].context   = context;
+				model.memories[m].timeStamp = new Date();
+				model.memories[m].times    += 1;
+				found = true;
+				break;
+			}
+		}
+		if( !found ) model.memories.push( { context:context, memory:memory, timeStamp:new Date(), times:1 } ); 
+	}
+
 	// Translate string recognizer pattern to matchable version
 	formatRecognizerPattern( string ) {
 		// Tokenize recognizer pattern
@@ -381,7 +397,7 @@ class Moringa {
 			// Does message match expect?  Then change message to "as"
 			if( this.matchRecognizer( message, model.expects[x].matchers, model ) ) {
 				message = this.formatOutput( model.expects[x].as, awareness.variable, [] );
-				this.log('Matched expectation (""), so changing to: ' + message);
+				this.log('Matched expectation (' + JSON.stringify(model.expects[x].expecting) + '), so changing to: ' + message);
 				break;
 			} 
 		}
@@ -619,13 +635,12 @@ class Moringa {
 		awareness.validOptions = [];
 		for( var c = 0; c < awareness.options.length; c += 1 ) {
 			var option = awareness.options[c];
-			//console.log('OPTION: ' + JSON.stringify(option));
 			if( this.isConditionTrue( option.condition, awareness.variable, model ) ) awareness.validOptions.push(option);
 		}
-	
+
 		// Determine option preferrabilities and which is highest..
 		// TODO: Do properly (by seeks and avoids else human) -- think of intuitive way to add random or round robin options
-		var preferred = awareness.options[this.randomBetween(0,awareness.validOptions.length-1)];
+		var preferred = awareness.validOptions[this.randomBetween(0,awareness.validOptions.length-1)];
 		
 		// TODO: build pathfinding articulation -- contemplation 
 		return preferred;
@@ -664,7 +679,6 @@ class Moringa {
 
 		// Return only boolean result
 		for( let name in variable ) condition = condition.replace(name,variable[name][0].value);
-		this.log('condition {' + condition + '} resolved to ' + this.makeBoolean( result ) + ' with variables:' + this.listVariables(variable) );  // DEBUG
 		return this.makeBoolean( result );
 	}
 
@@ -908,8 +922,7 @@ class Moringa {
 	}
 
 	actionRemember( param, model ) {
-		// Note: could calculate LTM (slowness of fading), as median time between writes and (when performing option) reads.
-		model.memories.push( { context:'general', memory:this.formatOutput( param.message, model.awareness.variable, model.conjugations ), timeStamp:new Date() } ); 
+		this.setMemory( 'general', this.formatOutput(param.message, model.awareness.variable, model.conjugations), model );
 	}
 
 	actionRecall( param, model, flags ) {
