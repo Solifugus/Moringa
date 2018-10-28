@@ -309,11 +309,26 @@ class Moringa {
 		for( var c = 0; c < model.contexts.length; c += 1 ) {
 			var context = model.contexts[c];
 			context.recognizers.sort(( a, b ) => {
-				if( a.pattern === '' ) return -1;  // ensure always recognizer is always first.. 
-				return b.matchers.length - a.matchers.length 
+				if( a.pattern === '' ) return -1;  // ensure the global "always" recognizer is always first.. 
+				//return b.matchers.length) - a.matchers.length;
+				return this.patternPriority(b.matchers) - this.patternPriority(a.matchers); 
 			});
 		}
 	} // end of importSupplement()
+
+	// Literal comes before Constrained Variable before Open Variable
+	patternPriority( matchers ) {
+		let priority = 0;
+		for( var i = 0; i < matchers.length; i += 1 ) {
+			let matcher = matchers[i].trim();
+			if( matcher[0] === '[' && matcher[matcher.length-1] === ']' ) {
+				if( matcher.indexOf('<<') !== -1 ) { priority += 2; }  // constrained variable
+				else{ priority += 1; } // open variable
+			}
+			else { priority += 3; } // literal
+		}
+		return priority;
+	} // end of patternPriority
 
 	// Ensure memory is written
 	setMemory( context, memory, model ) {

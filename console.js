@@ -31,6 +31,15 @@ stdin.addListener("data", function( received ) {
 			case 'expects':
 				console.log( JSON.stringify(agent.model.synthia.expects, null, '  ') );
 				break;
+			case 'recognizers':
+				for( var c = 0; c < agent.model.synthia.contexts.length; c += 1 ) {
+					var context = agent.model.synthia.contexts[c];
+					for( var r = 0; r < context.recognizers.length; r += 1 ) {
+						var matchers = context.recognizers[r].matchers;
+						console.log('C' + c + 'R' + r + ': ' + JSON.stringify(matchers));
+					}
+				}
+				break;
 		}
 	}
 	else {
