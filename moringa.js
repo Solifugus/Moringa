@@ -99,7 +99,7 @@ class Moringa {
 				'memories',
 				'recognizer','fallback','exclusive','additional','option','always','if',
 				'synonyms',':',',','conjugate','and',
-				'say','remember','recall','forget','interpret','expect','as',
+				'say','ask','remember','recall','forget','interpret','expect','as',
 				'enter','exit','context'
 			],
 			removes:[' ','\t'],
@@ -169,6 +169,9 @@ class Moringa {
 			{ command:'say',          gram:'say " * " at " * " \n',                            param:{ message:2, at:6 }        },
 			{ command:'say',          gram:'say " * " in " * " \n',                            param:{ message:2, in:6 }        },
 			{ command:'say',          gram:'say " * " \n',                                     param:{ message:2 }              },
+			{ command:'ask',          gram:'ask " * " at " * " \n',                            param:{ message:2, at:6 }        },
+			{ command:'ask',          gram:'ask " * " in " * " \n',                            param:{ message:2, in:6 }        },
+			{ command:'ask',          gram:'ask " * " \n',                                     param:{ message:2 }              },
 			{ command:'remember',     gram:'remember " * " \n',                                param:{ message:2 }              },
 			{ command:'recall',       gram:'recall " * " \n',                                  param:{ message:2 }              },
 			{ command:'forget',       gram:'forget " * " \n',                                  param:{ message:2 }              },
@@ -376,6 +379,7 @@ class Moringa {
 				contextPriority:0,  // current order of context, to be interpreted
 				variable:{},        // variables collected -- e.g, 'name':[{value:'xx',timeStamp:'xx'},..];
 				options:[],         // valid options collected
+				validOptions:[],    // options with conditions evaluating to true
 			};
 	
 			model.awareness = awareness;
@@ -397,7 +401,7 @@ class Moringa {
 			// Does message match expect?  Then change message to "as"
 			if( this.matchRecognizer( message, model.expects[x].matchers, model ) ) {
 				message = this.formatOutput( model.expects[x].as, awareness.variable, [] );
-				this.log('Matched expectation (' + JSON.stringify(model.expects[x].expecting) + '), so changing to: ' + message);
+				this.log('Matched expectation (' + JSON.stringify(model.expects[x].expect) + '), so changing to: ' + JSON.stringify(message));
 				break;
 			} 
 		}
@@ -415,9 +419,14 @@ class Moringa {
 				if( recognizer.pattern === '' ) {
 					// Perform always actions
 					this.performActions( recognizer.actions, model );
-					// Collect valid options
+
+					// Collect options performing any valid always if .. actions
 					for( var i = 0; i < recognizer.options.length; i += 1 ) {
-						if( this.isOptionValid( option, model ) ) awareness.options.push(recognizer.options[i]);
+						let option = recognizer.options[i];
+						if( option.always ) {
+							if( this.isConditionTrue( option.condition, model ) ) this.performActions( option.actions, model );
+						}
+						else { awareness.options.push(option); }
 					}
 					continue;
 				}
@@ -428,7 +437,7 @@ class Moringa {
 					awareness.recognizer = recognizer.pattern;
 
 					// Add to log
-					this.log('Matched recognizer "' + JSON.stringify(recognizer.pattern) + '" with variables:' + this.listVariables(variable));
+					this.log('Matched recognizer ' + JSON.stringify(recognizer.pattern) + ' with variables:' + this.listVariables(variable));
 
 					// Add variables picked up from recognizer to awareness..
 					for( var name in variable ) awareness.variable[name] = variable[name]; // TODO: implement following lines in place of this one
@@ -470,13 +479,17 @@ class Moringa {
 			splitters:[' ','\t','\n','~','`','!','@','#','$','%','^','&','*','(',')','-','+','_','=','{','}','[',']',':',';','"','\'','<','>',',','.','?','/','|','\\'],
 			removes:['\t','\n']
 		}
-		let actuals = tokenizer( message, syntax, {rich:false} );
+		// TODO: check and see if this should sometimes bring in message already tokenized into words.. 
+		let actuals;
+		if( typeof message === 'string' ) { actuals = tokenizer( message, syntax, {rich:false} ) }
+		else { actuals = message; };
 
 		// Check how many matchers in actuals (message tokens), in order.. 
-		var m        = 0;
-		var a        = 0;
-		var variable = {};
-		var betweens = '';
+		var m         = 0;
+		var a         = 0;
+		var variable  = {};
+		var betweens  = '';
+		var timeStamp = new Date();
 		for( a = 0; a < actuals.length; a += 1 ) {
 			if( !( m < matchers.length ) ) break;
 			var matcher = matchers[m];
@@ -507,7 +520,7 @@ class Moringa {
 				}
 
 				// All is well.. assign variable to collection (singular overwrite, as opposed to Recall command that may collect multipe values)
-				if( name !== '' ) variable[name] = [{value:value}];  // TODO: add date/time to value for fading
+				if( name !== '' ) variable[name] = [{ value:value, timeStamp:timeStamp }]; 
 			} 
 			// Else litteral
 			else {
@@ -515,8 +528,8 @@ class Moringa {
 					// Record any relevant implicit variables between matchers
 					betweens = betweens.trim();
 					if( betweens !== '' ) {
-						if( m < matchers.length ) variable['before-' + m] = [{value:betweens}];  // TODO: add date/time to value for fading     
-						if( m > 0 ) variable['after-' + (m-1)]            = [{value:betweens}];  // TODO: add date/time to value for fading
+						if( m < matchers.length ) variable['before-' + m] = [{ value:betweens, timeStamp:timeStamp }];    
+						if( m > 0 ) variable['after-' + (m-1)]            = [{ value:betweens, timeStamp:timeStamp }];
 						betweens                                          = ''; 
 					}
 
@@ -531,7 +544,7 @@ class Moringa {
 		} // end of actuals for loop
 		for( a = a; a < actuals.length; a += 1 ) betweens += actuals[a];
 		betweens = betweens.trim();
-		if( betweens !== '' ) variable['after-' + (m-1)] = [{value:betweens}];  // TODO: add date/time to value for fading
+		if( betweens !== '' ) variable['after-' + (m-1)] = [{ value:betweens, timeStamp:timeStamp }];  // TODO: add date/time to value for fading
 
 		// This Recognizer Matched, if all matchers were found in input message actuals 
 		if( m === matchers.length ) {
@@ -603,8 +616,9 @@ class Moringa {
 					} 
 					else {
 						// Get variable value else variable name as the value
-						//var value = variable[name] === undefined ? name : variable[name];  // TODO VVV: replace this line with following commented out lines
-						var value = this.valuesToCommaList(variable[name],'and');  // TODO: add ability in notation to specify "and", "or", or "and/or"
+						var value = name;
+						// TODO: add ability in notation to specify "and", "or", or "and/or"
+						if( variable[name] !== undefined ) value = this.valuesToCommaList(variable[name],'and');
 
 						// Insert value into the output puttern
 						pattern = pattern.substring(0,opener) + value + pattern.substr(closer+1);
@@ -635,7 +649,7 @@ class Moringa {
 		awareness.validOptions = [];
 		for( var c = 0; c < awareness.options.length; c += 1 ) {
 			var option = awareness.options[c];
-			if( this.isConditionTrue( option.condition, awareness.variable, model ) ) awareness.validOptions.push(option);
+			if( this.isConditionTrue( option.condition, model ) ) awareness.validOptions.push(option);
 		}
 
 		// Determine option preferrabilities and which is highest..
@@ -650,7 +664,9 @@ class Moringa {
 		return Math.floor( Math.random() * ( max - min + 1 ) + min );
 	}
 
-	isConditionTrue( condition, variable, model ) { 
+	isConditionTrue( condition, model ) { 
+		var variable = model.awareness.variable;
+
 		// If no condition given, assume it's true..
 		if( condition.trim() === '' ) return true;
 
@@ -795,7 +811,7 @@ class Moringa {
 			var action = actions[a];
 
 			// Add to log.. 
-			if( action.command.substr(0,6) !== 'conjug' ) this.log('Performing action "' + action.command + '": ' + JSON.stringify(action) );
+			if( action.command.substr(0,6) !== 'conjug' ) this.log('Performing action "' + action.command + '": ' + JSON.stringify(action.param) );
 
 			// If other than inline "do" command after inline "do" command, just collect actions to schedule..
 			if( action.command.toLowerCase() !== 'do' && toSchedule.when !== null ) {
@@ -809,6 +825,7 @@ class Moringa {
 				case 'conjugateand':  this.actionConjugateAnd( action.param, model ); break;
 				case 'conjugateto':   this.actionConjugateTo( action.param, model ); break;
 				case 'say':           this.actionSay( action.param, model ); break;	
+				case 'ask':           this.actionAsk( action.param, model ); break;	
 				case 'remember':      this.actionRemember( action.param, model ); break;
 				case 'recall':        this.actionRecall( action.param, model ); break;
 				case 'forget':        this.actionForget( action.param, model ); break;
@@ -921,6 +938,11 @@ class Moringa {
 		}
 	}
 
+	actionAsk( param, model ) {
+		this.actionSay( param, model ); 
+		this.setMemory( 'general', this.formatOutput('asked [user]: ' + param.message, model.awareness.variable, model.conjugations), model );
+	}
+
 	actionRemember( param, model ) {
 		this.setMemory( 'general', this.formatOutput(param.message, model.awareness.variable, model.conjugations), model );
 	}
@@ -944,7 +966,7 @@ class Moringa {
 		var matchers = this.formatRecognizerPattern(param.message);
 		for( var m = 0; m < model.memories.length; m += 1 ) {
 			var memory = model.memories[m].memory;
-			found = this.matchRecognizer( matchers, memory, model );
+			let found = this.matchRecognizer( matchers, memory, model );
 			if( found !== false ) memories[m].splice(m,1);
 		}
 	}
