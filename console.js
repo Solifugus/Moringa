@@ -26,10 +26,10 @@ stdin.addListener("data", function( received ) {
 	if( statement[0] === '/' ) {
 		switch(statement.substr(1).toLowerCase()) {
 			case 'memory':
-				console.log( agent.memory, null, '  ' );
+				console.log( JSON.stringify(agent.model.synthia.memories, null, '  ') );
 				break;
 			case 'expects':
-				console.log( agent.expects, null, '  ' );
+				console.log( JSON.stringify(agent.model.synthia.expects, null, '  ') );
 				break;
 		}
 	}
