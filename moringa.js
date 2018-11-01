@@ -28,13 +28,21 @@ class Moringa {
 		this.model         = {};        // per model, an array of contexts; a context holds an array of recognizers; holding array of options; holding array of actions 
 		this.nextScheduled = null;      // when next output or action command is scheduled
 		this.logEntries    = [];        // for debugging purposes
+		this.traces        = [];        // What kinds of things to log: all, input, compared, matched, options, actions
 
 		if( script !== '' ) this.importFoundation( script, name );
 	}
 
-	log( message ) {
-		this.logEntries.push( message );
-		//console.log( ' => ' + message );
+	log( message, traceAs ) {
+		if( traceAs === undefined ) console.log('ASSIGN TRACE FOR: ' + message);
+		if( this.traces.indexOf('all') !== -1 ) {
+			this.logEntries.push(message);
+			return;
+		}
+		for( var i = 0; i < this.traces.length; i += 1 ) {
+			var trace = this.traces[i];
+			if( traceAs.trim().toLowerCase() === trace.trim().toLowerCase() ) this.logEntries.push(message);
+		}
 	}
 
 	checkSchedule() {
@@ -372,10 +380,17 @@ class Moringa {
 	// ===== Process an Input Message =====
 	input( message, name = this.name, callback = this.callback ) {
 		this.inputCount += 1;
-		this.log('User Input (' + this.inputCount + '): ' + message);
+		this.log('User input (' + this.inputCount + '): ' + message, 'input');
 		let model = this.model[name];
 		this.interpret( message, model );
-		//console.log( 'OPTIONS FOUND: ' + JSON.stringify(model.awareness.options,null,'  ') );
+		let log = 'Valid options:\n';
+		for( var i = 0; i < model.awareness.options.length; i += 1 ) {
+			log += '\tOption #' + (i+1) + ' actions:\n';
+			for( var ii = 0; ii < model.awareness.options[i].actions[ii].length; ii +=1 ) {
+				log += '\t\t' + JSON.stringify(model.awareness.options[i].actions[ii]) + '\n';
+			}
+		}  
+		this.log( 'Valid options: ' + log, 'options' );
 		let preferred    = this.pickOption( model );
 		if( preferred !== undefined ) this.performActions( preferred.actions, model );
 	}
@@ -448,11 +463,12 @@ class Moringa {
 
 				// If recognizer is matched, collect all its options then stop collecting any further options.
 				let variable = this.matchRecognizer( message, recognizer.matchers, model );
+				this.log( 'Compared recognizer: ' + recognizer.pattern, 'compared' );
 				if( variable !== false ) {
 					awareness.recognizer = recognizer.pattern;
 
 					// Add to log
-					this.log('Matched recognizer ' + JSON.stringify(recognizer.pattern) + ' with variables:' + this.listVariables(variable));
+					this.log( 'Matched recognizer ' + JSON.stringify(recognizer.pattern) + ', capturing:' + this.listVariables(variable),'matched' );
 
 					// Add variables picked up from recognizer to awareness..
 					for( var name in variable ) awareness.variable[name] = variable[name]; // TODO: implement following lines in place of this one
@@ -826,7 +842,7 @@ class Moringa {
 			var action = actions[a];
 
 			// Add to log.. 
-			if( action.command.substr(0,6) !== 'conjug' ) this.log('Performing action "' + action.command + '": ' + JSON.stringify(action.param) );
+			if( action.command.substr(0,6) !== 'conjug' ) this.log('Performing action "' + action.command + '": ' + JSON.stringify(action.param), 'actions' );
 
 			// If other than inline "do" command after inline "do" command, just collect actions to schedule..
 			if( action.command.toLowerCase() !== 'do' && toSchedule.when !== null ) {
@@ -969,9 +985,22 @@ class Moringa {
 			var found  = this.matchRecognizer( memory, matchers, model );
 			if( found !== false ) {
 				// For each variable name, remove all previous values and reload, accoridng to what was found
+				var variable = model.awareness.variable;
 				for( var name in found ) {
-					if( model.awareness.variable[name] === undefined ) model.awareness.variable[name] = []; 
-					for( var v = 0; v < found[name].length; v += 1 ) model.awareness.variable[name].push(found[name][v]);
+					//if( model.awareness.variable[name] === undefined ) model.awareness.variable[name] = []; 
+					if( variable[name] === undefined ) variable[name] = []; 
+					for( var vf = 0; vf < found[name].length; vf += 1 ) {
+						// Is value already known in variable?
+						let alreadyKnown = false;
+						for( let vs = 0; vs < variable[name].length; vs += 1 ) {
+							if( variable[name][vs].value === found[name][vf].value ) {
+								alreadyKnown = true;
+								break;
+							}
+						} 
+						// If value not already known to variable, append it..
+						if( !alreadyKnown ) variable[name].push(found[name][vf]);
+					}
 				}
 			}
 		}

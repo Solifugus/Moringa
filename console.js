@@ -24,9 +24,37 @@ var stdin = process.openStdin();
 stdin.addListener("data", function( received ) {
 	let statement = received.toString().trim();
 	if( statement[0] === '/' ) {
+		if( statement.toLowerCase() === 'trace clear' ) {
+			agent.traces = [];
+			console.log('(Tracing For: nothing)');
+			return;
+		}
+		if( statement.substr(1,5) === 'trace' ) {
+			var options = statement.substr(6).split(' ');
+			var toggle = options.pop().trim().toLowerCase();
+			if( toggle !== 'on' && toggle !== 'off' ) {
+				options.push(toggle);
+				toggle = 'on';
+			}
+			for( var i = 0; i < options.length; i += 1 ) { 
+				var option = options[i].trim().toLowerCase();
+				if( option === '' ) continue;
+				if( toggle === 'on' ) {
+					if( agent.traces.indexOf(option) === -1 ) agent.traces.push(option);
+				}
+				else {
+					if( agent.traces.indexOf(option) !== -1 ) agent.traces.splice( agent.traces.indexOf(option), 1 );
+				}
+			}
+			console.log('(Tracing For: ' + JSON.stringify(agent.traces) + ')');
+			return;
+		}
 		switch(statement.substr(1).toLowerCase()) {
 			case 'memory':
-				console.log( JSON.stringify(agent.model.synthia.memories, null, '  ') );
+				for( var i = 0; i < agent.model.synthia.memories.length; i += 1 ) {
+					let memory = agent.model.synthia.memories[i];
+					console.log( memory.context + ': ' + memory.memory );
+				}
 				break;
 			case 'expects':
 				console.log( JSON.stringify(agent.model.synthia.expects, null, '  ') );
@@ -35,8 +63,7 @@ stdin.addListener("data", function( received ) {
 				for( var c = 0; c < agent.model.synthia.contexts.length; c += 1 ) {
 					var context = agent.model.synthia.contexts[c];
 					for( var r = 0; r < context.recognizers.length; r += 1 ) {
-						var matchers = context.recognizers[r].matchers;
-						console.log('C' + c + 'R' + r + ': ' + JSON.stringify(matchers));
+						console.log('C' + c + 'R' + r + ': ' + JSON.stringify(context.recognizers[r].pattern));
 					}
 				}
 				break;
@@ -45,6 +72,8 @@ stdin.addListener("data", function( received ) {
 	else {
 		console.log( 'User: ' + statement );
 		agent.input( statement, 'synthia' );
+		//console.log( 'XXX' + JSON.stringify( agent.logEntries, null, '  ' ) );
+		while( agent.logEntries.length > 0 ) console.log( '==> ' + agent.logEntries.shift() );
 	}
   });
 

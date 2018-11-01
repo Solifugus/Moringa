@@ -1,0 +1,16 @@
+
+-- Language for direct giving and querying of facts
+
+Recognizer "[subject] is [object]"
+	Forget "[subject] is not [object]"
+	Remember "[subject] is [object]"
+	Option Say "Remembered."
+
+Recognizer "[subject] is not [object]"
+	Forget "[subject] is [object]"
+	Remember "[subject] is not [object]"
+
+Recognizer "what is [subject]"
+	Recall "[subject] is [object]"
+	Say "[subject] is [object]"
+
