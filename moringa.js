@@ -158,10 +158,12 @@ class Moringa {
 		var option     = recognizer;  // to collect recognizer's always actions
 		context.recognizers.push(recognizer);
 
+		// Notes: * = anything; ? prefix = may or may not be; ~", = comma quote list
 		var commands = [
 			{ command:'comment',      gram:'-- * \n',                                          param:{ message:1 }              },  // useful to export with comments
 			{ command:'context',      gram:'context " * "',                                    param:{ context:2 }              },
-			{ command:'recognizer',   gram:'recognizer " * "',                                 param:{ pattern:2 }              },
+			//{ command:'recognizer',   gram:'recognizer " * "',                                 param:{ pattern:2 }              },
+			{ command:'recognizer',   gram:'recognizer ",',                                    param:{ pattern:2 }              },
 			{ command:'alwaysif',     gram:'?exclusive ?additional always if * \n',            param:{ condition:2 }            },  
 			{ command:'optionif',     gram:'?fallback ?exclusive ?additional option if * \n',  param:{ condition:2 }            },  
 			{ command:'option',       gram:'?fallback ?exclusive ?additional option',          param:{}                         }, 
@@ -193,8 +195,9 @@ class Moringa {
 		];
 
 		// Loop through Code Tokens
-		var err = '';
-		var t   = 0;
+		var err    = '';
+		var t      = 0;
+		var quotes = [];
 		while( t < tokens.length ) {
 			// Loop through Grammars to Find Matches or Identify Errors
 			var found = undefined;
@@ -203,7 +206,7 @@ class Moringa {
 				var gram = cmd.gram.split(' ');  // command grammars are defined space-separated ("?" prefixes optionals; "timings" is a sub-grammar)
 				var matched = true;              // If a recognized command actually found
 				var flags   = [];                // any flags found
-				var tt          = t;             // Searching for command starting at t and ending at tt
+				var tt      = t;                 // Searching for command starting at t and ending at tt
 				var wildcardFinish;
 				var debugLineNo = 99999;
 				if( tokens[t].lineNo === debugLineNo ) console.log('Checking if line starting with  "' + tokens[t].value + '" Matches Command ' + JSON.stringify(gram) + '.'); 
@@ -214,6 +217,7 @@ class Moringa {
 						tt += 1;
 						continue;
 					}
+
 					// Match ?Option (but if not, continue without advancing tt because this was only optional)
 					if( gram[w][0] === '?' ) {
 						if( gram[w].substr(1).toLowerCase() === tokens[tt].value.toLowerCase() ) {
@@ -222,6 +226,23 @@ class Moringa {
 							tt += 1;
 						}
 						continue;
+					}
+
+					// If comma quote list (collect list of comma separated quotes)
+					if( gram[w] === '",' ) {
+						quotes = [];
+						var more   = true;
+						
+						while( more && tt < tokens.length ) {
+							if( tokens[tt].value === '"' ) {
+								quotes.push( tokens[tt+1].value );
+								tt += 3;
+								if( tokens[tt].value !== ',' ) { more = false; }
+								else { tt += 1; }
+							}
+							else { more = false; }
+						}
+						if( quotes.length > 0 ) continue;
 					}
 
 					// Is Litteral Match?
@@ -243,7 +264,14 @@ class Moringa {
 					// Isolate found parameters -- NOTE: positions can change if preceded by ?optionals; undefine check is for ?timings 
 					for( var param in cmd.param ) {
 						let position = cmd.param[param] + found.flags.length;
-						if( found.tokens[position] !== undefined ) found.param[param] = found.tokens[ position ].value;	
+						if( found.tokens[position] !== undefined ) {
+							// If multiple quotes were collected (",).. 
+							if( quotes.length > 0 ) {
+								found.param[param] = quotes;
+								quotes             = '';
+							}  
+							else { found.param[param] = found.tokens[ position ].value; }
+						}
 					}
 					break;
 				}
@@ -256,7 +284,6 @@ class Moringa {
 				break;
 			}
 			
-
 			switch( found.command ) {
 				// Things to ignore..
 				case 'newline':
@@ -273,7 +300,12 @@ class Moringa {
 					break;
 
 				case 'recognizer':
-					let matchers = this.formatRecognizerPattern(found.param.pattern);  // translate to format for matching
+					//let matchers = this.formatRecognizerPattern(found.param.pattern[0]);  // translate to format for matching
+					//  Translate pattern(s) to format for matching
+					let matchers = [];
+					for( var p = 0; p < found.param.pattern.length; p += 1 ) {
+						matchers.push(this.formatRecognizerPattern(found.param.pattern[p]));
+					}
 					recognizer   = { pattern:found.param.pattern, matchers:matchers, options:[], actions:[] };
 					option       = recognizer;  // to collect recognizer's always actions 
 					context.recognizers.push(recognizer);
@@ -326,15 +358,18 @@ class Moringa {
 
 	// Literal comes before Constrained Variable before Open Variable
 	patternPriority( matchers ) {
+		if( !Array.isArray( matchers[0] ) ) matchers = [matchers];  // matchers may come in multiple segments (array of matcher arrays)
 		let priority = 0;
-		for( var i = 0; i < matchers.length; i += 1 ) {
-			let matcher = matchers[i].trim();
-			if( matcher[0] === '[' && matcher[matcher.length-1] === ']' ) {
-				if( matcher.indexOf('<<') !== -1 ) { priority += 2; }  // constrained variable
-				else{ priority += 1; } // open variable
-			}
-			else { priority += 3; } // literal
-		}
+		for( var s = 0; s < matchers.length; s += 1 ) {
+			for( var i = 0; i < matchers.length; i += 1 ) {
+				let matcher = matchers[s][i].trim();
+				if( matcher[0] === '[' && matcher[matcher.length-1] === ']' ) {
+					if( matcher.indexOf('<<') !== -1 ) { priority += 2; }  // constrained variable
+					else{ priority += 1; } // open variable
+				}
+				else { priority += 3; } // literal
+			} // i for
+		} // s for
 		return priority;
 	} // end of patternPriority
 
@@ -505,27 +540,46 @@ class Moringa {
 
 	// Returns false else object of collected variables
 	matchRecognizer( message, matchers, model ) {
-		// Tokenize input message
-		let syntax = {	
-			splitters:[' ','\t','\n','~','`','!','@','#','$','%','^','&','*','(',')','-','+','_','=','{','}','[',']',':',';','"','\'','<','>',',','.','?','/','|','\\'],
-			removes:['\t','\n']
-		}
 		// TODO: check and see if this should sometimes bring in message already tokenized into words.. 
-		let actuals;
-		if( typeof message === 'string' ) { actuals = tokenizer( message, syntax, {rich:false} ) }
+		var actuals;
+		if( typeof message === 'string' ) {
+			let syntax = {	
+				splitters:[' ','\t','\n','~','`','!','@','#','$','%','^','&','*','(',')','-','+','_','=','{','}','[',']',':',';','"','\'','<','>',',','.','?','/','|','\\'],
+				removes:['\t','\n']
+			}
+			actuals = tokenizer( message, syntax, {rich:false} )
+		}
 		else { actuals = message; };
 
+		// If single segment, make into list of one segment
+		if( !Array.isArray(matchers[0]) ) matchers = [matchers];
+
+		// Attempt Match, Collecting Variables over Each Segment
+		var variable     = {};
+		var skipSegments = [];  // Segments {first:0,last:0} already matched -- so not to match two segments over same actuals
+		for( var segmentNo = 0; segmentNo < matchers.length; segmentNo += 1 ) {
+			variable = this.matchRecognizerSegment( variable, actuals, matchers[segmentNo], skipSegments, model );
+			if( variable === false ) break;
+		}
+		return variable;
+	}
+
+	// Returns false else object of collected variables
+	matchRecognizerSegment( variable, actuals, matchers, skipSegments, model ) {
 		// Check how many matchers in actuals (message tokens), in order.. 
 		var m         = 0;
 		var a         = 0;
-		var variable  = {};
+		var firstActual;   // first to delete, if matched (to prevent double matching with subsequent segments)
+		var lastActual;    // last to delete, if matched
+		//var variable  = {};
 		var betweens  = '';
 		var timeStamp = new Date();
 		for( a = 0; a < actuals.length; a += 1 ) {
 			if( !( m < matchers.length ) ) break;
 			var matcher = matchers[m];
 			// If variable..
-			if( matcher[0] === '[' && matcher[matcher.length-1] === ']' ) {
+			if( !this.inZone(a,skipSegments) && matcher[0] === '[' && matcher[matcher.length-1] === ']' ) {
+				lastActual = a; if( firstActual === undefined ) { firstActual = a; }  // ensure we capture first + last found actuals
 				var name  = matchers[m].substr(1,matchers[m].length-2).trim();
 
 				// Capture variable until next matcher or end of actuals (of no more matchers)
@@ -555,7 +609,8 @@ class Moringa {
 			} 
 			// Else litteral
 			else {
-				if( this.wordMatches( actuals[a], matcher, model ) ) {
+				if( !this.inZone(a,skipSegments) && this.wordMatches( actuals[a], matcher, model ) ) {
+					lastActual = a; if( firstActual === undefined ) { firstActual = a; }  // ensure we capture first + last found actuals
 					// Record any relevant implicit variables between matchers
 					betweens = betweens.trim();
 					if( betweens !== '' ) {
@@ -577,11 +632,28 @@ class Moringa {
 		betweens = betweens.trim();
 		if( betweens !== '' ) variable['after-' + (m-1)] = [{ value:betweens, timeStamp:timeStamp }];  // TODO: add date/time to value for fading
 
+		//Remove any already matched actuals (to prevent double matching between segments)
+		//if( firstActual !== undefined ) actuals.splice(firstActual, lastActual-firstActual+1);  // XXX to remove
+		skipSegments.push({ first:firstActual, last:lastActual });
+
 		// This Recognizer Matched, if all matchers were found in input message actuals 
 		if( m === matchers.length ) {
 			return variable;
 		} 
 		else { return false; }
+	}
+
+	// Given an array of zones {first:0,last:0}, returns true if index is in any of them
+	inZone( index, zones ) {
+		var inZone = false;
+		for( var z = 0; z < zones.length; z += 1 ) {
+			let zone = zones[z];
+			if( index >= zone.first && index <= zone.last ) {
+				inZone = true;
+				break;
+			}
+		}
+		return inZone;
 	}
 
 	// Does word match matcher or any synonyms thereof?
