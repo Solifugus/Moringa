@@ -1,43 +1,13 @@
 
 
+===============================================================================
+TODO
 
-The Moringa Agent Engine and MoringaScript 1.0
-
-The Moringa agent engine (Moringa Engine) is a class that may be instantiated
-and run on any modern ECMAScript interpreter.  The Moringa Engine requires at
-least one foundational Moringa script and may have any number of supplemental
-scripts merged in, thereafter.  
-
-A Moringa script defines the Agent's interactions with its users and there may
-be two types: foundational and supplemental.  A foundational script is a 
-baseline to which supplementals may be added.  
-
-	Foundational Script.  The idea of a baseline is to catch all the generic 
-utterances that might be made by a user and provide generic responses to them.
-At a minimum, a foundational script should contain a catch-all.  That is, what 
-to do if the user's utterance is not understood.  
-
-Multiple foundational scripts may be fed into the Moringa Engine.  The purpose
-for this is that one is to be the agent's baseline personality and others may
-be added to represent other personalities to simulate.  For example, let's say
-the agent is a salesman.  To better guess how a customer might respond to a
-suggestion, it may want to contemplate making the suggestion to its internal
-model of the customer.  Hence, it may need to begin with a foundational 
-"customer" and, as it learns more by talking with the real customer, enhance
-its model by merging supplementals.  For example, if the customer says he/she
-likes sports then merge a "sports" supplemental script into the model of this
-customer being developed.  If the customer says he/she doesn't like water 
-sports then add that to the customer model.  Then before making a suggestion,
-first contemplate the response by suggesting it internally to the customer
-model.  Every time a foundational script is imported into the Moringa Engine,
-it creates a new model.  The first of these is the agent's base model.
-
-	Supplemental Scripts.  The idea of a supplemental script is to provide
-some kind of personality trait or topic expertise.  A supplemental script
-merges into a foundation and over or under what has already been merged in to
-that foundation.  That is, if a recognizer in the supplement already exists
-then it's options are either placed ahead of (over) or after (under) the 
-options already there. 
+	[ ] Prioritize interpretation of explicit word over variable, in recognizer
+        (might have already done this)
+	[ ] Complete merging
+		[ ] For pre-existing recognizer, add everything under it.
+		[ ] For pre-existing context, merge with context. 
 
 
 ===============================================================================
@@ -177,6 +147,20 @@ is executed.  After this, the Moringa engine determines what options are
 elligible for chosing.  Any options without conditions or with conditions 
 evaluating to true are deemed elligible.  If none are thus found to elligible 
 and then any "Last Option" may be evaluated for elligibility.
+
+
+
+===============================================================================
+Notes and Thoughts for Further Development
+
+	[ ] Change "betweens" to "befores","withins", and "afters" in relation to 
+	each segment.
+	[ ] Add input stream processing of multiple recognizers per input, adding
+	"betweens" as being unrecognized between recognized. 
+	[ ] Build loggins option
+	[ ] Enabling marking of each segment as subject, verb, or object.
+	This can be used to identify new subjects, objects, and perhaps verbs.
+
 
 
 

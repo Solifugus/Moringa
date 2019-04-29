@@ -1,0 +1,83 @@
+-- "Declara" Foundational
+-- A purely functional foundation for fact storage, recall, and analysis
+
+-- General Purpose Synonyms
+Synonyms yes: affirmative, certainly
+Synonyms no: negative
+
+-- General Conjugations Between Persons
+Conjugate "are" And "am"
+Conjugate "were" And "was"
+Conjugate "I" And "you"
+Conjugate "me" And "you"
+Conjugate "my" And "your"
+Conjugate "mine" And "yours"
+Conjugate "I'm" To "you are"
+Conjugate "you're" To "I am"
+Conjugate "I've" To "you have"
+Conjugate "you've" To "I have"
+Conjugate "I'll" To "you will"
+Conjugate "you'll" To "I will"
+Conjugate "myself" And "yourself"
+
+Invert On "not"
+
+-- Variables to Always Keep Active
+Retain user
+Retain it
+Retain this
+Retain that
+Retain him
+Retain her
+Retain them
+
+-- Directly Declaratives
+Recognizer "[subject] is [object]"
+	Remember "[subject] is [object]"
+
+Recognizer "[subject] has [object]"
+	Remember "[subject] has [object]"
+	
+Recognizer "[attribute] of [subject] is [object]"
+Recognizer "[attribute] of a [subject] is [object]"
+Recognizer "[attribute] of an [subject] is [object]"
+	Interpret As "[attribute] of a [subject] is [object]"
+	
+Recognizer "[subject] is a [object]"
+	Remember "[subject] is a type of [object]"
+Recognizer "[subject] is an [object]"
+	Interpret As "[subject] is a [object]"
+
+-- Queries
+Recognizer "what is [something]"
+Recognizer "what is [attribute] of [something]"
+Recognizer "what are [somethings]"
+Recognizer "What has [object]"
+
+--Analysis
+-- TODO
+
+Option
+	Remember "[attribute] of [something] is [something else]"
+	Remember "[something]'s [attribute] is [something else]"
+	Recall "[something]'s [attribute] is [something more]"
+	Say "Ok.  I understand that [something]'s [attribute] is [something more]"
+
+Recognizer "[something]'s [attribute] is [something else]"
+Option
+	Interpret As "[attribute] of [something] is [something else]"
+
+Recognizer "tell me about [thing]"
+Option
+	Recall "[thing] is [what]"
+	Say "[thing] is [what]"
+	
+Recognizer "what do you know about [thing]"
+Option
+	Interpret As "tell me about [thing]"
+
+-- catch all for statement patterns not recognized
+Recognizer "[unrecognized]"
+	Remember "I did not recognize:[unrecognized]"
+	Nonexclusive Option Say "Statement or query not recognized."
+	Nonexclusive Option Say "Please rephrase."

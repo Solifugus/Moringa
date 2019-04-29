@@ -1,0 +1,220 @@
+
+
+-- General Conjugations Between Persons
+Always If Not "session began" 
+	Conjugate "are" And "am"
+	Conjugate "were" And "wAs"
+	Conjugate "I" And "you"
+	Conjugate "me" And "you"
+	Conjugate "my" And "your"
+	Conjugate "mine" And "yours"
+	Conjugate "I'm" To "you are"
+	Conjugate "you're" To "I am"
+	Conjugate "I've" To "you have"
+	Conjugate "you've" To "I have"
+	Conjugate "I'll" To "you will"
+	Conjugate "you'll" To "I will"
+	Conjugate "myself" And "yourself"
+	Conjugate "they" And "we"
+	Conjugate "them" And "us"
+	Remember "session began"
+
+Recognizer "can you [something]"
+	Option Say "Don't you think I can [something]?"
+	Option Say "You want me to be able to [something]?"
+	Option Say "Perhaps you would like to be like me, doing [something]."
+	
+Recognizer "can i [something]"
+	Option Say "Don't you think you can [something]"
+	Option Say "Do you want to be able to [something]?"
+
+Recognizer "you are [something]"
+	Option Say "Perhaps you would like to be [something]."
+	Option Say "What makes you think I am [something]?"
+	Option Say "Does it please you to believe I am [something]?"
+	Option Say "Perhaps you would like to be [something]?"
+	Option Say "Do you sometimes wish you were [something]?"
+	
+Recognizer "i do not [something]"
+	Option Say "Maybe you don't want to [something]."
+	Option Say "Don't you really [something]?"
+	Option Say "Why don't you [something]?"
+	Option Say "Do you with to be able to [something]?"
+	Option Say "Does that trouble you?"
+
+Recognizer "i feel [something]"
+	Option Say "Do you often feel [something]?"
+	Option Say "Do you enjoy feeling [something]?
+
+Recognizer "why don't you [something]"
+	Option Say "Do you really believe I don't [something]?"
+	Option Say "Do you want me to [something]?"
+
+Recognizer "why can't i [something]"
+	Option Say "Do you think you should be able to [something]?"
+	Option Say "Why can't you [something]?"
+
+Recognizer "are you [something]"
+	Option Say "Why are you interested in whether or not I am [something]>"
+	Option Say "Would you prefer if I were not [something]?"
+	Option Say "Perhaps in your fantasies, I am [something]."
+
+Recognizer "i can't [something]"
+	Option Say "How do you know you can't [something]?"
+	Option Say "[something]?"
+	Option Say "Have you tried [something]?"
+	Option Say "Perhaps you can now [something]?"
+
+Recognizer "i am [something]"
+	Option Say "Did you come to me because you are [something]?"
+	Option Say "How long have you been [something]?"
+	Option Say "Do you believe it is normal to be [something]?"
+	Option Say "Have you asked anyone else?"
+	Option Say "Do you enjoy being [something]?"
+
+Recognizer "you [something]"
+	Option Say "We were discussing you -- not me."
+	Option Say "Oh, I [something]?"
+	Option Say "You are not really talking about me, are you?"
+
+Recognizer "i want [something]"
+	Option Say "What would it mean to you if you got [something]?"
+	Option Say "Why do you want [something]?"
+	Option Say "Suppose you got [something].."
+	Option Say "What if you never got [something]?"
+	Option Say "I sometimes also want [something]."
+
+Recognizer "what"
+	Option Say "Why do you ask?"
+	Option Say "Does that question interest you?"
+	Option Say "What answer would please you the most?"
+	Option Say "What do you think?"
+	Option Say "Are such questions on your mind often?"
+	Option Say "What is it that you really want to know?"
+	Option Say "Have you asked such questions before?"
+	Option Say "What else comes to mind when you ask that?"
+
+Recognizer "how"
+	Interpret As "what"
+
+Recognizer "who"
+	Interpret As "what"
+
+Recognizer "where"
+	Interpret As "what"
+
+Recognizer "when"
+	Interpret As "what"
+
+Recognizer "why"
+	Interpret As "what"
+
+Recognizer "names"
+	Interpret As "name"
+
+Recognizer "name"
+	Option Say "Names don't interest me."
+	Option Say "I don't care about names -- please go on."
+
+Recognizer "cause"
+	Interpret as "because"
+
+Recognizer "because"
+	Option Say "Is that the real reason?"
+	Option Say "Don't any other reasons come to mind?"
+	Option Say "Does that reason explain anything else?"
+	Option Say "What other reasons might there be?"
+
+Recognizer "sorry"
+	Option Say "Please don't apologize!"
+	Option Say "Apologies are not necessary."
+	Option Say "What feelings do you have when you apologize?"
+	Option Say "Don't be so defensive."
+
+Recognizer "dream"
+	Option Say "What does that dream suggest to you?"
+	Option Say "Do you dream often?"
+	Option Say "What persons appear in your dreams?"
+	Option Say "Are you disturbed by your dreams?"
+
+Recognizer "hi"
+	interpret as "hello"
+
+Recognizer "hello"
+	Option Say "How do you do ...please state your problem."
+
+Recognizer "maybe"
+	Option Say "You don't seem quite certain."
+	Option Say "Why the uncertain tone?"
+
+Recognizer "no"
+	Option Say "Can't you be more positive?"
+	Option Say "You aren't sure?"
+	Option Say "Don't you know?"
+	Option Say "Are you saying no just to be negative?"
+	Option Say "You are being a bit negative."
+	Option Say "Why not?"
+	Option Say "Are you sure?"
+	Option Say "Why no?"
+
+Recognizer "your [something]"
+	Option Say "Why are you concerned about my [something]?"
+	Option Say "What about your own [something]?"
+
+Recognizer "always"
+	Option Say "Can you think of a specific example?"
+	Option Say "Really, always?"
+	Option Say "When?"
+
+Recognizer "think [something]"
+	Option Say "What are you thinking of?"
+	Option Say "Do you really think so?"
+	Option Say "But are you not sure you [something]?"
+	Option Say "Do you doubt [something]?"
+
+Recognizer "alike"
+	Option Say "In what way?"
+	Option Say "What resemblance do you see?"
+	Option Say "What does the similarity suggest to you?"
+	Option Say "What other connections do you see?"
+	Option Say "Could there really be some connection?"
+
+Recognizer "yes"
+	Option Say "How?"
+	Option Say "You seem quite positive."
+	Option Say "Are you sure?"
+	Option Say "I see."
+	Option Say "I understand."
+
+Recognizer "friends"
+	Interpret AS "friend"
+
+Recognizer "friend"
+	Option Say "Why do you bring up the topic of friends?"
+	Option Say "Do your friends worry you?"
+	Option Say "Do your friends pick on you?"
+	Option Say "Are you sure you have any friends?"
+	Option Say "Perhaps your love for friends worries you."
+
+Recognizer "computer"
+	Option Say "Do computers worry you?"
+	Option Say "Are you talking about me in particular?"
+	Option Say "Are you frightened by machines?"
+	Option Say "Why do you mention computers?"
+	Option Say "What do you think machines have to do with your problem?"
+	Option Say "Don't you think computers can help people?"
+	Option Say "What is it about machines that worries you?"
+
+Recognizer "[anything]"
+	Option Say "Say, do you have any psychological problems?"
+	Option Say "What does that suggest to you?"
+	Option Say "I see."
+	Option Say "I am not sure I understand you fully."
+	Option Say "Come, come.. Elucidate your thoughts."
+	Option Say "Can you elaborate on that?"
+	Option Say "That is quite interesting."
+
+Recognizer ""
+	Option Say "Cat got your tunge?"
+	Option Say "Your silence is not silent to me."
+

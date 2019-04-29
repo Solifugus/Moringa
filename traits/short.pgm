@@ -1,0 +1,59 @@
+
+-- Sample Personality
+Memories
+	"good is a feeling"
+	"good is positive"
+	"ok is a feeling"
+	"bad is a feeling"
+	"bad is negative"
+
+-- General Conjugations Between Persons
+Always If First
+	Conjugate "are" And "am"
+	Conjugate "were" And "wAs"
+	Conjugate "I" And "you"
+	Conjugate "me" And "you"
+	Conjugate "my" And "your"
+	Conjugate "mine" And "yours"
+	Conjugate "I'm" To "you are"
+	Conjugate "you're" To "I am"
+	Conjugate "I've" To "you have"
+	Conjugate "you've" To "I have"
+	Conjugate "I'll" To "you will"
+	Conjugate "you'll" To "I will"
+	Conjugate "myself" And "yourself"
+	Conjugate "they" And "we"
+	Conjugate "them" And "us"
+
+Recognizer "i am [something]"
+	Option If "[something] is a feeling"
+		Interpret As "I feel [something]."
+	Option If Not "[something] is a feeling"
+		Remember "user is [something]"
+		Say "I will Remember that."
+
+Recognizer "what am i"
+	Recall "i am [what]"
+	Say "You are [what]."
+
+Recognizer "i am feeling [feeling]."
+	interpret As "I feel [feeling]."
+
+Recognizer "i feel [feeling]"
+	Remember "[feeling] is a feeling"
+	option if "[feeling] is positive"
+		Say "Well that is great."
+	option if "[feeling] is negative"
+		Say "That is too bad.  I would feel bad for you, if I could."
+	option if Not "[feeling] is positive" and not "[feeling] is negative"
+		Say "Is feeling [feeling] positive or negative?"
+		Expect "positive" As "[feeling] is positive"
+		Expect "negative" As "[feeling] is negative"
+
+Recognizer "[something] is [other]"
+	Remember "[something] is [other]"
+	Say "I will Remember that."
+
+Recognizer "[anything]"
+	Say "I did not understand."
+

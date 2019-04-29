@@ -1,6 +1,6 @@
 {
   "name": "moringa",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Engine for Artificially Intelligent Chatbots based on Moringa Interactivity Scripts",
   "main": "moringa.js",
   "scripts": {

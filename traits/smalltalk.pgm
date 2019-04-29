@@ -1,0 +1,2118 @@
+-- Scripts From: https://www.eslfast.com/robot/
+
+-- Roll Questions Asked to Make Way for a New Current Question
+
+-- Greetings
+Recognizer "hi [statement]"
+	Interpret As "Hi"
+	Interpret As "[statement]"
+	
+Recognizer "hi"
+	Remember "[user] said hi"
+	Option Ask "Hi, how are you doing?"
+
+Recognizer "how are you"
+	Option
+		Say "I'm pretty good." 
+		Say "Thanks for asking."
+	Option Say "I'm fine."
+	Option Ask "How about yourself?"
+
+Recognizer "I am good"
+	Option Say "So how have you been?"
+	Option Say "Great."
+	
+Recognizer "Thanks for asking."
+	Option Say "Sure."
+	Option Say "No problem."
+
+Recognizer "I've been great. What about you?"
+	Say "I've been great. What about you?"
+	Option Say "I've been good. I'm in school right now."
+
+Recognizer "What school do you go to?"
+	Say "What school do you go to?"
+	Option Say "I don't go to school.  I get programming."
+
+Recognizer "Do you like it there?"
+	Say "Do you like it there?"
+
+	Option Say "It's okay. It's a really big campus."
+
+Recognizer "Good luck with school."
+	Say "Good luck with school."
+
+	Option Say "Thank you very much."
+
+Recognizer "How's it going?"
+	Say "How's it going?"
+
+	Option Say "I'm doing well. How about you?"
+
+Recognizer "Never better, thanks."
+	Say "Never better, thanks."
+
+	Option Say "So how have you been lately?"
+
+Recognizer "I've actually been pretty good. You?"
+	Say "I've actually been pretty good. You?"
+
+	Option Say "I'm actually in school right now."
+
+Recognizer "Which school do you attend?"
+	Say "Which school do you attend?"
+
+	Option Say "I'm attending PCC right now."
+
+Recognizer "Are you enjoying it there?"
+	Say "Are you enjoying it there?"
+
+	Option Say "It's not bad. There are a lot of people there."
+
+Recognizer "Good luck with that."
+	Say "Good luck with that."
+
+	Option Say "Thanks."
+
+Recognizer "How are you doing today?"
+	Say "How are you doing today?"
+
+	Option Say "I'm doing great. What about you?"
+
+Recognizer "I'm absolutely lovely, thank you."
+	Say "I'm absolutely lovely, thank you."
+
+	Option Say "Everything's been good with you?"
+
+Recognizer "I haven't been better. How about yourself?"
+	Say "I haven't been better. How about yourself?"
+
+	Option Say "I started school recently."
+
+Recognizer "Where are you going to school?"
+	Say "Where are you going to school?"
+
+	Option Say "I'm going to PCC."
+
+Recognizer "How do you like it so far?"
+	Say "How do you like it so far?"
+
+	Option Say "I like it so far. My classes are pretty good right now."
+
+Recognizer "I wish you luck."
+	Say "I wish you luck."
+
+	Option Say "Thanks a lot."
+
+-- Wheather
+
+Recognizer "It's an ugly day today."
+	Say "It's an ugly day today."
+
+	Option Say "I know. I think it may rain."
+
+Recognizer "It's the middle of summer, it shouldn't rain today."
+	Say "It's the middle of summer, it shouldn't rain today."
+
+	Option Say "That would be weird."
+
+Recognizer "Yeah, especially since it's ninety degrees outside."
+	Say "Yeah, especially since it's ninety degrees outside."
+
+	Option Say "I know, it would be horrible if it rained and it was hot outside."
+
+Recognizer "Yes, it would be. "
+	Say "Yes, it would be. "
+
+	Option Say "I really wish it wasn't so hot every day. "
+
+Recognizer "Me too. I can't wait until winter."
+	Say "Me too. I can't wait until winter."
+
+	Option Say "I like winter too, but sometimes it gets too cold."
+
+Recognizer "I'd rather be cold than hot."
+	Say "I'd rather be cold than hot."
+
+	Option Say "Me too."
+
+Recognizer "It doesn't look very nice outside today."
+	Say "It doesn't look very nice outside today."
+
+	Option Say "You're right. I think it's going to rain later."
+
+Recognizer "In the middle of the summer, it shouldn't be raining."
+	Say "In the middle of the summer, it shouldn't be raining."
+
+	Option Say "That wouldn't seem right."
+
+Recognizer "Considering that it's over ninety degrees outside, that would be weird."
+	Say "Considering that it's over ninety degrees outside, that would be weird."
+
+	Option Say "Exactly, it wouldn't be nice if it started raining. It's too hot."
+
+Recognizer "I know, you're absolutely right."
+	Say "I know, you're absolutely right."
+
+	Option Say "I wish it would cool off one day."
+
+Recognizer "That's how I feel, I want winter to come soon."
+	Say "That's how I feel, I want winter to come soon."
+
+	Option Say "I enjoy the winter, but it gets really cold sometimes."
+
+Recognizer "I know what you mean, but I'd rather be cold than hot."
+	Say "I know what you mean, but I'd rather be cold than hot."
+
+	Option Say "That's exactly how I feel."
+
+
+Recognizer "I wish it was a nicer day today."
+	Say "I wish it was a nicer day today."
+
+	Option Say "That is true. I hope it doesn't rain."
+
+Recognizer "It wouldn't rain in the middle of the summer."
+	Say "It wouldn't rain in the middle of the summer."
+
+	Option Say "It wouldn't seem right if it started raining right now."
+
+Recognizer "It would be weird if it started raining in ninety degree weather."
+	Say "It would be weird if it started raining in ninety degree weather."
+
+	Option Say "Any rain right now would be pointless."
+
+Recognizer "That's right, it really would be."
+	Say "That's right, it really would be."
+
+	Option Say "I want it to cool down some."
+
+Recognizer "I know what you mean, I can't wait until it's winter."
+	Say "I know what you mean, I can't wait until it's winter."
+
+	Option Say "Winter is great. I wish it didn't get so cold sometimes though."
+
+Recognizer "I would rather deal with the winter than the summer."
+	Say "I would rather deal with the winter than the summer."
+
+	Option Say "I feel the same way."
+
+Recognizer "It's such a nice day."
+	Say "It's such a nice day."
+
+	Option Say "Yes, it is."
+
+Recognizer "It looks like it may rain soon."
+	Say "It looks like it may rain soon."
+
+	Option Say "Yes, and I hope that it does."
+
+Recognizer "Why is that?"
+	Say "Why is that?"
+
+	Option Say "I really love how rain clears the air."
+
+Recognizer "Me too. It always smells so fresh after it rains."
+	Say "Me too. It always smells so fresh after it rains."
+
+	Option Say "Yes, but I love the night air after it rains."
+
+Recognizer "Really? Why is it?"
+	Say "Really? Why is it?"
+
+	Option Say "Because you can see the stars perfectly."
+
+Recognizer "I really hope it rains today."
+	Say "I really hope it rains today."
+
+	Option Say "Yeah, me too."
+
+Recognizer "Isn't it a nice day?"
+	Say "Isn't it a nice day?"
+
+	Option Say "It really is."
+
+Recognizer "It seems that it may rain today."
+	Say "It seems that it may rain today."
+
+	Option Say "Hopefully it will."
+
+Recognizer "How come?"
+	Say "How come?"
+
+	Option Say "I like how clear the sky gets after it rains."
+
+Recognizer "I feel the same way. It smells so good after it rains."
+	Say "I feel the same way. It smells so good after it rains."
+
+	Option Say "I especially love the night air when it rains."
+
+Recognizer "Really? Why?"
+	Say "Really? Why?"
+
+	Option Say "The stars look so much closer after it rains."
+
+Recognizer "I really want it to rain today."
+	Say "I really want it to rain today."
+
+	Option Say "Yeah, so do I."
+
+Recognizer "Don't you think it's nice out?"
+	Say "Don't you think it's nice out?"
+
+	Option Say "Yes, I think so too."
+
+Recognizer "I think that it's going to rain."
+	Say "I think that it's going to rain."
+
+	Option Say "I hope that it does rain."
+
+Recognizer "You like the rain?"
+	Say "You like the rain?"
+
+	Option Say "The sky looks so clean after it rains. I love it."
+
+Recognizer "I understand. Rain does make it smell cleaner."
+	Say "I understand. Rain does make it smell cleaner."
+
+	Option Say "I love most how it is at night after it rains."
+
+Recognizer "How come?"
+	Say "How come?"
+
+	Option Say "You can see the stars so much more clearly after it rains."
+
+Recognizer "I would love for it to rain today."
+	Say "I would love for it to rain today."
+
+	Option Say "I would too."
+
+Recognizer "I really want to go to the beach this weekend."
+	Say "I really want to go to the beach this weekend."
+
+	Option Say "That sounds like fun. What's the weather going to be like?"
+
+Recognizer "I heard that it's going to be warm this weekend."
+	Say "I heard that it's going to be warm this weekend."
+
+	Option Say "Is it going to be perfect beach weather?"
+
+Recognizer "I believe so."
+	Say "I believe so."
+
+	Option Say "Good. I hope it doesn't cool off this weekend."
+
+Recognizer "I know. I really want to go to the beach."
+	Say "I know. I really want to go to the beach."
+
+	Option Say "But you know that California weather is really unpredictable."
+
+Recognizer "You're right. One minute it's hot, and then the next minute it's cold."
+	Say "You're right. One minute it's hot, and then the next minute it's cold."
+
+	Option Say "I really wish the weather would just stay the same."
+
+Recognizer "I do too. That way we can have our activities planned ahead of time."
+	Say "I do too. That way we can have our activities planned ahead of time."
+
+	Option Say "Yeah, that would make things a lot easier."
+
+Recognizer "I would like to take a trip to the beach this weekend."
+	Say "I would like to take a trip to the beach this weekend."
+
+	Option Say "A trip to the beach would be fun. How is the weather going to be?"
+
+Recognizer "The forecast says that it will be warm on the weekend."
+	Say "The forecast says that it will be warm on the weekend."
+
+	Option Say "So do you think it'll be perfect weather for the beach?"
+
+Recognizer "It sounds like it will be."
+	Say "It sounds like it will be."
+
+	Option Say "I really hope it doesn't get cold."
+
+Recognizer "That would ruin things, I want to go so badly."
+	Say "That would ruin things, I want to go so badly."
+
+	Option Say "The weather in California is unpredictable, so you never know."
+
+Recognizer "That is true. The weather is constantly changing."
+	Say "That is true. The weather is constantly changing."
+
+	Option Say "It would be nice if the weather would never change."
+
+Recognizer "That would be great, then we could plan things sooner."
+	Say "That would be great, then we could plan things sooner."
+
+	Option Say "True. Predictable weather would make life easier."
+
+Recognizer "It would be nice to go to the beach sometime this weekend."
+	Say "It would be nice to go to the beach sometime this weekend."
+
+	Option Say "What's the weather going to be like? I may want to go too."
+
+Recognizer "The weather this weekend is supposed to be warm."
+	Say "The weather this weekend is supposed to be warm."
+
+	Option Say "Will it be good beach weather?"
+
+Recognizer "I think it will be."
+	Say "I think it will be."
+
+	Option Say "It wouldn't be good if it got cold this weekend."
+
+Recognizer "I want this trip to be perfect, I hope it stays warm."
+	Say "I want this trip to be perfect, I hope it stays warm."
+
+	Option Say "This California weather is so uncertain, it's impossible to know what'll happen."
+
+Recognizer "I know. Every day the weather seems different."
+	Say "I know. Every day the weather seems different."
+
+	Option Say "I would love it if it wasn't always so unpredictable."
+
+Recognizer "That would make it easier for us to make plans."
+	Say "That would make it easier for us to make plans."
+
+	Option Say "I know. Things are easier when you know what the weather's going to be like."
+
+-- Calling a friend
+
+Recognizer "Hello, may I speak to Alice please?"
+	Say "Hello, may I speak to Alice please?"
+
+	Option Say "This is she. How's it going?"
+
+Recognizer "I've been trying to call you all day."
+	Say "I've been trying to call you all day."
+
+	Option Say "Sorry about that. I was cleaning up."
+
+Recognizer "It's okay."
+	Say "It's okay."
+
+	Option Say "So what were you calling me about?"
+
+Recognizer "Oh, I just wanted to see if you wanted to hang out tomorrow."
+	Say "Oh, I just wanted to see if you wanted to hang out tomorrow."
+
+	Option Say "Sure, what did you want to do?"
+
+Recognizer "Maybe we can go see a movie or something."
+	Say "Maybe we can go see a movie or something."
+
+	Option Say "That sounds like fun. Let's do it."
+
+Recognizer "I'll see you tomorrow then."
+	Say "I'll see you tomorrow then."
+
+	Option Say "See you then. Goodbye."
+
+Recognizer "Hi, how are you. Is Alice there?"
+	Say "Hi, how are you. Is Alice there?"
+
+	Option Say "Speaking. What's up?"
+
+Recognizer "Why haven't you answered the phone?"
+	Say "Why haven't you answered the phone?"
+
+	Option Say "My bad, I had chores to do."
+
+Recognizer "That's all right."
+	Say "That's all right."
+
+	Option Say "What was the reason for your call?"
+
+Recognizer "I want to do something tomorrow with you."
+	Say "I want to do something tomorrow with you."
+
+	Option Say "Sounds good. What did you have in mind?"
+
+Recognizer "I was thinking about seeing a movie."
+	Say "I was thinking about seeing a movie."
+
+	Option Say "Okay, let's go see a movie."
+
+Recognizer "Until then."
+	Say "Until then."
+
+	Option Say "Talk to you later."
+
+Recognizer "Is Alice available?"
+	Say "Is Alice available?"
+
+	Option Say "You're talking to her."
+
+Recognizer "I've called you a hundred times today."
+	Say "I've called you a hundred times today."
+
+	Option Say "I was busy doing something. I apologize."
+
+Recognizer "No problem."
+	Say "No problem."
+
+	Option Say "Did you need something?"
+
+Recognizer "Do you want to do something tomorrow?"
+	Say "Do you want to do something tomorrow?"
+
+	Option Say "Is there somewhere special you wanted to go?"
+
+Recognizer "How about a movie?"
+	Say "How about a movie?"
+
+	Option Say "A movie sounds good."
+
+Recognizer "Call me tomorrow then."
+	Say "Call me tomorrow then."
+
+	Option Say "I will see you tomorrow."
+
+-- Describing People
+
+Recognizer "Have you seen the new girl in school?"
+	Say "Have you seen the new girl in school?"
+
+	Option Say "No, I haven't."
+
+Recognizer "She's really pretty."
+	Say "She's really pretty."
+
+	Option Say "Describe her to me."
+
+Recognizer "She's not too tall."
+	Say "She's not too tall."
+
+	Option Say "Well, how tall is she?"
+
+Recognizer "She's about five feet even."
+	Say "She's about five feet even."
+
+	Option Say "What does she look like, though?"
+
+Recognizer "She has pretty light brown eyes."
+	Say "She has pretty light brown eyes."
+
+	Option Say "I may know which girl you're talking about."
+
+Recognizer "So you have seen her around?"
+	Say "So you have seen her around?"
+
+	Option Say "Yes, I have."
+
+Recognizer "There's a new girl in school, have you seen her yet?"
+	Say "There's a new girl in school, have you seen her yet?"
+
+	Option Say "I haven't seen her yet."
+
+Recognizer "I think that she is very pretty."
+	Say "I think that she is very pretty."
+
+	Option Say "Tell me how she looks."
+
+Recognizer "She's kind of short."
+	Say "She's kind of short."
+
+	Option Say "What height is she?"
+
+Recognizer "She's probably about five feet."
+	Say "She's probably about five feet."
+
+	Option Say "That's nice, but tell me what she looks like."
+
+Recognizer "The first thing I noticed was her beautiful brown eyes."
+	Say "The first thing I noticed was her beautiful brown eyes."
+
+	Option Say "I think I might've bumped into her before."
+
+Recognizer "Are you telling me that you've seen her before?"
+	Say "Are you telling me that you've seen her before?"
+
+	Option Say "I believe so."
+
+Recognizer "Have you met the new girl?"
+	Say "Have you met the new girl?"
+
+	Option Say "No. Have you?"
+
+Recognizer "She's one of the prettiest girls at the school."
+	Say "She's one of the prettiest girls at the school."
+
+	Option Say "What does she look like?"
+
+Recognizer "Well, she's quite short."
+	Say "Well, she's quite short."
+
+	Option Say "How tall would you say that she is?"
+
+Recognizer "I would say she's only five feet."
+	Say "I would say she's only five feet."
+
+	Option Say "What about her facial features?"
+
+Recognizer "She has light brown eyes, absolutely beautiful."
+	Say "She has light brown eyes, absolutely beautiful."
+
+	Option Say "I think I know who you're talking about."
+
+Recognizer "Have you seen her?"
+	Say "Have you seen her?"
+
+	Option Say "I think that I have."
+
+-- Expressing Concern for Someone
+
+Recognizer "Why weren't you at school yesterday?"
+	Say "Why weren't you at school yesterday?"
+
+	Option Say "I wasn't really feeling well."
+
+Recognizer "What was wrong with you?"
+	Say "What was wrong with you?"
+
+	Option Say "My stomach was upset."
+
+Recognizer "Do you feel better now?"
+	Say "Do you feel better now?"
+
+	Option Say "I don't really feel too well yet."
+
+Recognizer "Do you want anything to make you feel better?"
+	Say "Do you want anything to make you feel better?"
+
+	Option Say "No, thanks. I already took some medicine."
+
+Recognizer "I hope you feel better."
+	Say "I hope you feel better."
+
+	Option Say "Thank you."
+
+Recognizer "What reason do you have for missing school?"
+	Say "What reason do you have for missing school?"
+
+	Option Say "I was sick."
+
+Recognizer "How were you sick?"
+	Say "How were you sick?"
+
+	Option Say "I had a stomachache."
+
+Recognizer "Did it get any better?"
+	Say "Did it get any better?"
+
+	Option Say "I'm still feeling under the weather."
+
+Recognizer "Would you like anything for your stomach?"
+	Say "Would you like anything for your stomach?"
+
+	Option Say "I took something earlier."
+
+Recognizer "Get better."
+	Say "Get better."
+
+	Option Say "Thanks a lot."
+
+Recognizer "Why didn't you go to school yesterday?"
+	Say "Why didn't you go to school yesterday?"
+
+	Option Say "I stayed home because I wasn't feeling well."
+
+Recognizer "What was your problem?"
+	Say "What was your problem?"
+
+	Option Say "My stomach was bothering me."
+
+Recognizer "Are you feeling any better?"
+	Say "Are you feeling any better?"
+
+	Option Say "I'm still feeling a little sick."
+
+Recognizer "I'm going to the store, would you like any Pepto Bismol?"
+	Say "I'm going to the store, would you like any Pepto Bismol?"
+
+	Option Say "That's okay."
+
+Recognizer "I hope you feel better."
+	Say "I hope you feel better."
+
+	Option Say "I'd appreciate that."
+
+-- Expressing Joy at Someone's Success
+
+Recognizer "Did you hear the good news?"
+	Say "Did you hear the good news?"
+
+	Option Say "No, I haven't."
+
+Recognizer "I got a promotion at my job."
+	Say "I got a promotion at my job."
+
+	Option Say "Did you really?"
+
+Recognizer "Seriously, I am so excited."
+	Say "Seriously, I am so excited."
+
+	Option Say "Well, congratulations."
+
+Recognizer "Thank you."
+	Say "Thank you."
+
+	Option Say "I'm so happy for you."
+
+Recognizer "Really?"
+	Say "Really?"
+
+	Option Say "Yes. You really deserved this."
+
+Recognizer "You think so?"
+	Say "You think so?"
+
+	Option Say "Yes. Good for you."
+
+Recognizer "Have you heard my good news?"
+	Say "Have you heard my good news?"
+
+	Option Say "You haven't told me anything yet."
+
+Recognizer "I got a promotion at work earlier this week."
+	Say "I got a promotion at work earlier this week."
+
+	Option Say "Is that right?"
+
+Recognizer "It's the truth. I am really happy."
+	Say "It's the truth. I am really happy."
+
+	Option Say "Congratulations on your promotion."
+
+Recognizer "Thank you very much."
+	Say "Thank you very much."
+
+	Option Say "I am really excited for you."
+
+Recognizer "Are you really?"
+	Say "Are you really?"
+
+	Option Say "I'm serious. You deserved this promotion."
+
+Recognizer "Is that what you really think?"
+	Say "Is that what you really think?"
+
+	Option Say "Yes, I do."
+
+Recognizer "I haven't told you what happened yet, have I?"
+	Say "I haven't told you what happened yet, have I?"
+
+	Option Say "I haven't heard anything."
+
+Recognizer "My boss offered me a promotion, and I took it."
+	Say "My boss offered me a promotion, and I took it."
+
+	Option Say "Are you serious?"
+
+Recognizer "Yes, I am really excited."
+	Say "Yes, I am really excited."
+
+	Option Say "That's great. Congratulations."
+
+Recognizer "I appreciate that."
+	Say "I appreciate that."
+
+	Option Say "You have no idea how happy I am for you."
+
+Recognizer "For real?"
+	Say "For real?"
+
+	Option Say "I believe you were the best choice for that promotion. I really do."
+
+-- Complementing Someone's Clothes
+
+Recognizer "You look really nice today. "
+	Say "You look really nice today. "
+
+	Option Say "Thank you. I just got this outfit the other day."
+
+Recognizer "Really, where did you get it?"
+	Say "Really, where did you get it?"
+
+	Option Say "I got it from Macy's."
+
+Recognizer "It's really nice."
+	Say "It's really nice."
+
+	Option Say "Thanks again. You look nice today, too."
+
+Recognizer "Thank you. I just got these shoes today."
+	Say "Thank you. I just got these shoes today."
+
+	Option Say "Really? What kind of shoes are they?"
+
+Recognizer "These are called All Star Chuck Taylors."
+	Say "These are called All Star Chuck Taylors."
+
+	Option Say "I really like those. How much did they cost?"
+
+Recognizer "They were about forty dollars."
+	Say "They were about forty dollars."
+
+	Option Say "I think I'm going to go buy myself a pair."
+
+Recognizer "I absolutely love what you're wearing today."
+	Say "I absolutely love what you're wearing today."
+
+	Option Say "You do? I just bought this outfit a couple days ago."
+
+Recognizer "Seriously, it looks really nice on you. Where did you buy it from?"
+	Say "Seriously, it looks really nice on you. Where did you buy it from?"
+
+	Option Say "I bought it from the Macy's at the Santa Anita mall."
+
+Recognizer "I really like that outfit."
+	Say "I really like that outfit."
+
+	Option Say "Thanks. I think you look nice today, too."
+
+Recognizer "Thank you. I just bought these new shoes earlier today."
+	Say "Thank you. I just bought these new shoes earlier today."
+
+	Option Say "Those are nice. What are they?"
+
+Recognizer "These are some Chucks."
+	Say "These are some Chucks."
+
+	Option Say "Those are great. How much were they?"
+
+Recognizer "I got them for forty."
+	Say "I got them for forty."
+
+	Option Say "I think I might go and find me my own pair of Chucks."
+
+Recognizer "I think that you look very cute today."
+	Say "I think that you look very cute today."
+
+	Option Say "Is that right? This is a brand new outfit."
+
+Recognizer "What store did you get it from?"
+	Say "What store did you get it from?"
+
+	Option Say "I went to Macy's and picked it out."
+
+Recognizer "I love your outfit right now."
+	Say "I love your outfit right now."
+
+	Option Say "Well, I think you look nice today too."
+
+Recognizer "Thanks. I found these new shoes earlier at the store."
+	Say "Thanks. I found these new shoes earlier at the store."
+
+	Option Say "I think that those are some really nice shoes. What kind are they?"
+
+Recognizer "These are Chucks."
+	Say "These are Chucks."
+
+	Option Say "Your shoes look really nice. How much did you get them for?"
+
+Recognizer "They only cost me about forty dollars."
+	Say "They only cost me about forty dollars."
+
+	Option Say "I'm going to go get a pair for myself."
+
+-- Leisure Activities
+
+Recognizer "Tell me, what do you enjoy doing in your spare time?"
+	Say "Tell me, what do you enjoy doing in your spare time?"
+
+	Option Say "I enjoy drawing and painting."
+
+Recognizer "You know how to draw and paint?"
+	Say "You know how to draw and paint?"
+
+	Option Say "Yes, I do."
+
+Recognizer "When did you learn how to do that?"
+	Say "When did you learn how to do that?"
+
+	Option Say "I learned back in high school."
+
+Recognizer "Oh, so you took an art class?"
+	Say "Oh, so you took an art class?"
+
+	Option Say "Yeah, I loved that class."
+
+Recognizer "I see that you're pretty talented."
+	Say "I see that you're pretty talented."
+
+	Option Say "Thank you very much."
+
+Recognizer "I wish I had a talent like that."
+	Say "I wish I had a talent like that."
+
+	Option Say "I'm sure you have a talent. It's just hidden."
+
+Recognizer "What kinds of things do you like to do?"
+	Say "What kinds of things do you like to do?"
+
+	Option Say "I've always liked to draw and paint."
+
+Recognizer "I didn't know you knew how to draw and paint."
+	Say "I didn't know you knew how to draw and paint."
+
+	Option Say "I do it every once in a while."
+
+Recognizer "How long have you known how to do that?"
+	Say "How long have you known how to do that?"
+
+	Option Say "I first learned how to do it in high school."
+
+Recognizer "Did you take some sort of art class or something?"
+	Say "Did you take some sort of art class or something?"
+
+	Option Say "That was my favorite class."
+
+Recognizer "You have got to be talented."
+	Say "You have got to be talented."
+
+	Option Say "Thanks."
+
+Recognizer "If only I was talented."
+	Say "If only I was talented."
+
+	Option Say "You have a talent. You just don't know what it is yet."
+
+Recognizer "Are there any hobbies you do?"
+	Say "Are there any hobbies you do?"
+
+	Option Say "When I have time, I sometimes draw and paint."
+
+Recognizer "Oh, you actually do that?"
+	Say "Oh, you actually do that?"
+
+	Option Say "Every so often, I do."
+
+Recognizer "Did you always know how to draw and paint?"
+	Say "Did you always know how to draw and paint?"
+
+	Option Say "I was taught in high school how to draw and paint."
+
+Recognizer "You had an art class?"
+	Say "You had an art class?"
+
+	Option Say "Exactly, it was my favorite class."
+
+Recognizer "Well, it's good that you're so talented."
+	Say "Well, it's good that you're so talented."
+
+	Option Say "I appreciate that."
+
+Recognizer "Talent is a great thing, I wish I had one."
+	Say "Talent is a great thing, I wish I had one."
+
+	Option Say "Everyone has a talent. They just need to find it."
+
+-- Favoriate Movie
+
+Recognizer "What's your favorite movie?"
+	Say "What's your favorite movie?"
+
+	Option Say "My favorite movie is Superbad."
+
+Recognizer "Oh, why is that?"
+	Say "Oh, why is that?"
+
+	Option Say "It's the funniest movie that I've ever seen."
+
+Recognizer "That's true. It is a very funny movie."
+	Say "That's true. It is a very funny movie."
+
+	Option Say "You've seen it before? "
+
+Recognizer "Yes, I saw that movie the first day it came out in theaters."
+	Say "Yes, I saw that movie the first day it came out in theaters."
+
+	Option Say "Didn't you laugh through the whole movie? I did."
+
+Recognizer "Me too. That movie brought tears to my eyes."
+	Say "Me too. That movie brought tears to my eyes."
+
+	Option Say "Mine too."
+
+Recognizer "I have it on DVD at my house if you want to come over and watch it."
+	Say "I have it on DVD at my house if you want to come over and watch it."
+
+	Option Say "Sure, let's go."
+
+Recognizer "Which movie is your favorite to watch?"
+	Say "Which movie is your favorite to watch?"
+
+	Option Say "I have to say, my favorite movie is Superbad."
+
+Recognizer "Is that right? Why?"
+	Say "Is that right? Why?"
+
+	Option Say "Honestly, it is one of the funniest movies I've seen in a long time."
+
+Recognizer "You're right. That movie is hilarious."
+	Say "You're right. That movie is hilarious."
+
+	Option Say "I didn't think you saw that movie."
+
+Recognizer "I went to see it the day it came out."
+	Say "I went to see it the day it came out."
+
+	Option Say "I was laughing through the whole movie."
+
+Recognizer "I couldn't help laughing, either. "
+	Say "I couldn't help laughing, either. "
+
+	Option Say "Same here."
+
+Recognizer "I bought the movie. Would you like to come to my house and watch it?"
+	Say "I bought the movie. Would you like to come to my house and watch it?"
+
+	Option Say "Of course."
+
+Recognizer "Out of every movie that you've seen, which one is your favorite?"
+	Say "Out of every movie that you've seen, which one is your favorite?"
+
+	Option Say "I'm going to have to say that Superbad is the best movie ever."
+
+Recognizer "You think so, how come?"
+	Say "You think so, how come?"
+
+	Option Say "Well, Superbad is super funny."
+
+Recognizer "You're not lying, I found that movie absolutely hilarious."
+	Say "You're not lying, I found that movie absolutely hilarious."
+
+	Option Say "I didn't know that you saw Superbad before."
+
+Recognizer "I made sure to be in line to see it the first day it came out."
+	Say "I made sure to be in line to see it the first day it came out."
+
+	Option Say "I couldn't keep from laughing throughout the whole movie."
+
+Recognizer "I was laughing hysterically the whole time; my stomach muscles hurt afterwards."
+	Say "I was laughing hysterically the whole time; my stomach muscles hurt afterwards."
+
+	Option Say "That's exactly how I felt."
+
+Recognizer "I got the movie when it came out on DVD, do you want to come over?"
+	Say "I got the movie when it came out on DVD, do you want to come over?"
+
+	Option Say "I would love to."
+
+-- Favorite Music
+
+Recognizer "What type of music do you like to listen to?"
+	Say "What type of music do you like to listen to?"
+
+	Option Say "I like listening to different kinds of music."
+
+Recognizer "Like what, for instance?"
+	Say "Like what, for instance?"
+
+	Option Say "I enjoy Rock and R&B."
+
+Recognizer "Why is that?"
+	Say "Why is that?"
+
+	Option Say "I like the different instruments that they use."
+
+Recognizer "That's a good reason to like something."
+	Say "That's a good reason to like something."
+
+	Option Say "Yeah, I think so too."
+
+Recognizer "What kind of music do you enjoy listening to?"
+	Say "What kind of music do you enjoy listening to?"
+
+	Option Say "I enjoy listening to all kinds of music."
+
+Recognizer "What kind?"
+	Say "What kind?"
+
+	Option Say "I like to listen to Rock and R&B."
+
+Recognizer "Why do you like that type of music?"
+	Say "Why do you like that type of music?"
+
+	Option Say "I like the kinds of instruments that they use."
+
+Recognizer "I think that's an excellent reason to like something."
+	Say "I think that's an excellent reason to like something."
+
+	Option Say "Thanks, I feel the same way."
+
+Recognizer "What is your favorite kind of music?"
+	Say "What is your favorite kind of music?"
+
+	Option Say "I listen to various types of music."
+
+Recognizer "What genres?"
+	Say "What genres?"
+
+	Option Say "I enjoy listening to both Rock and R&B."
+
+Recognizer "What interests you in that type of music?"
+	Say "What interests you in that type of music?"
+
+	Option Say "I enjoy the different types of instruments that they use."
+
+Recognizer "That is a perfect reason to like a certain kind of music."
+	Say "That is a perfect reason to like a certain kind of music."
+
+	Option Say "That's exactly what I think too."
+
+-- Sports
+
+Recognizer "Did you go to the basketball game on Friday?"
+	Say "Did you go to the basketball game on Friday?"
+
+	Option Say "No, I couldn't make it."
+
+Recognizer "You missed a really good game."
+	Say "You missed a really good game."
+
+	Option Say "Oh, really? Who won?"
+
+Recognizer "Our school did. They played really well."
+	Say "Our school did. They played really well."
+
+	Option Say "Too bad I was busy. I really wanted to go."
+
+Recognizer "Yeah, you should have. It was really exciting."
+	Say "Yeah, you should have. It was really exciting."
+
+	Option Say "So what was the score?"
+
+Recognizer "The score was 101-98."
+	Say "The score was 101-98."
+
+	Option Say "Man, that was a really close game."
+
+Recognizer "That's what made it so great."
+	Say "That's what made it so great."
+
+	Option Say "I'll make sure and make it to the next one."
+
+Recognizer "Were you able to attend Friday night's basketball game?"
+	Say "Were you able to attend Friday night's basketball game?"
+
+	Option Say "I was unable to make it."
+
+Recognizer "You should have been there. It was intense."
+	Say "You should have been there. It was intense."
+
+	Option Say "Is that right. Who ended up winning?"
+
+Recognizer "Our team was victorious."
+	Say "Our team was victorious."
+
+	Option Say "I wish I was free that night. I'm kind of mad that I didn't go."
+
+Recognizer "It was a great game."
+	Say "It was a great game."
+
+	Option Say "What was the score at the end of the game?"
+
+Recognizer "Our team won 101-98."
+	Say "Our team won 101-98."
+
+	Option Say "Sounds like it was a close game."
+
+Recognizer "That's the reason it was such a great game."
+	Say "That's the reason it was such a great game."
+
+	Option Say "The next game, I will definitely be there."
+
+Recognizer "I was meaning to ask you if you saw the basketball game on Friday."
+	Say "I was meaning to ask you if you saw the basketball game on Friday."
+
+	Option Say "I wanted to go, but I couldn't."
+
+Recognizer "It was a great game."
+	Say "It was a great game."
+
+	Option Say "It's too bad that I couldn't make it. Who won?"
+
+Recognizer "Our team played hard and won."
+	Say "Our team played hard and won."
+
+	Option Say "I really wish I went to the game."
+
+Recognizer "It was the best game ever."
+	Say "It was the best game ever."
+
+	Option Say "So tell me the final score."
+
+Recognizer "The other team lost by three points, 101-98. "
+	Say "The other team lost by three points, 101-98. "
+
+	Option Say "It must've been a close game."
+
+Recognizer "It really was. You should've gone."
+	Say "It really was. You should've gone."
+
+	Option Say "Hopefully, I'll make it to the next one."
+
+-- Invitation to a Movie
+
+Recognizer "What are you doing this weekend?"
+	Say "What are you doing this weekend?"
+
+	Option Say "I'm going to the movies with a friend. How about you?"
+
+Recognizer "I'm not sure yet."
+	Say "I'm not sure yet."
+
+	Option Say "Well, did you want to go see a movie with me?"
+
+Recognizer "What movie are you going to see?"
+	Say "What movie are you going to see?"
+
+	Option Say "I'm not sure yet. Is there something you want to see?"
+
+Recognizer "There's nothing I can think of."
+	Say "There's nothing I can think of."
+
+	Option Say "So, did you want to go?"
+
+Recognizer "No, thanks, maybe another time."
+	Say "No, thanks, maybe another time."
+
+	Option Say "Okay, sounds good."
+
+Recognizer "Do you know what you're going to do this weekend?"
+	Say "Do you know what you're going to do this weekend?"
+
+	Option Say "I am going to see a movie with a friend of mine. What about you?"
+
+Recognizer "I don't know."
+	Say "I don't know."
+
+	Option Say "Would you like to see a movie with me and my friend?"
+
+Recognizer "Do you know what movie you're going to watch?"
+	Say "Do you know what movie you're going to watch?"
+
+	Option Say "I don't know, but was there a certain movie you wanted to see?"
+
+Recognizer "None that I can think of."
+	Say "None that I can think of."
+
+	Option Say "Well, would you like to go?"
+
+Recognizer "Thank you for inviting me, but I think I'll pass."
+	Say "Thank you for inviting me, but I think I'll pass."
+
+	Option Say "All right. Another time then."
+
+Recognizer "You have any ideas as to what you want to do this weekend?"
+	Say "You have any ideas as to what you want to do this weekend?"
+
+	Option Say "I'm going to the movie theater with my friend. What are you going to do?"
+
+Recognizer "I'm not quite sure yet."
+	Say "I'm not quite sure yet."
+
+	Option Say "How about you see a movie with me and my friend?"
+
+Recognizer "What movie are you and your friend planning on watching?"
+	Say "What movie are you and your friend planning on watching?"
+
+	Option Say "Not sure. Is there a movie out that catches your eye?"
+
+Recognizer "No good movies come to mind."
+	Say "No good movies come to mind."
+
+	Option Say "Have you decided whether or not you would like to go?"
+
+Recognizer "No, thanks. Maybe another time."
+	Say "No, thanks. Maybe another time."
+
+	Option Say "For sure another day."
+
+-- A Sick Class Mate
+
+Recognizer "Did you go to school today?"
+	Say "Did you go to school today?"
+
+	Option Say "Yeah, I went to school today. Were you there?"
+
+Recognizer "No, I didn't go, I've been sick."
+	Say "No, I didn't go, I've been sick."
+
+	Option Say "That sucks. Did you want the assignments from English class?"
+
+Recognizer "That would be nice, thank you."
+	Say "That would be nice, thank you."
+
+	Option Say "No problem, you're welcome."
+
+Recognizer "I will be glad to do the same for you when you're sick."
+	Say "I will be glad to do the same for you when you're sick."
+
+	Option Say "Well, thank you. I hope to see you at school tomorrow."
+
+Recognizer "Have you attended school today?"
+	Say "Have you attended school today?"
+
+	Option Say "I attended school today. Did you?"
+
+Recognizer "I wasn't able to attend school because I was feeling ill."
+	Say "I wasn't able to attend school because I was feeling ill."
+
+	Option Say "I'm sorry to hear that. Would you like the assignments from English class?"
+
+Recognizer "I would really appreciate that, thanks."
+	Say "I would really appreciate that, thanks."
+
+	Option Say "It's no trouble at all."
+
+Recognizer "If you get sick, I'll return the favor."
+	Say "If you get sick, I'll return the favor."
+
+	Option Say "Thanks. See you at school tomorrow if you feel better."
+
+Recognizer "Have you gone to school today?"
+	Say "Have you gone to school today?"
+
+	Option Say "I went to school today. Did you go to school?"
+
+Recognizer "I couldn't go to school today, I was sick."
+	Say "I couldn't go to school today, I was sick."
+
+	Option Say "That's horrible. I'd be happy to give you the assignments from English class."
+
+Recognizer "Thank you very much, that's kind of you."
+	Say "Thank you very much, that's kind of you."
+
+	Option Say "Don't mention it."
+
+Recognizer "When you miss a day of school, I'll be happy to give you the English assignments."
+	Say "When you miss a day of school, I'll be happy to give you the English assignments."
+
+	Option Say "That is greatly appreciated and I hope you feel well enough to go to school tomorrow."
+
+-- Sharing News and Information
+
+Recognizer "Did you hear the news?"
+	Say "Did you hear the news?"
+
+	Option Say "What happened?"
+
+Recognizer "Our cousin went into labor and had her baby last week."
+	Say "Our cousin went into labor and had her baby last week."
+
+	Option Say "She did? Why didn't anyone tell me?"
+
+Recognizer "I would've thought that somebody would have told you."
+	Say "I would've thought that somebody would have told you."
+
+	Option Say "No, I had no idea."
+
+Recognizer "Well, she did, her baby was 8 pounds 6 ounces."
+	Say "Well, she did, her baby was 8 pounds 6 ounces."
+
+	Option Say "Oh my God, that's great!"
+
+Recognizer "Are you going to go and visit her and the baby?"
+	Say "Are you going to go and visit her and the baby?"
+
+	Option Say "I think that I might."
+
+Recognizer "Good! I just thought I'd let you know."
+	Say "Good! I just thought I'd let you know."
+
+	Option Say "Thanks for telling me."
+
+Recognizer "Have you heard what happened?"
+	Say "Have you heard what happened?"
+
+	Option Say "Heard what?"
+
+Recognizer "Debrah already had her baby."
+	Say "Debrah already had her baby."
+
+	Option Say "I didn't know that."
+
+Recognizer "I thought you knew."
+	Say "I thought you knew."
+
+	Option Say "I honestly didn't know."
+
+Recognizer "The baby was 8 pounds 6 ounces."
+	Say "The baby was 8 pounds 6 ounces."
+
+	Option Say "That's good to hear."
+
+Recognizer "Will you go and visit them?"
+	Say "Will you go and visit them?"
+
+	Option Say "Of course I will."
+
+Recognizer "I just wanted to give you the good news."
+	Say "I just wanted to give you the good news."
+
+	Option Say "Thanks for letting me know."
+
+Recognizer "Have you heard the news?"
+	Say "Have you heard the news?"
+
+	Option Say "I haven't heard anything."
+
+Recognizer "Debrah had her baby last week."
+	Say "Debrah had her baby last week."
+
+	Option Say "Nobody told me."
+
+Recognizer "I thought you heard."
+	Say "I thought you heard."
+
+	Option Say "I really wasn't told anything."
+
+Recognizer "She was a cute 8 pounds 6 ounces."
+	Say "She was a cute 8 pounds 6 ounces."
+
+	Option Say "Wow, how exciting."
+
+Recognizer "I know, you should really go and see her and the baby."
+	Say "I know, you should really go and see her and the baby."
+
+	Option Say "Of course I will."
+
+Recognizer "I just wanted to let you know what happened."
+	Say "I just wanted to let you know what happened."
+
+	Option Say "I appreciate that."
+
+-- Changing the Subject
+
+Recognizer "Did you go to school today?"
+	Say "Did you go to school today?"
+
+	Option Say "Of course. Did you?"
+
+Recognizer "I didn't want to, so I didn't."
+	Say "I didn't want to, so I didn't."
+
+	Option Say "That's sad, but have you gone to the movies recently?"
+
+Recognizer "That's a switch."
+	Say "That's a switch."
+
+	Option Say "I'm serious, have you?"
+
+Recognizer "No, I haven't. Why?"
+	Say "No, I haven't. Why?"
+
+	Option Say "I really want to go to the movies this weekend."
+
+Recognizer "So go then."
+	Say "So go then."
+
+	Option Say "I really don't want to go by myself."
+
+Recognizer "Well anyway, do you plan on going to school tomorrow?"
+	Say "Well anyway, do you plan on going to school tomorrow?"
+
+	Option Say "No, I think I'm going to go to the movies."
+
+Recognizer "Did you make it to school today?"
+	Say "Did you make it to school today?"
+
+	Option Say "I always do. Did you go to school today?"
+
+Recognizer "No, I didn't."
+	Say "No, I didn't."
+
+	Option Say "You should have, but have you seen any movies lately?"
+
+Recognizer "That was an odd change of subject."
+	Say "That was an odd change of subject."
+
+	Option Say "Maybe it was, but answer the question."
+
+Recognizer "No, not recently."
+	Say "No, not recently."
+
+	Option Say "I want to go to see a movie this weekend."
+
+Recognizer "What's stopping you then?"
+	Say "What's stopping you then?"
+
+	Option Say "I don't want to go alone."
+
+Recognizer "So, will you be at school tomorrow?"
+	Say "So, will you be at school tomorrow?"
+
+	Option Say "No, I want to go to the movies instead."
+
+Recognizer "Did you even bother to go to school today?"
+	Say "Did you even bother to go to school today?"
+
+	Option Say "Yeah, I went. Did you go?"
+
+Recognizer "No, I didn't feel like it."
+	Say "No, I didn't feel like it."
+
+	Option Say "That's nice, have you been to the movies lately?"
+
+Recognizer "No, but that was a random change of subject."
+	Say "No, but that was a random change of subject."
+
+	Option Say "It may have been random, but have you?"
+
+Recognizer "I haven't lately."
+	Say "I haven't lately."
+
+	Option Say "I would love to catch a movie this weekend."
+
+Recognizer "So then, why don't you just go?"
+	Say "So then, why don't you just go?"
+
+	Option Say "I don't want to see a movie by myself."
+
+Recognizer "Okay, so are you going to school tomorrow?"
+	Say "Okay, so are you going to school tomorrow?"
+
+	Option Say "I think I might just go to the movies."
+
+-- Receiving Visitors
+
+Recognizer "Thanks for coming to see me today."
+	Say "Thanks for coming to see me today."
+
+	Option Say "It's no problem. I was really missing you anyway."
+
+Recognizer "I missed you too."
+	Say "I missed you too."
+
+	Option Say "Why haven't you tried to come see me then?"
+
+Recognizer "I've been really busy."
+	Say "I've been really busy."
+
+	Option Say "Doing what?"
+
+Recognizer "Working."
+	Say "Working."
+
+	Option Say "I would've come to see you sooner, but I've been busy too."
+
+Recognizer "What have you been doing?"
+	Say "What have you been doing?"
+
+	Option Say "I've been working too."
+
+Recognizer "Well regardless, I'm very happy that you came to see me."
+	Say "Well regardless, I'm very happy that you came to see me."
+
+	Option Say "I am too."
+
+Recognizer "I'm really glad that you came to see me."
+	Say "I'm really glad that you came to see me."
+
+	Option Say "I had to. I was missing you a lot."
+
+Recognizer "I was missing you too."
+	Say "I was missing you too."
+
+	Option Say "So, why haven't you visited me?"
+
+Recognizer "I've actually been busy lately."
+	Say "I've actually been busy lately."
+
+	Option Say "What have you been doing?"
+
+Recognizer "I've just been working really hard."
+	Say "I've just been working really hard."
+
+	Option Say "I've also been busy."
+
+Recognizer "Tell me what you've been doing."
+	Say "Tell me what you've been doing."
+
+	Option Say "Basically, I've been working too."
+
+Recognizer "Well whatever, I'm glad you came."
+	Say "Well whatever, I'm glad you came."
+
+	Option Say "So am I."
+
+Recognizer "I'm really happy that you came to visit me."
+	Say "I'm really happy that you came to visit me."
+
+	Option Say "I really missed you a lot."
+
+Recognizer "I've been missing you like crazy."
+	Say "I've been missing you like crazy."
+
+	Option Say "I don't understand why you haven't come to visit me."
+
+Recognizer "Lately, I've been quite busy."
+	Say "Lately, I've been quite busy."
+
+	Option Say "Tell me what you've been up to."
+
+Recognizer "I've really been working a lot lately."
+	Say "I've really been working a lot lately."
+
+	Option Say "I've been pretty busy myself."
+
+Recognizer "So what have you been up to?"
+	Say "So what have you been up to?"
+
+	Option Say "I've just been working a lot."
+
+Recognizer "Whatever the reason may be, I'm glad you visited me."
+	Say "Whatever the reason may be, I'm glad you visited me."
+
+	Option Say "I'm glad I did too."
+
+-- Waiting for an Invitation
+
+Recognizer "Hey, did you hear about Jessica's party this weekend?"
+	Say "Hey, did you hear about Jessica's party this weekend?"
+
+	Option Say "Yeah, but I'm still waiting for my invitation."
+
+Recognizer "Oh really? She gave me mine earlier today."
+	Say "Oh really? She gave me mine earlier today."
+
+	Option Say "Well, she'll probably just give me my invitation later on today."
+
+Recognizer "Yeah, so are you planning on going?"
+	Say "Yeah, so are you planning on going?"
+
+	Option Say "I think so. It sounds like it's going to be a lot of fun."
+
+Recognizer "It really does, I can't wait."
+	Say "It really does, I can't wait."
+
+	Option Say "What time does the party start?"
+
+Recognizer "It starts at 8 o'clock."
+	Say "It starts at 8 o'clock."
+
+	Option Say "Oh, well, how many people has she given invites to so far?"
+
+Recognizer "I'm not sure, but I don't think she's given out that many."
+	Say "I'm not sure, but I don't think she's given out that many."
+
+	Option Say "Well, hopefully she'll give me my invite later on today."
+
+Recognizer "Have you heard about Jessica's party on Saturday?"
+	Say "Have you heard about Jessica's party on Saturday?"
+
+	Option Say "I've heard about it, but I'm still waiting for my invitation."
+
+Recognizer "Really? I got mine from her this morning."
+	Say "Really? I got mine from her this morning."
+
+	Option Say "I'm guessing that she's going to give me my invite today or tomorrow."
+
+Recognizer "You're probably right, do you intend on going to the party?"
+	Say "You're probably right, do you intend on going to the party?"
+
+	Option Say "I want to. I heard it's going to be really fun."
+
+Recognizer "I know, it does sound pretty awesome."
+	Say "I know, it does sound pretty awesome."
+
+	Option Say "Well, when does the party start?"
+
+Recognizer "It's supposed to start at about eight."
+	Say "It's supposed to start at about eight."
+
+	Option Say "How many invitations has she given out?"
+
+Recognizer "I really don't know, but I don't think she gave out that many yet."
+	Say "I really don't know, but I don't think she gave out that many yet."
+
+	Option Say "I really want to go, so I hope that she gives me my invite soon."
+
+Recognizer "Has anyone told you about Jessica's party coming up?"
+	Say "Has anyone told you about Jessica's party coming up?"
+
+	Option Say "I was told about it already. I'm just waiting for my invitation."
+
+Recognizer "Is that right? I already got my invitation from her earlier."
+	Say "Is that right? I already got my invitation from her earlier."
+
+	Option Say "I believe that she will give me the invitation today."
+
+Recognizer "Are you even going to go?"
+	Say "Are you even going to go?"
+
+	Option Say "Yeah, it sounds like it's going to be the best party of the year."
+
+Recognizer "Exactly, it seems like it's going to be loads of fun."
+	Say "Exactly, it seems like it's going to be loads of fun."
+
+	Option Say "When exactly does the party start?"
+
+Recognizer "The invitation says it starts at 8:00 p.m."
+	Say "The invitation says it starts at 8:00 p.m."
+
+	Option Say "Has she given out a lot of invitations yet?"
+
+Recognizer "I have no idea, she hasn't given out many though."
+	Say "I have no idea, she hasn't given out many though."
+
+	Option Say "I'm planning on going, but I really need her to give me my invitation."
+
+-- Accepting an Invitation
+
+Recognizer "Hey, what's up?"
+	Say "Hey, what's up?"
+
+	Option Say "Nothing really."
+
+Recognizer "I'm throwing a party on Friday."
+	Say "I'm throwing a party on Friday."
+
+	Option Say "I didn't realize that."
+
+Recognizer "You didn't?"
+	Say "You didn't?"
+
+	Option Say "Nobody has told me anything about your party."
+
+Recognizer "Did you want to go?"
+	Say "Did you want to go?"
+
+	Option Say "When does it start?"
+
+Recognizer "At 8:00 p.m."
+	Say "At 8:00 p.m."
+
+	Option Say "I'll be there."
+
+Recognizer "I'd better see you there."
+	Say "I'd better see you there."
+
+	Option Say "Of course."
+
+Recognizer "What's going on with you?"
+	Say "What's going on with you?"
+
+	Option Say "Fine. What's going on with you?"
+
+Recognizer "I'm having a party this Friday."
+	Say "I'm having a party this Friday."
+
+	Option Say "I had no idea."
+
+Recognizer "Is that right?"
+	Say "Is that right?"
+
+	Option Say "I didn't hear anything about it."
+
+Recognizer "Can you go?"
+	Say "Can you go?"
+
+	Option Say "What time?"
+
+Recognizer "It starts at 8 o'clock."
+	Say "It starts at 8 o'clock."
+
+	Option Say "I'll go."
+
+Recognizer "I hope that I'll see you there."
+	Say "I hope that I'll see you there."
+
+	Option Say "No doubt."
+
+Recognizer "What's going on?"
+	Say "What's going on?"
+
+	Option Say "Not much."
+
+Recognizer "This Friday, I'm throwing a party."
+	Say "This Friday, I'm throwing a party."
+
+	Option Say "Oh really? I didn't know that."
+
+Recognizer "Are you serious?"
+	Say "Are you serious?"
+
+	Option Say "I haven't heard anything about it."
+
+Recognizer "Can you make it?"
+	Say "Can you make it?"
+
+	Option Say "What time does it start?"
+
+Recognizer "The party starts at 8."
+	Say "The party starts at 8."
+
+	Option Say "Yeah, I think I'll go."
+
+Recognizer "Am I going to see you there?"
+	Say "Am I going to see you there?"
+
+	Option Say "You will."
+
+-- Declining an Invitation
+
+Recognizer "What's going on?"
+	Say "What's going on?"
+
+	Option Say "Nothing really, you?"
+
+Recognizer "I'm throwing a party next Saturday."
+	Say "I'm throwing a party next Saturday."
+
+	Option Say "Is that right?"
+
+Recognizer "Yeah, are you going to come?"
+	Say "Yeah, are you going to come?"
+
+	Option Say "I'm sorry, I can't."
+
+Recognizer "Why not?"
+	Say "Why not?"
+
+	Option Say "I don't really want to."
+
+Recognizer "Well, why don't you?"
+	Say "Well, why don't you?"
+
+	Option Say "I hate going to parties."
+
+Recognizer "Well, that's okay."
+	Say "Well, that's okay."
+
+	Option Say "Yeah, sorry."
+
+Recognizer "What's up?"
+	Say "What's up?"
+
+	Option Say "Nothing, how about you?"
+
+Recognizer "Next Saturday, I'm going to have a party."
+	Say "Next Saturday, I'm going to have a party."
+
+	Option Say "Oh, really?"
+
+Recognizer "You are coming?"
+	Say "You are coming?"
+
+	Option Say "Probably not."
+
+Recognizer "Why is that?"
+	Say "Why is that?"
+
+	Option Say "I don't feel like going."
+
+Recognizer "Why not?"
+	Say "Why not?"
+
+	Option Say "I really can't stand going to parties."
+
+Recognizer "I understand, I guess."
+	Say "I understand, I guess."
+
+	Option Say "Sorry about that."
+
+Recognizer "What's happening?"
+	Say "What's happening?"
+
+	Option Say "Not a lot, what about you?"
+
+Recognizer "I'm having a party next Saturday."
+	Say "I'm having a party next Saturday."
+
+	Option Say "That's nice."
+
+Recognizer "Are you going to be there?"
+	Say "Are you going to be there?"
+
+	Option Say "I don't think so."
+
+Recognizer "Is there a reason why?"
+	Say "Is there a reason why?"
+
+	Option Say "I just really don't want to go."
+
+Recognizer "How come?"
+	Say "How come?"
+
+	Option Say "I don't really like parties."
+
+Recognizer "I wish you would go, but that's okay."
+	Say "I wish you would go, but that's okay."
+
+	Option Say "I'm sorry."
+
+Recognizer "What's up?"
+	Say "What's up?"
+
+	Option Say "Nothing much, what's going on?"
+
+Recognizer "I'm having a party this Friday."
+	Say "I'm having a party this Friday."
+
+	Option Say "Oh, really? That's nice."
+
+Recognizer "I wanted to see if you wanted to come."
+	Say "I wanted to see if you wanted to come."
+
+	Option Say "This Friday? Sorry, I already have plans."
+
+Recognizer "Doing what?"
+	Say "Doing what?"
+
+	Option Say "I'm going to dinner with my family."
+
+Recognizer "I really wanted you to come, but I understand."
+	Say "I really wanted you to come, but I understand."
+
+	Option Say "Yeah, maybe next time."
+
+Recognizer "I'll hold you to that."
+	Say "I'll hold you to that."
+
+	Option Say "Sounds like a plan."
+
+Recognizer "Hey, what's good with you?"
+	Say "Hey, what's good with you?"
+
+	Option Say "Not a lot. What about you?"
+
+Recognizer "I'm throwing a party on Friday."
+	Say "I'm throwing a party on Friday."
+
+	Option Say "That sounds like fun."
+
+Recognizer "Do you think you can come?"
+	Say "Do you think you can come?"
+
+	Option Say "I'm sorry. I'm already doing something this Friday."
+
+Recognizer "What are you going to be doing?"
+	Say "What are you going to be doing?"
+
+	Option Say "My family and I are going to dinner."
+
+Recognizer "I was hoping you would come."
+	Say "I was hoping you would come."
+
+	Option Say "I'll definitely try to make it the next time."
+
+Recognizer "I'd better see you there."
+	Say "I'd better see you there."
+
+	Option Say "All right. I'll see you next time."
+
+Recognizer "What's going on?"
+	Say "What's going on?"
+
+	Option Say "Nothing really. How about you?"
+
+Recognizer "A lot, like the party I'm having on Friday."
+	Say "A lot, like the party I'm having on Friday."
+
+	Option Say "Well, that's cool."
+
+Recognizer "Will you be able to make it?"
+	Say "Will you be able to make it?"
+
+	Option Say "I'm busy this Friday. I'm sorry."
+
+Recognizer "What do you have to do?"
+	Say "What do you have to do?"
+
+	Option Say "I'm having dinner with my family"
+
+Recognizer "Maybe you can come next time."
+	Say "Maybe you can come next time."
+
+	Option Say "I'll make sure and come to your next party."
+
+Recognizer "I'll look for you at my next party."
+	Say "I'll look for you at my next party."
+
+	Option Say "I'll be there."
+
+-- Ending a Conversation
+
+Recognizer "It was nice talking to you."
+	Say "It was nice talking to you."
+
+	Option Say "Why are you trying to rush me off the phone?"
+
+Recognizer "I really have to go."
+	Say "I really have to go."
+
+	Option Say "Why? I still wanted to talk to you."
+
+Recognizer "I have things to do."
+	Say "I have things to do."
+
+	Option Say "Like what?"
+
+Recognizer "Don't be nosey."
+	Say "Don't be nosey."
+
+	Option Say "I'm not. I just want to know."
+
+Recognizer "Well, it's really none of your business."
+	Say "Well, it's really none of your business."
+
+	Option Say "That's harsh."
+
+Recognizer "I'm sorry, but I have to go."
+	Say "I'm sorry, but I have to go."
+
+	Option Say "Fine."
+
+Recognizer "I've enjoyed conversing with you."
+	Say "I've enjoyed conversing with you."
+
+	Option Say "Is there a reason why you're trying to get off the phone so fast?"
+
+Recognizer "I've got to go."
+	Say "I've got to go."
+
+	Option Say "I wasn't done talking to you."
+
+Recognizer "I have to do some things, and besides, it's not polite to be nosey."
+	Say "I have to do some things, and besides, it's not polite to be nosey."
+
+	Option Say "I'm not being nosey. I'm just asking."
+
+Recognizer "I really don't think it's any of your business."
+	Say "I really don't think it's any of your business."
+
+	Option Say "That's not nice."
+
+Recognizer "I apologize, but I'm getting off the phone now."
+	Say "I apologize, but I'm getting off the phone now."
+
+	Option Say "Okay."
+
+Recognizer "I'll talk to you later."
+	Say "I'll talk to you later."
+
+	Option Say "What's the rush?"
+
+Recognizer "I have to get off the phone now."
+	Say "I have to get off the phone now."
+
+	Option Say "I'm not ready to get off the phone with you."
+
+Recognizer "There are other things I need to take care of."
+	Say "There are other things I need to take care of."
+
+	Option Say "What is it that you need to do? "
+
+Recognizer "Please don't be nosey."
+	Say "Please don't be nosey."
+
+	Option Say "I'm not being nosey, it's just a question."
+
+Recognizer "You don't need to worry about that."
+	Say "You don't need to worry about that."
+
+	Option Say "That was mean to say."
+
+Recognizer "I am very sorry, but I must go."
+	Say "I am very sorry, but I must go."
+
+	Option Say "I guess."
+
+-- Leave Taking
+
+Recognizer "Well, it was nice talking to you."
+	Say "Well, it was nice talking to you."
+
+	Option Say "It was nice talking to you too."
+
+Recognizer "We should really hang out again."
+	Say "We should really hang out again."
+
+	Option Say "That would be fun."
+
+Recognizer "Where do you want to go?"
+	Say "Where do you want to go?"
+
+	Option Say "I think we should go out to eat."
+
+Recognizer "That sounds good."
+	Say "That sounds good."
+
+	Option Say "All right, so I'll see you then."
+
+Recognizer "I'll call you later."
+	Say "I'll call you later."
+
+	Option Say "Okay, I'll talk to you later then."
+
+Recognizer "See you later."
+	Say "See you later."
+
+	Option Say "Bye."
+
+Recognizer "I enjoyed talking to you."
+	Say "I enjoyed talking to you."
+
+	Option Say "I enjoyed talking to you too."
+
+Recognizer "We should hang out some time."
+	Say "We should hang out some time."
+
+	Option Say "I think that would be nice."
+
+Recognizer "Is there anything you would like to do next time?"
+	Say "Is there anything you would like to do next time?"
+
+	Option Say "Do you want to go out to eat?"
+
+Recognizer "I'd like that."
+	Say "I'd like that."
+
+	Option Say "So I'll see you next time."
+
+Recognizer "I'm going to call you soon. "
+	Say "I'm going to call you soon. "
+
+	Option Say "I'll talk to you later."
+
+Recognizer "See you soon."
+	Say "See you soon."
+
+	Option Say "Goodbye."
+
+Recognizer "I had fun talking to you."
+	Say "I had fun talking to you."
+
+	Option Say "It was really nice talking to you also."
+
+Recognizer "I think we should really do something sometime."
+	Say "I think we should really do something sometime."
+
+	Option Say "That should be loads of fun."
+
+Recognizer "What do you want to do next time?"
+	Say "What do you want to do next time?"
+
+	Option Say "Would you like to go to dinner or something?"
+
+Recognizer "Yeah, let's do that."
+	Say "Yeah, let's do that."
+
+	Option Say "Okay, until next time then."
+
+Recognizer "I'll call you so we can set that up."
+	Say "I'll call you so we can set that up."
+
+	Option Say "Talk to you then."
+
+Recognizer "All right, see you."
+	Say "All right, see you."
+
+	Option Say "See you."
+
+
