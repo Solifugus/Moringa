@@ -19,6 +19,9 @@ Always If Not "session began"
 	Conjugate "them" And "us"
 	Remember "session began"
 
+Recognizer "say this back [something]"
+	Say "You said to tell you [something]."
+
 Recognizer "can you [something]"
 	Option Say "Don't you think I can [something]?"
 	Option Say "You want me to be able to [something]?"
@@ -44,7 +47,7 @@ Recognizer "i do not [something]"
 
 Recognizer "i feel [something]"
 	Option Say "Do you often feel [something]?"
-	Option Say "Do you enjoy feeling [something]?
+	Option Say "Do you enjoy feeling [something]?"
 
 Recognizer "why don't you [something]"
 	Option Say "Do you really believe I don't [something]?"
@@ -69,7 +72,6 @@ Recognizer "i am [something]"
 	Option Say "Did you come to me because you are [something]?"
 	Option Say "How long have you been [something]?"
 	Option Say "Do you believe it is normal to be [something]?"
-	Option Say "Have you asked anyone else?"
 	Option Say "Do you enjoy being [something]?"
 
 Recognizer "you [something]"

@@ -118,7 +118,6 @@ class Moringa {
 				{ opener:':', closer:'\n' }
 			]
 		};
-
 		var tokens = tokenizer( script, syntax, {rich:true} );
 		var t;
 		//console.log( 'TOKENS:\n' + JSON.stringify( tokens, null, '  ' ) + '\n\n' ); 
@@ -283,7 +282,7 @@ class Moringa {
 				err = 'Malformed Statement at ' + JSON.stringify(tokens[t].value) + ', line ' + tokens[t].lineNo + '.';
 				break;
 			}
-			
+
 			switch( found.command ) {
 				// Things to ignore..
 				case 'newline':
@@ -303,8 +302,11 @@ class Moringa {
 					//let matchers = this.formatRecognizerPattern(found.param.pattern[0]);  // translate to format for matching
 					//  Translate pattern(s) to format for matching
 					let matchers = [];
-					for( var p = 0; p < found.param.pattern.length; p += 1 ) {
-						matchers.push(this.formatRecognizerPattern(found.param.pattern[p]));
+					if( found.param.pattern.length === 1 && found.param.pattern[0] === '' ) { matchers.push(['']); }  // Deals with case of recognizer "" (empty string)
+					else {
+						for( var p = 0; p < found.param.pattern.length; p += 1 ) {
+							matchers.push(this.formatRecognizerPattern(found.param.pattern[p]));
+						}
 					}
 					recognizer   = { pattern:found.param.pattern, matchers:matchers, options:[], actions:[] };
 					option       = recognizer;  // to collect recognizer's always actions 
@@ -344,6 +346,8 @@ class Moringa {
 			
 		} // end of tokens loop
 		if( err !== '' ) console.log( err );
+
+		//console.log( 'MODEL: ' + JSON.stringify(model,null,'  '));  // To Show Model XXX
 		
 		// For each context, sort from longest to shortest..
 		for( var c = 0; c < model.contexts.length; c += 1 ) {
@@ -724,7 +728,7 @@ class Moringa {
 						if( variable[name] !== undefined ) value = this.valuesToCommaList(variable[name],'and');
 
 						// Insert value into the output puttern
-						pattern = pattern.substring(0,opener) + value + pattern.substr(closer+1);
+						pattern = pattern.substring(0,opener) + this.conjugate(value, conjugations) + pattern.substr(closer+1);
 						p    = opener + value.length + 2;
 					}
 
@@ -745,9 +749,55 @@ class Moringa {
 		return commaList;
 	}
 
+	conjugate( oldStr, conjugations ) {  // YYY 
+		let newStr = '';
+
+		// Find first con.from in oldStr
+		let alpha   = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+		let found   = undefined;
+		let foundAt = -1;
+		let pos     = 0;
+		let done    = false;
+		console.log( 'oldStr:',oldStr);
+		while( !done ) {
+			for( let c = 0; c < conjugations.length; c += 1 ) {
+				let con = conjugations[c];
+				if( oldStr.substr(pos).toLowerCase().indexOf( con.from.toLowerCase() ) !== -1 ) {
+					found   = con;
+					foundAt = pos + oldStr.substr(pos).toLowerCase().indexOf( con.from.toLowerCase() );
+					break;
+				}
+				if( c === conjugations.length -1 ) done = true;  
+			}
+	
+			// If found, add any of oldStr before it, to new str and and matching con.to
+			if( found !== undefined ) {
+				// Is match a whole word (or part of another word)?
+				let first = foundAt;
+				let last  = foundAt + found.from.length;
+				let isWholeWord = true;
+				if( first > 0 && ( alpha.indexOf(oldStr[first-1]) !== -1 ) ) isWholeWord = false;
+				if( last < oldStr.length && ( alpha.indexOf(oldStr[last]) !== -1 ) ) isWholeWord = false;
+				
+				// If whole word, do conjugation else move on..
+				if( isWholeWord ) {
+					newStr += oldStr.substring( pos, foundAt ) + found.to;
+					pos = foundAt + found.from.length;
+					if( pos === oldStr.length ) done = true;
+					found = undefined;
+				}
+				else { done = true; }
+			}
+			else { done = true; }
+		}
+
+		// Else just add all remaining oldStr to newStr
+		if( pos < oldStr.length ) newStr += oldStr.substr(pos);
+
+		return newStr;
+	}
 
 	pickOption( model ) {
-		var awareness = model.awareness;
 		// Determine which options are currently valid
 		awareness.validOptions = [];
 		for( var c = 0; c < awareness.options.length; c += 1 ) {
@@ -1017,8 +1067,9 @@ class Moringa {
 		}
 		else {
 			// Add new one with "from" regex matcher for the conjugation
+			let pattern = '([^A-Za-z])' + param.first.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') + '([^A-Za-z])';
 			let regex = new RegExp( '([^A-Za-z])' + param.first.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') + '([^A-Za-z])', 'gim' );
-			model.conjugations.push({ context:model.awareness.contextName, regex:regex, from:param.first, to:param.second });
+			model.conjugations.push({ context:model.awareness.contextName, pattern:pattern, regex:regex, from:param.first, to:param.second });
 		}
 
 		// Resort conjugations from longest to shortest
