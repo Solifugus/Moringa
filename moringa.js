@@ -118,7 +118,7 @@ class Moringa {
 				{ opener:':', closer:'\n' }
 			]
 		};
-		var tokens = tokenizer( script, syntax, {rich:true} );
+		var tokens = tokenizer( script.replace(/\r/gm,''), syntax, {rich:true} );
 		var t;
 		//console.log( 'TOKENS:\n' + JSON.stringify( tokens, null, '  ' ) + '\n\n' ); 
 
@@ -749,7 +749,7 @@ class Moringa {
 		return commaList;
 	}
 
-	conjugate( oldStr, conjugations ) {  // YYY 
+	conjugate( oldStr, conjugations ) { 
 		let newStr = '';
 
 		// Find first con.from in oldStr
@@ -758,7 +758,6 @@ class Moringa {
 		let foundAt = -1;
 		let pos     = 0;
 		let done    = false;
-		console.log( 'oldStr:',oldStr);
 		while( !done ) {
 			for( let c = 0; c < conjugations.length; c += 1 ) {
 				let con = conjugations[c];
@@ -798,6 +797,7 @@ class Moringa {
 	}
 
 	pickOption( model ) {
+		var awareness = model.awareness;
 		// Determine which options are currently valid
 		awareness.validOptions = [];
 		for( var c = 0; c < awareness.options.length; c += 1 ) {
@@ -1067,9 +1067,8 @@ class Moringa {
 		}
 		else {
 			// Add new one with "from" regex matcher for the conjugation
-			let pattern = '([^A-Za-z])' + param.first.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') + '([^A-Za-z])';
 			let regex = new RegExp( '([^A-Za-z])' + param.first.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') + '([^A-Za-z])', 'gim' );
-			model.conjugations.push({ context:model.awareness.contextName, pattern:pattern, regex:regex, from:param.first, to:param.second });
+			model.conjugations.push({ context:model.awareness.contextName, regex:regex, from:param.first, to:param.second });
 		}
 
 		// Resort conjugations from longest to shortest

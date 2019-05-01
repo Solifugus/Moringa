@@ -1,4 +1,4 @@
-#!/usr/bin/node
+#! env node
 
 if( process.argv.length < 3 ) {
 	console.error('One or more script files are required.');
