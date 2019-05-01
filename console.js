@@ -11,8 +11,8 @@ var agent = new Moringa( reception, 'synthia' );
 
 for( var f = 2; f < process.argv.length; f += 1 ) {
 	let script = fs.readFileSync( process.argv[f] ).toString();
-	console.log('Importing ' + process.argv[f] + '..');
-	agent.importFoundation( script, 'synthia' );
+	console.log('Importing/Merging ' + process.argv[f] + '..');
+	agent.merge( script, 'synthia' );
 }
 
 console.log('\nStarting Cybernetic Synthia..');

@@ -25,7 +25,7 @@ Recognizer "say this back [something]"
 Recognizer "can you [something]"
 	Option Say "Don't you think I can [something]?"
 	Option Say "You want me to be able to [something]?"
-	Option Say "Perhaps you would like to be like me, doing [something]."
+	Option Say "Perhaps you would like to be like me, and [something]."
 	
 Recognizer "can i [something]"
 	Option Say "Don't you think you can [something]"

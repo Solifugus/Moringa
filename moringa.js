@@ -30,7 +30,8 @@ class Moringa {
 		this.logEntries    = [];        // for debugging purposes
 		this.traces        = [];        // What kinds of things to log: all, input, compared, matched, options, actions
 
-		if( script !== '' ) this.importFoundation( script, name );
+		this.wipe();
+		if( script !== '' ) this.merge( script, name );
 	}
 
 	log( message, traceAs ) {
@@ -45,6 +46,7 @@ class Moringa {
 		}
 	}
 
+	// Checks and performs scheduled actions at appropriate times..
 	checkSchedule() {
 		// Output any scheduled messages (should be pre-formatted for output)
 		var currently = new Date();
@@ -76,15 +78,20 @@ class Moringa {
 		}
 	}
 
-	importFoundation( script, name = this.name ) {
+	// Erases specified model else resets entire agent to blank
+	wipe( name ) {
+		if( name === undefined ) {
+			this.model = [];
+			name = this.name;
+		}
 		this.model[name] = {      // each model is named
-			fading:60,            // number of seconds before short term memories fade -- TODO: add option for custom fading
-			contexts:[],          // each, e.g. { name:'general', recognizers:[], active:true }
-			memories:[],          // each, e.g. { context:'general', memory:'the sky is blue', timeStamp:new Date() }
-			conjugations:[],      // each, e.g. { context:'general', from:'me', to:'you' }
-			synonyms:[],          // each, e.g. { context:'general', keyword:'yes', members:['yeah','yep','yup','sure'] }
-			schedules:[],         // each, e.g., { context:'general', when:0, performed:false, actions:{} } 
-			expects:[],           // each, e.g., { expect:'yes', matchers:[], as:'I would like to kiss you.', timeStamp:new Date() }
+			fading:60,        // number of seconds before short term memories fade -- TODO: add option for custom fading
+			contexts:[],      // each, e.g. { name:'general', recognizers:[], active:true }
+			memories:[],      // each, e.g. { context:'general', memory:'the sky is blue', timeStamp:new Date() }
+			conjugations:[],  // each, e.g. { context:'general', from:'me', to:'you' }
+			synonyms:[],      // each, e.g. { context:'general', keyword:'yes', members:['yeah','yep','yup','sure'] }
+			schedules:[],     // each, e.g., { context:'general', when:0, performed:false, actions:{} } 
+			expects:[],       // each, e.g., { expect:'yes', matchers:[], as:'I would like to kiss you.', timeStamp:new Date() }
 		};
 		this.model[name].contexts.push({
 				name:'general',  // general context of model (interpreted after any other active context(s))
@@ -92,13 +99,13 @@ class Moringa {
 				sequences:[],    // context's sequences, e.g. { name:'..', actions:[] } 
 				active:true
 		});
-		this.importSupplement( script, name );
 	}
 
-	importSupplement( script, name ) {
+	// Amalgamate script into specified model else to agent directly
+	merge( script, name = this.name ) {
 		if( this.model[name] === undefined ) return 'Failure: Specified foundation "' + name + '" could not be supplemented because it does not exist.'; 
-		var model = this.model[name];   // each model comprises an array of contexts 
-		var context     = model.contexts[0];  // general context of model 
+		var model   = this.model[name];   // each model comprises an array of contexts 
+		var context = model.contexts[0];  // general context of model 
 
 		// MoringaScript Syntax Lexicon
 		var syntax = {
@@ -358,7 +365,7 @@ class Moringa {
 				return this.patternPriority(b.matchers) - this.patternPriority(a.matchers); 
 			});
 		}
-	} // end of importSupplement()
+	} // end of merge()
 
 	// Literal comes before Constrained Variable before Open Variable
 	patternPriority( matchers ) {
