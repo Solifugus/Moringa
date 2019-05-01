@@ -14,3 +14,7 @@ Recognizer "what is [subject]"
 	Recall "[subject] is [object]"
 	Say "[subject] is [object]"
 
+Recognizer "[subject] is what"
+	Recall "[subject] is [object]"
+	Say "[subject] is [object]"
+

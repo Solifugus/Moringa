@@ -67,6 +67,10 @@ stdin.addListener("data", function( received ) {
 					}
 				}
 				break;
+			case 'export':
+				let script = agent.exportScript();
+				fs.writeFileSync('exported.pgm',script);
+				break;
 		}
 	}
 	else {

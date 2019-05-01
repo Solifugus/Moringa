@@ -359,7 +359,7 @@ class Moringa {
 		// For each context, sort from longest to shortest..
 		for( var c = 0; c < model.contexts.length; c += 1 ) {
 			var context = model.contexts[c];
-			context.recognizers.sort(( a, b ) => {
+			context.recognizers.sort( ( a, b ) => {
 				if( a.pattern === '' ) return -1;  // ensure the global "always" recognizer is always first.. 
 				//return b.matchers.length) - a.matchers.length;
 				return this.patternPriority(b.matchers) - this.patternPriority(a.matchers); 
@@ -368,7 +368,7 @@ class Moringa {
 	} // end of merge()
 
 	// Literal comes before Constrained Variable before Open Variable
-	patternPriority( matchers ) {
+	patternPriority( matchers ) {  // XXX DEBUG: not sorting properly ..
 		if( !Array.isArray( matchers[0] ) ) matchers = [matchers];  // matchers may come in multiple segments (array of matcher arrays)
 		let priority = 0;
 		for( var s = 0; s < matchers.length; s += 1 ) {
@@ -420,7 +420,85 @@ class Moringa {
 	}
 
 	exportScript( name = this.name, includeModels = true ) {
-		// TODO
+		//return JSON.stringify( this.model[name], null, '  ' );
+		let model = this.model[name];
+		if( model === undefined ) return '-- Cannot export non-existant model named "' + name + '"';
+
+		let script = '';
+		let tabs   = 0;
+		for( let c = 0; c < model.contexts.length; c += 1 ) {
+			let context = model.contexts[c];
+			script += '\nContext: "' + context.name + '"\n';
+			tabs   += 1;
+			for( let r = 0; r < context.recognizers.length; r += 1 ) {
+				let recognizer = context.recognizers[r];
+
+				// Blank Recognizer is Global
+				if( recognizer.pattern !== '' ) {
+					let pattern = JSON.stringify( recognizer.pattern );
+					script += this.stringOf('\t',tabs) + '\nRecognizer ' + pattern.substr(1,pattern.length-2) + '\n';
+					tabs += 1;
+				}
+
+				// Add Any Recognizer Always Actions
+				for( let a = 0; a < recognizer.actions.length; a += 1 ) script += this.stringifyAction( recognizer.actions[a], tabs );
+
+				// For Options, Regardless of If Global or Not
+				for( let o = 0; o < recognizer.options.length; o += 1 ) {
+					let option = recognizer.options[o];
+					// TODO: for two below, add option's options
+					if( option.condition === '' && option.actions.length === 1 ) {
+						script += this.stringOf('\t',tabs) + 'Option ' + this.stringifyAction( option.actions[0], 0 );
+					}
+					else {
+						script += this.stringOf('\t',tabs) + 'Option ' + JSON.stringify( option.condition ) + '\n';
+						tabs += 1;
+						for( let a = 0; a < option.actions.length; a += 1 ) script += this.stringifyAction( option.actions[a], tabs );
+						tabs -= 1;
+					}
+				}
+				if( recognizer.pattern !== '' ) tabs -= 1;
+			}
+			tabs -= 1;
+		}
+		tabs -= 1;  // should now be zero
+		return script;
+	}
+
+	stringifyAction( action, tabs ) {
+		let script;
+		switch( action.command ) {  // TODO: Finish for all commands..
+			case 'say':
+				script = this.stringOf('\t',tabs) + 'Say ' + JSON.stringify(action.param.message) + '\n';
+				break;
+			case 'remember':
+				script = this.stringOf('\t',tabs) + 'Remember ' + JSON.stringify(action.param.message) + '\n';
+				break;
+			case 'recall':
+				script = this.stringOf('\t',tabs) + 'Recall ' + JSON.stringify(action.param.message) + '\n';
+				break;
+			case 'forget':
+				script = this.stringOf('\t',tabs) + 'Forget ' + JSON.stringify(action.param.message) + '\n';
+				break;
+			case 'interpretAs':
+				script = this.stringOf('\t',tabs) + 'Interpret As ' + JSON.stringify(action.param.statement) + '\n';
+				break;
+			case 'conjugateAnd':
+				script = this.stringOf('\t',tabs) + 'Conjugate ' + JSON.stringify(action.param.first) + ' And ' + JSON.stringify(action.param.second) + '\n';
+				break;
+			case 'conjugateTo':
+				script = this.stringOf('\t',tabs) + 'Conjugate ' + JSON.stringify(action.param.first) + ' To ' + JSON.stringify(action.param.second) + '\n';
+				break;
+			default:
+				script = this.stringOf('\t',tabs) + '-- Command "' + action.command + '" Undrecognized: ' + JSON.stringify(action.param) + '\n';
+		}
+		return script;
+	}
+
+	stringOf( single, num ) {
+		let multiple = '';
+		for( let i = 0; i < num; i += 1 ) { multiple += single; }
+		return multiple;
 	}
 
 	// ===== Process an Input Message =====
