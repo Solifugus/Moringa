@@ -4,6 +4,7 @@
 //
 // TO DO ITEMS:
 //  [ ] Directives not working case-sensitive
+//  [ ] When merging, if pre-existing recognizer uses different variable names, auto-adapt newly merged commands to pre-existing variable names.
 //  [ ] Make send MoringaScript errors to self..  (for self-error handling and also making self-diagnostics possible)
 // 	[ ] Decision logic
 // 	[ ] Retention of variables for standard fading
@@ -169,7 +170,6 @@ class Moringa {
 		var commands = [
 			{ command:'comment',      gram:'-- * \n',                                          param:{ message:1 }              },  // useful to export with comments
 			{ command:'context',      gram:'context " * "',                                    param:{ context:2 }              },
-			//{ command:'recognizer',   gram:'recognizer " * "',                                 param:{ pattern:2 }              },
 			{ command:'recognizer',   gram:'recognizer ",',                                    param:{ pattern:2 }              },
 			{ command:'alwaysif',     gram:'?exclusive ?additional always if * \n',            param:{ condition:2 }            },  
 			{ command:'optionif',     gram:'?fallback ?exclusive ?additional option if * \n',  param:{ condition:2 }            },  
@@ -197,6 +197,9 @@ class Moringa {
 			{ command:'enter',        gram:'enter " * " \n',                                   param:{ context:2 }              },
 			{ command:'exit',         gram:'exit " * " \n',                                    param:{ context:2 }              },
 			{ command:'seek',         gram:'seek * % * \n',                                    param:{ percent:1, condition:2 } }, 
+			{ command:'imagine',      gram:'imagine " * " as " * " \n',                        param:{ oldModel:2, newModel:6 } },   // create model
+			{ command:'unimagine',    gram:'unimagine " * " \n',                               param:{ model:2 }                },   // destroy model
+			{ command:'sayTo',        gram:'say " * " to " * " \n',                            param:{ message:2, model:6 }     },   // response goes to memory: "[model] model said:[message]"
 			{ command:'avoid',        gram:'avoid * % * \n',                                   param:{ percent:1, condition:2 } },
 			{ command:'newline',      gram:'\n',                                               param:{}                         }
 		];
@@ -1361,6 +1364,19 @@ class Moringa {
 	}
 
 	actionSeek( param, model ) {
+	}
+
+	// Create New Model (newModel) from Old Model (oldModel) -- only "self" model may use this
+	actionImagine( param, model ) {
+		// TODO: export old model and import as new model (this will alow merging of multiple models)
+	}
+
+	// Destroy model (model) -- only "self" model may use this
+	actionUnimagine( param, model ) {
+	}
+
+	// Talk To Model -- only "self" model may use this
+	actionSayTo( param, model ) {
 	}
 
 	actionAvoid( param, model ) {
