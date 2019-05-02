@@ -160,9 +160,10 @@ class Moringa {
 		var i = 0;
 		
 		// Begin with assumption we are in global recognizer's global option
-		var recognizer = { pattern:'', matchers:[], options:[], actions:[] };
+		//var recognizer = { pattern:'', matchers:[], options:[], actions:[] };
+		var recognizer = this.getRecognizer( context.recognizers, [], [] );  // old recognizers, pattern, and matchers
 		var option     = recognizer;  // to collect recognizer's always actions
-		context.recognizers.push(recognizer);
+		context.recognizers.push(recognizer); 
 
 		// Notes: * = anything; ? prefix = may or may not be; ~", = comma quote list
 		var commands = [
@@ -299,9 +300,10 @@ class Moringa {
 				// Architectural Commands
 				case 'context':
 					context    = {name:found.tokens[2].value, recognizers:[], memories:[], active:false}; 
-					recognizer = { pattern:'', matchers:[], options:[], actions:[] };  // context's global always recognizer 
+					//recognizer = { pattern:'', matchers:[], options:[], actions:[] };  // context's global always recognizer 
+					recognizer = this.getRecognizer( context.recognizers, [], [] );  // old recognizers, patter, and matchers 
 					option     = recognizer;                                           // to collect recognizer's always actions
-					context.recognizers.push(recognizer);
+					context.recognizers.push(recognizer); 
 					model.contexts.push(context);
 					break;
 
@@ -315,9 +317,10 @@ class Moringa {
 							matchers.push(this.formatRecognizerPattern(found.param.pattern[p]));
 						}
 					}
-					recognizer   = { pattern:found.param.pattern, matchers:matchers, options:[], actions:[] };
+					//recognizer   = { pattern:found.param.pattern, matchers:matchers, options:[], actions:[] };
+					recognizer   = this.getRecognizer( context.recognizers, found.param.pattern, matchers );  
 					option       = recognizer;  // to collect recognizer's always actions 
-					context.recognizers.push(recognizer);
+					if( recognizer.merging !== true ) context.recognizers.push(recognizer); 
 					break;
 
 				case 'option':
@@ -344,7 +347,10 @@ class Moringa {
 				default:
 					//console.log('Known but unsupported command "' + found.command + '".');
 					let action = { command:found.command, param:found.param, flags:found.flags, lineNo:found.tokens[0].lineNo };
-					option.actions.push(action);
+					if( recognizer.merging === true ) {
+						if( !this.actionExists( option.actions, action ) ) option.actions.push(action);
+					}
+					else { option.actions.push(action); }
 			}
 
 			// Advance in code to continue with next token
@@ -356,9 +362,14 @@ class Moringa {
 
 		//console.log( 'MODEL: ' + JSON.stringify(model,null,'  '));  // To Show Model XXX
 		
-		// For each context, sort from longest to shortest..
+		// For each context, final processing in preparation for use..
 		for( var c = 0; c < model.contexts.length; c += 1 ) {
 			var context = model.contexts[c];
+
+			// Unmark all recognizers as merging (any merging is done)
+			for( let r = 0; r < context.recognizers.length; r += 1 ) context.recognizers[r].merging = false;
+
+			// Soft Content's recognizers from longest to shortest
 			context.recognizers.sort( ( a, b ) => {
 				if( a.pattern === '' ) return -1;  // ensure the global "always" recognizer is always first.. 
 				//return b.matchers.length) - a.matchers.length;
@@ -368,11 +379,11 @@ class Moringa {
 	} // end of merge()
 
 	// Literal comes before Constrained Variable before Open Variable
-	patternPriority( matchers ) {  // XXX DEBUG: not sorting properly ..
+	patternPriority( matchers ) { 
 		if( !Array.isArray( matchers[0] ) ) matchers = [matchers];  // matchers may come in multiple segments (array of matcher arrays)
 		let priority = 0;
 		for( var s = 0; s < matchers.length; s += 1 ) {
-			for( var i = 0; i < matchers.length; i += 1 ) {
+			for( var i = 0; i < matchers[s].length; i += 1 ) {
 				let matcher = matchers[s][i].trim();
 				if( matcher[0] === '[' && matcher[matcher.length-1] === ']' ) {
 					if( matcher.indexOf('<<') !== -1 ) { priority += 2; }  // constrained variable
@@ -383,6 +394,61 @@ class Moringa {
 		} // s for
 		return priority;
 	} // end of patternPriority
+
+	// Get Already Existing (same pattern) Else New Recognizer Object 
+	getRecognizer( oldRecognizers, pattern, matchers ) { 
+		let debug = false;
+
+		// See If the Recognizer Pattern Already Exists.. 
+		let recognizer = undefined;
+		for( let r = 0; r < oldRecognizers.length; r += 1 ) {
+			let oldPattern = oldRecognizers[r].pattern;
+
+			// Do lengths match?
+			let matches = ( oldPattern.length === pattern.length ) ? true : false;
+
+			// If lengths match, do elements match?
+			if( matches ) {
+				for( let i = 0; i < oldPattern.length; i += 1 ) {
+					let oldSegment = oldPattern[i];
+					let newSegment = pattern[i];
+					// TODO: need match disregarding variable names & whitespace
+					// but noting variable names to unify actions and options, when merging.. ( could add to recognizer, object for code elsewhere to reference )
+					if( oldSegment.toLowerCase() !== newSegment.toLowerCase() ) {
+						matches = false;
+						break;
+					}
+				}
+			}
+
+			// If matches, get matching oldRecognizer and break out of search..
+			if( matches ) {
+				recognizer = oldRecognizers[r];
+				recognizer.merging = true;  // TODO: later, also add any translation of variable names needed to fully unify the merge..
+				break;
+			}
+		}
+
+		// If Not Found, Create as New
+		if( recognizer === undefined ) recognizer = { pattern:pattern, matchers:matchers, options:[], actions:[], merging:false };
+
+		return recognizer;
+	}
+
+	// { command:found.command, param:found.param, flags:found.flags, lineNo:found.tokens[0].lineNo };
+	actionExists( oldActions, newAction ) {
+		let matches = false;  // fails to match by default, if there are not old actions..
+		for( let i = 0; i < oldActions.length; i += 1 ) {
+			let oldAction = oldActions[i];
+			matches = true;
+			if( oldAction.command !== newAction.command ) matches = false;
+			if( JSON.stringify( oldAction.param ) !== JSON.stringify( newAction.param ) ) matches = false;
+			if( JSON.stringify( oldAction.param ) !== JSON.stringify( newAction.param ) ) matches = false;
+			// Note: We are not comparing action.flags to allow those to be overridden, if all else matches.. TODO
+			if( matches ) break;
+		}
+		return matches;
+	}
 
 	// Ensure memory is written
 	setMemory( context, memory, model ) {

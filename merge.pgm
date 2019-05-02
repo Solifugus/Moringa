@@ -1,0 +1,9 @@
+
+Recognizer "hello"
+	Remember "User said hello"
+	Option Say "Nice to meet you."
+
+Recognizer "Hello"
+	Remember "User said hello"
+	Option Say "I hope you are well."
+
