@@ -56,8 +56,7 @@ stdin.addListener("data", function( received ) {
 					console.log( memory.context + ': ' + memory.memory );
 				}
 				break;
-			case 'synonyms':
-				//console.log( 'Synthia: ' + JSON.stringify(agent.model.synthia.synonyms, null, '  ' ) );
+			case 'export-json':
 				fs.writeFileSync('output.json','Synonyms: ' + JSON.stringify( agent.model.synthia, null, '  ') );
 				console.log('Wrote to file "output.json"');
 				break;

@@ -165,10 +165,9 @@ class Moringa {
 		var i = 0;
 		
 		// Begin with assumption we are in global recognizer's global option
-		//var recognizer = { pattern:'', matchers:[], options:[], actions:[] };
-		var recognizer = this.getRecognizer( context.recognizers, [], [] );  // old recognizers, pattern, and matchers
+		var recognizer = this.getRecognizer( context.recognizers, [], [] );  // Gets old recognizer if exists else create new blank recognizer..
 		var option     = recognizer;  // to collect recognizer's always actions
-		context.recognizers.push(recognizer); 
+		if( recognizer.actions.length === 0 && recognizer.options.length === 0 ) context.recognizers.push(recognizer); // only push if not already existing
 
 		// Notes: * = anything; ? prefix = may or may not be; ~", = comma quote list
 		var commands = [
@@ -307,9 +306,8 @@ class Moringa {
 				// Architectural Commands
 				case 'context':
 					context    = {name:found.tokens[2].value, recognizers:[], memories:[], active:false}; 
-					//recognizer = { pattern:'', matchers:[], options:[], actions:[] };  // context's global always recognizer 
 					recognizer = this.getRecognizer( context.recognizers, [], [] );  // old recognizers, patter, and matchers 
-					option     = recognizer;                                           // to collect recognizer's always actions
+					option     = recognizer;                                         // to collect recognizer's always actions
 					context.recognizers.push(recognizer); 
 					model.contexts.push(context);
 					break;
@@ -324,7 +322,6 @@ class Moringa {
 							matchers.push(this.formatRecognizerPattern(found.param.pattern[p]));
 						}
 					}
-					//recognizer   = { pattern:found.param.pattern, matchers:matchers, options:[], actions:[] };
 					recognizer   = this.getRecognizer( context.recognizers, found.param.pattern, matchers );  
 					option       = recognizer;  // to collect recognizer's always actions 
 					if( recognizer.merging !== true ) context.recognizers.push(recognizer); 
@@ -405,8 +402,6 @@ class Moringa {
 
 	// Get Already Existing (same pattern) Else New Recognizer Object 
 	getRecognizer( oldRecognizers, pattern, matchers ) { 
-		let debug = false;
-
 		// See If the Recognizer Pattern Already Exists.. 
 		let recognizer = undefined;
 		for( let r = 0; r < oldRecognizers.length; r += 1 ) {
@@ -428,7 +423,7 @@ class Moringa {
 					}
 				}
 			}
-
+			
 			// If matches, get matching oldRecognizer and break out of search..
 			if( matches ) {
 				recognizer = oldRecognizers[r];
@@ -439,7 +434,7 @@ class Moringa {
 
 		// If Not Found, Create as New
 		if( recognizer === undefined ) recognizer = { pattern:pattern, matchers:matchers, options:[], actions:[], merging:false };
-
+	
 		return recognizer;
 	}
 
@@ -536,7 +531,7 @@ class Moringa {
 					}
 				}
 				script += '\n';
-				if( recognizer.pattern !== '' ) tabs -= 1;
+				if( recognizer.pattern.length > 0 ) tabs -= 1;
 			}
 			tabs -= 1;
 		}
