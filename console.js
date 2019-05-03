@@ -56,6 +56,11 @@ stdin.addListener("data", function( received ) {
 					console.log( memory.context + ': ' + memory.memory );
 				}
 				break;
+			case 'synonyms':
+				//console.log( 'Synthia: ' + JSON.stringify(agent.model.synthia.synonyms, null, '  ' ) );
+				fs.writeFileSync('output.json','Synonyms: ' + JSON.stringify( agent.model.synthia, null, '  ') );
+				console.log('Wrote to file "output.json"');
+				break;
 			case 'expects':
 				console.log( JSON.stringify(agent.model.synthia.expects, null, '  ') );
 				break;
@@ -69,7 +74,8 @@ stdin.addListener("data", function( received ) {
 				break;
 			case 'export':
 				let script = agent.exportScript();
-				fs.writeFileSync('exported.pgm',script);
+				fs.writeFileSync('output.pgm',script);
+				console.log('Wrote to file "output.pgm"');
 				break;
 		}
 	}

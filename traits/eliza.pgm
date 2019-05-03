@@ -21,6 +21,10 @@ Always If Not "session began"
 
 Recognizer "say this back [something]"
 	Say "You said to tell you [something]."
+Recognizer "how are you"
+	Option Say "Let's talk about you."
+	Option Say "Let's focus on you."
+	Option Say "I am fine."
 
 Recognizer "can you [something]"
 	Option Say "Don't you think I can [something]?"
@@ -215,8 +219,4 @@ Recognizer "[anything]"
 	Option Say "Come, come.. Elucidate your thoughts."
 	Option Say "Can you elaborate on that?"
 	Option Say "That is quite interesting."
-
-Recognizer ""
-	Option Say "Cat got your tunge?"
-	Option Say "Your silence is not silent to me."
 

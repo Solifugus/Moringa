@@ -16,6 +16,10 @@
 // 	[ ] Inter-Model Communication (Say "message" To "model") and reception source
 // 	[ ] Create named model instances.. refer to each by name.
 
+// BUGS:
+//   [ ] Merges duplicate global options and actions
+//   [ ] multi-word synonyms seem not working
+
 var tokenizer = require('retokenizer');
 require('datejs');
 
@@ -36,7 +40,7 @@ class Moringa {
 	}
 
 	log( message, traceAs ) {
-		if( traceAs === undefined ) console.log('ASSIGN TRACE FOR: ' + message);
+		//if( traceAs === undefined ) console.log('ASSIGN TRACE FOR: ' + message);
 		if( this.traces.indexOf('all') !== -1 ) {
 			this.logEntries.push(message);
 			return;
@@ -180,7 +184,7 @@ class Moringa {
 			{ command:'doSequence',   gram:'do " * " \n',                                      param:{ seqname:2 }              }, 
 			{ command:'do',           gram:'do in " * " \n',                                   param:{ in:3 }                   }, 
 			{ command:'do',           gram:'do at " * " \n',                                   param:{ at:3 }                   }, 
-			{ command:'synonyms',     gram:'synonyms * : * \n',                                param:{ keyword:1, members:3 }   },
+			{ command:'synonyms',     gram:'synonyms " * " : * \n',                            param:{ keyword:2, members:5 }   },
 			{ command:'conjugateAnd', gram:'conjugate " * " and " * " \n',                     param:{ first:2, second:6 }      }, 
 			{ command:'conjugateTo',  gram:'conjugate " * " to " * " \n',                      param:{ first:2, second:6 }      }, 
 			{ command:'say',          gram:'say " * " at " * " \n',                            param:{ message:2, at:6 }        },
@@ -196,10 +200,10 @@ class Moringa {
 			{ command:'expectAs',     gram:'expect " * " as " * " \n',                         param:{ expecting:2, as:6 }      },
 			{ command:'enter',        gram:'enter " * " \n',                                   param:{ context:2 }              },
 			{ command:'exit',         gram:'exit " * " \n',                                    param:{ context:2 }              },
-			{ command:'seek',         gram:'seek * % * \n',                                    param:{ percent:1, condition:2 } }, 
 			{ command:'imagine',      gram:'imagine " * " as " * " \n',                        param:{ oldModel:2, newModel:6 } },   // create model
 			{ command:'unimagine',    gram:'unimagine " * " \n',                               param:{ model:2 }                },   // destroy model
 			{ command:'sayTo',        gram:'say " * " to " * " \n',                            param:{ message:2, model:6 }     },   // response goes to memory: "[model] model said:[message]"
+			{ command:'seek',         gram:'seek * % * \n',                                    param:{ percent:1, condition:2 } }, 
 			{ command:'avoid',        gram:'avoid * % * \n',                                   param:{ percent:1, condition:2 } },
 			{ command:'newline',      gram:'\n',                                               param:{}                         }
 		];
@@ -374,10 +378,11 @@ class Moringa {
 
 			// Soft Content's recognizers from longest to shortest
 			context.recognizers.sort( ( a, b ) => {
-				if( a.pattern === '' ) return -1;  // ensure the global "always" recognizer is always first.. 
+				if( a.pattern.length === 0 ) return -1;  // ensure the global "always" recognizer is always first.. 
 				//return b.matchers.length) - a.matchers.length;
 				return this.patternPriority(b.matchers) - this.patternPriority(a.matchers); 
 			});
+			
 		}
 	} // end of merge()
 
@@ -499,18 +504,21 @@ class Moringa {
 			let context = model.contexts[c];
 			script += '\nContext: "' + context.name + '"\n';
 			tabs   += 1;
+			
+			// For each recognizer
 			for( let r = 0; r < context.recognizers.length; r += 1 ) {
 				let recognizer = context.recognizers[r];
 
 				// Blank Recognizer is Global
-				if( recognizer.pattern !== '' ) {
+				if( recognizer.pattern.length > 0 ) {
 					let pattern = JSON.stringify( recognizer.pattern );
-					script += this.stringOf('\t',tabs) + '\nRecognizer ' + pattern.substr(1,pattern.length-2) + '\n';
+					script += this.stringOf('\t',tabs) + 'Recognizer ' + pattern.substr(1,pattern.length-2) + '\n';
 					tabs += 1;
 				}
 
 				// Add Any Recognizer Always Actions
 				for( let a = 0; a < recognizer.actions.length; a += 1 ) script += this.stringifyAction( recognizer.actions[a], tabs );
+				if( recognizer.actions.length > 0 ) script += '\n';
 
 				// For Options, Regardless of If Global or Not
 				for( let o = 0; o < recognizer.options.length; o += 1 ) {
@@ -520,12 +528,14 @@ class Moringa {
 						script += this.stringOf('\t',tabs) + 'Option ' + this.stringifyAction( option.actions[0], 0 );
 					}
 					else {
-						script += this.stringOf('\t',tabs) + 'Option ' + JSON.stringify( option.condition ) + '\n';
+						let condition = (option.condition === '') ? '' : 'If ' + option.condition;
+						script += this.stringOf('\t',tabs) + 'Option ' + condition + '\n';
 						tabs += 1;
 						for( let a = 0; a < option.actions.length; a += 1 ) script += this.stringifyAction( option.actions[a], tabs );
 						tabs -= 1;
 					}
 				}
+				script += '\n';
 				if( recognizer.pattern !== '' ) tabs -= 1;
 			}
 			tabs -= 1;
@@ -537,6 +547,9 @@ class Moringa {
 	stringifyAction( action, tabs ) {
 		let script;
 		switch( action.command ) {  // TODO: Finish for all commands..
+			case 'synonyms':
+				script = this.stringOf('\t',tabs) + 'Synonyms "' + action.param.keyword + '": ' + action.param.members + '\n';
+				break;
 			case 'say':
 				script = this.stringOf('\t',tabs) + 'Say ' + JSON.stringify(action.param.message) + '\n';
 				break;
@@ -582,7 +595,7 @@ class Moringa {
 			for( var ii = 0; ii < model.awareness.options[i].actions[ii].length; ii +=1 ) {
 				log += '\t\t' + JSON.stringify(model.awareness.options[i].actions[ii]) + '\n';
 			}
-		}  
+		}
 		this.log( 'Valid options: ' + log, 'options' );
 		let preferred    = this.pickOption( model );
 		if( preferred !== undefined ) this.performActions( preferred.actions, model );
@@ -638,8 +651,8 @@ class Moringa {
 			for( var r = 0; r < model.contexts[c].recognizers.length; r += 1 ) {
 				var recognizer = model.contexts[c].recognizers[r];
 
-				// If the context's always recognizer.. 
-				if( recognizer.pattern === '' ) {
+				// If the context's always recognizer then execute no matter what.. 
+				if( recognizer.pattern.length === 0 ) {
 					// Perform always actions
 					this.performActions( recognizer.actions, model );
 
@@ -1116,7 +1129,7 @@ class Moringa {
 		var toSchedule = { when:null, performed:false, actions:[] };
 		for( var a = 0; a < actions.length; a += 1 ) {
 			var action = actions[a];
-
+			
 			// Add to log.. 
 			if( action.command.substr(0,6) !== 'conjug' ) this.log('Performing action "' + action.command + '": ' + JSON.stringify(action.param), 'actions' );
 
@@ -1193,6 +1206,7 @@ class Moringa {
 		else {
 			model.synonyms.push({ context:model.awareness.contextName, keyword:param.keyword, members:members });
 		}
+		
 	}
 
 	// Specify two-way conjugations
