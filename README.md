@@ -11,13 +11,13 @@ Features include (but are not limited to):
 * Seeking/Avoiding Conditions
 * Contemplations
 
-# Description
-
-## Moringa Agent Script Reference
+# Moringa Agent Script Reference
 
 A Moringa Script comprises directives and action commands.  The directives are generally structural in nature while the action commands are mostly intended for defining reactions.  The basic structure allows for specification of initial memory items, conjugations, synonyms, and re-usable sequences of action commands.
 
-## Memories Directive.  In Moringa, memory is just an array of strings.  The Remember action command may be used to compose new memories.  The Recall action command may be used to read memories, based on pattern searches.  However, you may set initial memories using the following Memory directive early in the script:
+## Memories Directive.  
+
+In Moringa, memory is just an array of strings.  The Remember action command may be used to compose new memories.  The Recall action command may be used to read memories, based on pattern searches.  However, you may set initial memories using the following Memory directive early in the script:
 
 ```
 Memories
@@ -28,7 +28,9 @@ Memories
        "bad is negative"
 ```
 
-## Conjugate Directive.  A conjugation is where text has its form reversed from second-person to first-person.  This is used in changing user input to a form that may be directed back to the user, in an output pattern.  For example, if the user statement was "I am a good fellow.", it may be conjugated back in the form "You are a good follow.".  The following are examples of English language conjugations:
+## Conjugate Directive.  
+
+A conjugation is where text has its form reversed from second-person to first-person.  This is used in changing user input to a form that may be directed back to the user, in an output pattern.  For example, if the user statement was "I am a good fellow.", it may be conjugated back in the form "You are a good follow.".  The following are examples of English language conjugations:
 
 ```
 Conjugate "are" And "am"
@@ -48,7 +50,9 @@ Conjugate "are" And "am"
   Conjugate "them" And "us"
 ```
 
-## Synonym Command.  Synonyms are often context dependent and so might be defined differently in different contexts within an agent script.  The following illustrates a couple of the most generically applicable synonyms, therefore probably desirable in the global context.
+## Synonym Command.  
+
+Synonyms are often context dependent and so might be defined differently in different contexts within an agent script.  The following illustrates a couple of the most generically applicable synonyms, therefore probably desirable in the global context.
 
 ```
 Synonym yes: yep, yeah, sure
@@ -56,7 +60,9 @@ Synonym no: nope, nah
 ```
 After specification of the above synonyms (for example), any user input with the word "yeah" will be interpreted the same as if it were "yes".
 
-## Sequences Directive.  A sequence is just a way of referencing a re-usable list of action commands.  For example,
+## Sequences Directive.  
+
+A sequence is just a way of referencing a re-usable list of action commands.  For example,
 
 ```
 Sequence "poem"
