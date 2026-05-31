@@ -346,6 +346,46 @@ The `examples/` directory contains:
 - **Script Examples**: Demonstration scripts showing various features
 - **Interactive Tools**: Console applications for testing
 
+## 🎨 Syntax Highlighting
+
+Comprehensive syntax highlighting support for Moringa scripts (`.pgm` files) is available for major editors:
+
+### 🚀 Quick Install
+
+**VS Code (Recommended)**
+```bash
+cd syntax
+./install-vscode.sh
+```
+
+**Vim/Neovim**
+```bash
+mkdir -p ~/.vim/syntax ~/.vim/ftdetect
+cp syntax/vim/moringa.vim ~/.vim/syntax/
+echo 'au BufRead,BufNewFile *.pgm,*.moringa set filetype=moringa' > ~/.vim/ftdetect/moringa.vim
+```
+
+### ✨ Features
+
+- **Keyword Highlighting**: Directives, actions, conditionals
+- **Variable Recognition**: `[variable]` and `[var:choice1,choice2]` patterns  
+- **Code Snippets**: Pre-built templates for common patterns (VS Code)
+- **Smart Indentation**: Context-aware formatting
+- **Code Folding**: Collapsible sections for contexts and sequences
+- **Auto-completion**: IntelliSense support (VS Code)
+
+### 📚 Supported Editors
+
+| Editor | Status | Installation |
+|--------|--------|-------------|
+| VS Code | ✅ Full Support | `syntax/install-vscode.sh` |
+| Vim/Neovim | ✅ Full Support | Manual or plugin manager |
+| Sublime Text | ✅ TextMate Grammar | Copy `.tmGrammar` file |
+| Atom | ✅ TextMate Grammar | Package manager |
+| TextMate | ✅ Native Support | Bundle installation |
+
+See [`syntax/README.md`](syntax/README.md) for detailed installation instructions.
+
 ## 🤝 Contributing
 
 We welcome contributions! Please follow these guidelines:

@@ -1,0 +1,62 @@
+{
+  "name": "moringa-script",
+  "displayName": "Moringa Script Language Support",
+  "description": "Syntax highlighting and language support for Moringa chatbot script files (.pgm)",
+  "version": "1.0.0",
+  "publisher": "moringa",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "keywords": [
+    "moringa",
+    "chatbot",
+    "ai",
+    "script",
+    "pgm"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "moringa",
+        "aliases": ["Moringa Script", "Moringa", "pgm"],
+        "extensions": [".pgm", ".moringa"],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/moringa-light.png",
+          "dark": "./icons/moringa-dark.png"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "moringa",
+        "scopeName": "source.moringa",
+        "path": "./moringa.tmLanguage.json"
+      }
+    ],
+    "configurationDefaults": {
+      "[moringa]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 4,
+        "editor.autoIndent": "advanced"
+      }
+    },
+    "snippets": [
+      {
+        "language": "moringa",
+        "path": "./snippets.json"
+      }
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Solifugus/Moringa.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Solifugus/Moringa/issues"
+  },
+  "homepage": "https://github.com/Solifugus/Moringa#readme"
+}

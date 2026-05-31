@@ -1,0 +1,137 @@
+{
+  "Basic Recognizer": {
+    "prefix": "rec",
+    "body": [
+      "recognizer \"${1:pattern}\"",
+      "\tsay \"${2:response}\""
+    ],
+    "description": "Create a basic recognizer with response"
+  },
+  "Variable Recognizer": {
+    "prefix": "recvar",
+    "body": [
+      "recognizer \"${1:pattern with [${2:variable}]}\"",
+      "\tsay \"${3:response using [${2:variable}]}\""
+    ],
+    "description": "Create a recognizer with variable capture"
+  },
+  "Memory Storage": {
+    "prefix": "remember",
+    "body": [
+      "recognizer \"${1:input pattern}\"",
+      "\tremember \"${2:memory pattern}\"",
+      "\tsay \"${3:confirmation message}\""
+    ],
+    "description": "Store information in memory"
+  },
+  "Memory Recall": {
+    "prefix": "recall",
+    "body": [
+      "recognizer \"${1:input pattern}\"",
+      "\trecall \"${2:memory pattern with [${3:variable}]}\"",
+      "\tsay \"${4:response using [${3:variable}]}\""
+    ],
+    "description": "Recall information from memory"
+  },
+  "Context Definition": {
+    "prefix": "context",
+    "body": [
+      "context \"${1:context_name}\"",
+      "\trecognizer \"${2:pattern}\"",
+      "\t\tsay \"${3:response}\""
+    ],
+    "description": "Define a new context"
+  },
+  "Context Entry": {
+    "prefix": "enter",
+    "body": [
+      "recognizer \"${1:entry trigger}\"",
+      "\tenter \"${2:context_name}\"",
+      "\tsay \"${3:entry message}\""
+    ],
+    "description": "Enter a context"
+  },
+  "Context Exit": {
+    "prefix": "exit",
+    "body": [
+      "recognizer \"${1:exit trigger}\"",
+      "\texit \"${2:context_name}\"",
+      "\tsay \"${3:exit message}\""
+    ],
+    "description": "Exit a context"
+  },
+  "Sequence Definition": {
+    "prefix": "sequence",
+    "body": [
+      "sequence \"${1:sequence_name}\"",
+      "\tsay \"${2:first message}\"",
+      "\tsay \"${3:second message}\""
+    ],
+    "description": "Define a reusable sequence"
+  },
+  "Execute Sequence": {
+    "prefix": "do",
+    "body": [
+      "do \"${1:sequence_name}\""
+    ],
+    "description": "Execute a sequence"
+  },
+  "Scheduled Action": {
+    "prefix": "schedule",
+    "body": [
+      "say \"${1:message}\" in \"${2:time}\""
+    ],
+    "description": "Schedule a delayed action"
+  },
+  "Conditional Response": {
+    "prefix": "conditional",
+    "body": [
+      "recognizer \"${1:pattern}\"",
+      "\talways if \"${2:condition}\":",
+      "\t\tsay \"${3:conditional response}\"",
+      "\topen:",
+      "\t\tsay \"${4:default response}\""
+    ],
+    "description": "Conditional response pattern"
+  },
+  "Choice Variable": {
+    "prefix": "choice",
+    "body": [
+      "recognizer \"I want [${1:item}:${2:option1,option2,option3}]\"",
+      "\tsay \"You chose [${1:item}]!\""
+    ],
+    "description": "Variable with predefined choices"
+  },
+  "Timer Pattern": {
+    "prefix": "timer",
+    "body": [
+      "recognizer \"set timer for [${1:duration}] [${2:unit}]\"",
+      "\tsay \"Timer set for [${1:duration}] [${2:unit}].\"",
+      "\tsay \"Time's up!\" in \"[${1:duration}] [${2:unit}]\""
+    ],
+    "description": "Timer functionality pattern"
+  },
+  "Expectation": {
+    "prefix": "expect",
+    "body": [
+      "recognizer \"${1:question}\"",
+      "\tsay \"${2:question text}\"",
+      "\texpect \"${3:expected_input}\" as \"${4:interpreted_as}\""
+    ],
+    "description": "Set user input expectation"
+  },
+  "Conjugation": {
+    "prefix": "conjugate",
+    "body": [
+      "conjugate \"${1:word1}\" and \"${2:word2}\""
+    ],
+    "description": "Define word conjugation"
+  },
+  "Synonym Definition": {
+    "prefix": "synonym",
+    "body": [
+      "synonym ${1:word}: ${2:synonym1}, ${3:synonym2}"
+    ],
+    "description": "Define word synonyms"
+  }
+}

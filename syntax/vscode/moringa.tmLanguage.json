@@ -1,0 +1,138 @@
+{
+  "name": "Moringa Script",
+  "scopeName": "source.moringa",
+  "fileTypes": ["pgm", "moringa"],
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#directives" },
+    { "include": "#actions" },
+    { "include": "#conditionals" },
+    { "include": "#strings" },
+    { "include": "#variables" },
+    { "include": "#keywords" },
+    { "include": "#operators" },
+    { "include": "#numbers" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-dash.moringa",
+          "match": "(--)\s*(.*)",
+          "captures": {
+            "1": { "name": "punctuation.definition.comment.moringa" }
+          }
+        }
+      ]
+    },
+    "directives": {
+      "patterns": [
+        {
+          "name": "meta.directive.moringa",
+          "match": "\\b(context|recognizer|sequence)\\s+(\".*?\")",
+          "captures": {
+            "1": { "name": "keyword.control.directive.moringa" },
+            "2": { "name": "string.quoted.double.moringa" }
+          }
+        },
+        {
+          "name": "keyword.control.directive.moringa",
+          "match": "\\b(memories|conjugate|synonym)\\b"
+        }
+      ]
+    },
+    "actions": {
+      "patterns": [
+        {
+          "name": "keyword.control.action.moringa",
+          "match": "\\b(say|remember|recall|forget|expect|enter|exit|do|interpret|imagine|unimagine|seek|avoid)\\b"
+        }
+      ]
+    },
+    "conditionals": {
+      "patterns": [
+        {
+          "name": "keyword.control.conditional.moringa",
+          "match": "\\b(always|option|open|fallback|nonexclusive)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.moringa",
+          "begin": "\"",
+          "end": "\"",
+          "beginCaptures": {
+            "0": { "name": "punctuation.definition.string.begin.moringa" }
+          },
+          "endCaptures": {
+            "0": { "name": "punctuation.definition.string.end.moringa" }
+          },
+          "patterns": [
+            { "include": "#variables" },
+            {
+              "name": "constant.character.escape.moringa",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "variables": {
+      "patterns": [
+        {
+          "name": "meta.variable.moringa",
+          "match": "(\\[)([a-zA-Z_][a-zA-Z0-9_]*)(:([a-zA-Z0-9_,\\s]+))?(\\])",
+          "captures": {
+            "1": { "name": "punctuation.definition.variable.begin.moringa" },
+            "2": { "name": "variable.other.moringa" },
+            "3": { "name": "punctuation.separator.choice.moringa" },
+            "4": { "name": "constant.other.choice.moringa" },
+            "5": { "name": "punctuation.definition.variable.end.moringa" }
+          }
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.other.moringa",
+          "match": "\\b(if|and|or|not|as|in|at|to|from|on|with|by|for|of|the|a|an|is|are|am|was|were|be|been|being|have|has|had|do|does|did|will|would|could|should|may|might|can)\\b"
+        },
+        {
+          "name": "keyword.other.time.moringa",
+          "match": "\\b(seconds?|minutes?|hours?|days?|weeks?|months?|years?)\\b"
+        },
+        {
+          "name": "keyword.other.time.meridiem.moringa",
+          "match": "\\b(AM|PM)\\b"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.moringa",
+          "match": "[%:]"
+        },
+        {
+          "name": "punctuation.separator.moringa",
+          "match": "[,()]"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.moringa",
+          "match": "\\b\\d+(\\.\\d+)?\\b"
+        },
+        {
+          "name": "constant.numeric.time.moringa",
+          "match": "\\b\\d{1,2}:\\d{2}(:\\d{2})?\\b"
+        }
+      ]
+    }
+  }
+}
