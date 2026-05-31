@@ -4,7 +4,10 @@
   "description": "Engine for Artificially Intelligent Chatbots based on Moringa Interactivity Scripts",
   "main": "moringa.js",
   "scripts": {
-    "test": "node example.js"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:example": "node example.js"
   },
   "repository": {
     "type": "git",
@@ -25,5 +28,8 @@
     "datejs": "^1.0.0-rc3",
     "fs": "0.0.1-security",
     "retokenizer": "^1.4.2"
+  },
+  "devDependencies": {
+    "jest": "^30.4.2"
   }
 }

@@ -155,10 +155,77 @@ class Moringa {
 			t += 1;
 		}
 
+		// Extract Any Synonym Declarations
+		t = 0;
+		while( t < tokens.length ) {
+			if( tokens[t].type === 'splitter' && tokens[t].value.toLowerCase() === 'synonyms' ) {
+				// Pattern: synonyms "keyword" : member1, member2, member3
+				if( t + 5 < tokens.length && tokens[t+1].value === '"' && tokens[t+3].value === '"' && tokens[t+4].value === ':' ) {
+					let keyword = tokens[t+2].value;
+					let membersStr = tokens[t+5].value.trim();
+					let members = membersStr.split(',');
+					for( let i = 0; i < members.length; i += 1 ) members[i] = members[i].trim();
+
+					// Add synonym directly to model
+					let found = undefined;
+					for( let i = 0; i < model.synonyms.length; i += 1 ) {
+						if( model.synonyms[i].keyword.toLowerCase() === keyword.toLowerCase() ) {
+							found = model.synonyms[i];
+							break;
+						}
+					}
+
+					if( found !== undefined ) {
+						found.context = 'general';
+						found.members = members;
+					}
+					else {
+						model.synonyms.push({ context:'general', keyword:keyword, members:members });
+					}
+
+					// Remove processed tokens
+					let removeCount = 6;
+					if( t + removeCount < tokens.length && tokens[t + removeCount].value === '\n' ) removeCount++;
+					tokens.splice( t, removeCount );
+					t -= 1; // Adjust for removed tokens
+				}
+			}
+			t += 1;
+		}
+
+		// Extract Any Conjugation Declarations
+		t = 0;
+		while( t < tokens.length ) {
+			if( tokens[t].type === 'splitter' && tokens[t].value.toLowerCase() === 'conjugate' ) {
+				// Pattern: conjugate "first" and "second" OR conjugate "first" to "second"
+				if( t + 6 < tokens.length && tokens[t+1].value === '"' && tokens[t+3].value === '"' && tokens[t+5].value === '"' ) {
+					let first = tokens[t+2].value;
+					let second = tokens[t+6].value;
+					let conjType = tokens[t+4].value.toLowerCase();
+
+					if( conjType === 'and' || conjType === 'to' ) {
+						// Add conjugation directly to model
+						model.conjugations.push({ context:'general', from:first, to:second });
+						if( conjType === 'and' ) {
+							// Bidirectional conjugation
+							model.conjugations.push({ context:'general', from:second, to:first });
+						}
+
+						// Remove processed tokens
+						let removeCount = 7;
+						if( t + removeCount < tokens.length && tokens[t + removeCount].value === '\n' ) removeCount++;
+						tokens.splice( t, removeCount );
+						t -= 1; // Adjust for removed tokens
+					}
+				}
+			}
+			t += 1;
+		}
+
 		// If quote not closed by end of line, make error clear closing quote is missing..
 		for( t = 0; t < tokens.length; t += 1 ) {
 			if( tokens[t].type === 'opener' && tokens[t].value === '"' && tokens[t+1] !== undefined && tokens[t+1].value.indexOf('\n') !== -1 ) {
-				throw('Syntax Error: quote on line ' + tokens[t].lineNo + ' not closed.');
+				return 'Syntax Error: quote on line ' + tokens[t].lineNo + ' not closed.';
 			}
 		}
 		
@@ -1148,8 +1215,8 @@ class Moringa {
 				case 'expectas':      this.actionExpectAs( action.param, model ); break;
 				case 'enter':         this.actionEnter( action.param, model ); break;  // TODO
 				case 'exit':          this.actionExit( action.param, model ); break;  // TODO
-				case 'seek':          this.actionExit( action.param, model ); break;  // TODO
-				case 'avoid':         this.actionExit( action.param, model ); break;  // TODO
+				case 'seek':          this.actionSeek( action.param, model ); break;  // TODO
+				case 'avoid':         this.actionAvoid( action.param, model ); break;  // TODO
 				case 'dosequence':    this.actionDoSequence( action.param, model ); break;
 				case 'do':
 					if( toSchedule.when !== null ) {
@@ -1348,7 +1415,7 @@ class Moringa {
 	actionEnter( param, model ) { // ZZZ
 		for(var c = 0; c < model.contexts.length; c += 1 ) {
 			if( param.context.toLowerCase().trim() === model.contexts[c].name.toLowerCase().trim() ) {
-				mode.contexts[c].active = true;
+				model.contexts[c].active = true;
 				this.prioritizeContext( model.contexts, c );
 				break;
 			}
@@ -1357,16 +1424,16 @@ class Moringa {
 
 	// Except for 0 ("general"), if not at end of list, move context to end of list 
 	prioritizeContext( contexts, contextNo ) {
-		if( contextNo !== 0 && contextNo !== model.contexts.length - 1 ) {
-			model.contexts.push( model.contexts[contextNo] );
-			model.contexts.splice(contextNo,1);
+		if( contextNo !== 0 && contextNo !== contexts.length - 1 ) {
+			contexts.push( contexts[contextNo] );
+			contexts.splice(contextNo,1);
 		}
 	}
 
 	actionExit( param, model ) {
 		for(var c = 0; c < model.contexts.length; c += 1 ) {
 			if( param.context.toLowerCase().trim() === model.contexts[c].name.toLowerCase().trim() ) {
-				mode.contexts[c].active = false;
+				model.contexts[c].active = false;
 				break;
 			}
 		}
