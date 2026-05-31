@@ -9,7 +9,7 @@ console.log('\nStarting Cybernetic Synthia..');
 console.log('=============================');
 let script = fs.readFileSync('./synthia.pgm').toString();
 
-agent.importFoundation( script, 'synthia' );
+agent.merge( script, 'synthia' );
 
 // Send message to agent and route response to reception
 //agent.input('I only want to say hello, my friend','synthia');
