@@ -827,8 +827,12 @@ class Moringa {
 				}
 				a -= 1;
 				
-				// remove all punctuation and outlaying spaces
-				value = value.trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+				// remove all punctuation and outlaying spaces, but preserve decimal points in numbers
+				value = value.trim();
+				// Only remove punctuation if this isn't a decimal number
+				if (!/^\d+\.\d+$/.test(value)) {
+					value = value.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+				}
 
 				if( name.indexOf('<<') !== -1 ) {
 					let group = name.split('<<')[1].trim();
@@ -1327,15 +1331,27 @@ class Moringa {
 	}
 
 	actionRemember( param, model ) {
-		this.setMemory( 'general', this.formatOutput(param.message, model.awareness.variable, model.conjugations), model );
+		// Store memory in the current context, not just 'general'
+		let contextName = model.awareness.contextName || 'general';
+		this.setMemory( contextName, this.formatOutput(param.message, model.awareness.variable, model.conjugations), model );
 	}
 
 	actionRecall( param, model, flags ) {
 		var matchers = this.formatRecognizerPattern(param.message);
+		// Get list of currently active contexts
+		var activeContexts = ['general']; // always include general
+		for( var c = 0; c < model.contexts.length; c += 1 ) {
+			if( model.contexts[c].active ) {
+				activeContexts.push(model.contexts[c].name);
+			}
+		}
+
 		for( var m = 0; m < model.memories.length; m += 1 ) {
-			var memory = model.memories[m].memory;
-			var found  = this.matchRecognizer( memory, matchers, model );
-			if( found !== false ) {
+			// Only search memories from currently active contexts
+			if( activeContexts.includes(model.memories[m].context) ) {
+				var memory = model.memories[m].memory;
+				var found  = this.matchRecognizer( memory, matchers, model );
+				if( found !== false ) {
 				// For each variable name, remove all previous values and reload, accoridng to what was found
 				var variable = model.awareness.variable;
 				for( var name in found ) {
@@ -1356,6 +1372,7 @@ class Moringa {
 				}
 			}
 		}
+	}
 	}
 	
 	actionForget( param, model ) {
@@ -1413,6 +1430,14 @@ class Moringa {
 	}
 
 	actionEnter( param, model ) { // ZZZ
+		// First deactivate all non-general contexts (exclusive context switching)
+		for(var c = 0; c < model.contexts.length; c += 1 ) {
+			if( model.contexts[c].name !== 'general' ) {
+				model.contexts[c].active = false;
+			}
+		}
+
+		// Then activate the target context
 		for(var c = 0; c < model.contexts.length; c += 1 ) {
 			if( param.context.toLowerCase().trim() === model.contexts[c].name.toLowerCase().trim() ) {
 				model.contexts[c].active = true;
