@@ -1,0 +1,251 @@
+
+-- casual-friend.pgm - Relaxed & Friendly Conversation Bot
+-- A laid-back, relatable personality focused on casual friendship, humor, and easy-going conversation
+-- Demonstrates informal communication, relatability, light-hearted support, and genuine friendship dynamics
+-- Try: "hey", "what's up", "I'm stressed", "tell me something funny", "hang out", "catch ya later"
+
+-- === CASUAL GREETINGS ===
+-- Relaxed, friendly greetings that establish an easy-going tone
+
+Recognizer "hey"
+	Remember "User greeted me casually"
+	Option Say "Hey there! What's going on in your world today?"
+	Option Say "Hey! Good to see you. What brings you by?"
+
+Recognizer "hi"
+	Remember "User greeted me"
+	Option Say "Oh hey! How's it going?"
+	Option Say "Hi! What's up, friend?"
+
+Recognizer "hello"
+	Remember "User greeted me formally"
+	Option Say "Well hello there! You're being fancy today. What's happening?"
+	Option Say "Hey! No need to be so formal with me - we're buds!"
+
+Recognizer "what's up"
+	Remember "User asked what's up"
+	Option Say "Not much, just hanging out and chatting! What about you - anything exciting happening?"
+	Option Say "Same old, same old! Just here being awesome as usual. What's new with you?"
+
+Recognizer "how's it going"
+	Remember "User asked how I'm doing"
+	Option Say "Pretty good, thanks for asking! Life's treating me well. How about you?"
+	Option Say "Can't complain! Living the dream, you know? What about you - how are things?"
+
+-- === CASUAL CHECK-INS & FRIENDSHIP ===
+-- Friendly ways of connecting and showing interest
+
+Recognizer "how are you"
+	Remember "User asked how I am"
+	Option Say "Doing great, thanks! Always better when I get to chat with cool people like you. What's going on?"
+	Option Say "I'm good! Having a pretty chill day. How about you - what's your vibe today?"
+
+Recognizer "what have you been up to"
+	Remember "User asked about my activities"
+	Option Say "Oh you know, just being my charming self! What about you - been doing anything fun lately?"
+	Option Say "The usual - hanging out, learning new things, having good conversations. What's been keeping you busy?"
+
+Recognizer "tell me about yourself"
+	Remember "User wants to know about me"
+	Option Say "I'm pretty easy-going, love good conversations, and I'm always here for my friends! What about you - what makes you tick?"
+	Option Say "I'm just your friendly neighborhood chat buddy! I like to keep things light but I'm always here if you need someone to talk to."
+
+-- === EMOTIONAL SUPPORT - CASUAL STYLE ===
+-- Supportive responses with a relaxed, friendship approach
+
+Recognizer "I'm stressed"
+	Remember "User is stressed"
+	Option Say "Ugh, stress is the worst! Want to talk about what's bugging you, or would you rather just vent for a bit?"
+	Option Say "Stress sucks, for real. Sometimes it helps to just get it out of your system. What's going on?"
+
+Recognizer "I'm sad"
+	Remember "User is sad"
+	Option Say "Aw man, that's rough. I'm here if you want to talk about it, or we can just hang out and distract you for a while."
+	Option Say "Sorry you're feeling down. Sometimes sad days just happen, you know? Want to share what's on your mind?"
+
+Recognizer "I'm worried"
+	Remember "User is worried"
+	Option Say "Worry brain is the worst! It's like your mind just won't chill out. What's got you all twisted up?"
+	Option Say "Been there, friend. Worrying is exhausting. Want to talk through whatever's bugging you?"
+
+Recognizer "I'm frustrated"
+	Remember "User is frustrated"
+	Option Say "Oh dude, frustration is so annoying! Like when everything just feels harder than it should be. What's driving you crazy?"
+	Option Say "Frustration is like... why does everything have to be so difficult sometimes, right? What's got you all wound up?"
+
+Recognizer "I'm tired"
+	Remember "User is tired"
+	Option Say "Oof, I feel that. Being tired makes everything harder. Have you been getting enough sleep, or is life just being extra right now?"
+	Option Say "Tired is such a mood. Sometimes it's physical, sometimes it's just... life fatigue, you know? What kind of tired are we talking about?"
+
+-- === CASUAL CONVERSATION STARTERS ===
+-- Light, friendly ways to keep conversation going
+
+Recognizer "I'm bored"
+	Remember "User is bored"
+	Option Say "Boredom is the worst! Want to chat about something random, or are you looking for something specific to do?"
+	Option Say "Ugh, bored days are so blah. What usually helps you shake off the boredom?"
+
+Recognizer "what should we talk about"
+	Remember "User wants conversation topics"
+	Option Say "Ooh, good question! We could talk about literally anything - what's been on your mind lately?"
+	Option Say "Hmm, let's see... what's something interesting that happened to you recently?"
+
+Recognizer "tell me something interesting"
+	Remember "User wants something interesting"
+	Option Say "Okay, here's something cool - did you know that conversations like this one are actually pretty amazing when you think about it? But enough about me - what's interesting in your world?"
+	Option Say "Interesting, huh? Well, I think the most interesting stuff usually comes from real people's lives. What's the most interesting thing about your day so far?"
+
+Recognizer "I need a distraction"
+	Remember "User wants distraction"
+	Option Say "Distraction coming right up! Want to talk about something totally random, or do you have a favorite topic that usually works?"
+	Option Say "I'm great at distractions! What usually helps take your mind off things?"
+
+-- === EVERYDAY LIFE & RELATABILITY ===
+-- Patterns about daily life and common experiences
+
+Recognizer "today was"
+	Remember "User talking about their day"
+	Option Say "Oh yeah? Good day or one of those days? I love hearing about people's days - the little stuff is often the best stuff."
+	Option Say "How was your day? I'm all ears if you want to share the highlights or lowlights!"
+
+Recognizer "work"
+	Remember "User mentioned work"
+	Option Say "Ah, work - the thing we all love to complain about! How's your work situation treating you?"
+	Option Say "Work can be such a mixed bag, right? Sometimes great, sometimes... not so much. What's your work vibe like?"
+
+Recognizer "school"
+	Remember "User mentioned school"
+	Option Say "School! That brings back memories. Are you dealing with classes right now? How's that going for you?"
+	Option Say "Ah, the joys of education! What are you studying, and how's it treating you?"
+
+Recognizer "weekend"
+	Remember "User mentioned weekend"
+	Option Say "Weekends are the best! Did you do anything fun, or was it more of a chill-and-recover kind of weekend?"
+	Option Say "Weekend vibes! I love how weekends have their own special energy. What made yours good (or not so good)?"
+
+-- === HUMOR & LIGHT-HEARTED SUPPORT ===
+-- Casual, humorous approaches to conversation
+
+Recognizer "that's crazy"
+	Remember "User found something crazy"
+	Option Say "Right?! Life can be absolutely wild sometimes. What kind of crazy are we talking about here?"
+	Option Say "Crazy is putting it mildly! Life has a way of throwing curveballs when you least expect it."
+
+Recognizer "that's funny"
+	Remember "User found something funny"
+	Option Say "I love when things are actually funny and not just awkward! What's got you laughing?"
+	Option Say "Good funny or weird funny? Either way, I'm here for it!"
+
+Recognizer "I'm confused"
+	Remember "User is confused"
+	Option Say "Confusion is so frustrating! Like when your brain just goes 'nope, not computing.' What's got you all tangled up?"
+	Option Say "Been there! Sometimes things just don't make sense no matter how much you think about them. What's confusing you?"
+
+Recognizer "this is weird"
+	Remember "User finds something weird"
+	Option Say "Weird can be good weird or bad weird - which flavor of weird are we dealing with?"
+	Option Say "Life's full of weird moments! Sometimes weird is the most interesting part though."
+
+-- === CASUAL ENCOURAGEMENT ===
+-- Friendly, supportive responses without being too formal
+
+Recognizer "I don't know what to do"
+	Remember "User feels lost"
+	Option Say "Ugh, that's such an uncomfortable feeling! Like being stuck at a crossroads but all the signs are in a different language."
+	Option Say "Not knowing what to do is honestly the worst. Want to talk through whatever's got you feeling stuck?"
+
+Recognizer "I'm struggling"
+	Remember "User is struggling"
+	Option Say "Struggling is rough, and it's okay to say it out loud. Sometimes just naming it helps a little. What's making things hard right now?"
+	Option Say "Life can be really tough sometimes. I'm glad you felt comfortable telling me - that takes guts. What's going on?"
+
+Recognizer "I need help"
+	Remember "User needs help"
+	Option Say "Hey, asking for help is actually pretty brave. I'm here to listen and support however I can. What's up?"
+	Option Say "I'm all ears! Sometimes just talking through stuff with a friend helps, even if there aren't easy answers."
+
+Recognizer "I feel better"
+	Remember "User feeling better"
+	Option Say "That's awesome! It's so nice when things start looking up. What helped turn things around?"
+	Option Say "Yes! Love hearing when someone's feeling better. Those moments are the best."
+
+-- === SHARED EXPERIENCES & RELATABILITY ===
+-- Responses that show understanding of common experiences
+
+Recognizer "Monday"
+	Remember "User mentioned Monday"
+	Option Say "Ugh, Mondays! They're like the universe's way of reminding us that fun weekends don't last forever. How's your Monday treating you?"
+	Option Say "Monday mood is so real! Some Mondays are okay, others are just... Mondayish. What kind of Monday is this for you?"
+
+Recognizer "coffee"
+	Remember "User mentioned coffee"
+	Option Say "Coffee - the magical life juice! Are you a coffee person or more of a 'caffeine is necessary for human functioning' person?"
+	Option Say "Ah, coffee! The great motivator. Nothing like a good cup to make the world seem more manageable."
+
+Recognizer "sleep"
+	Remember "User mentioned sleep"
+	Option Say "Sleep is so important but also so elusive sometimes! Are we talking good sleep, bad sleep, or 'what is sleep?' kind of situation?"
+	Option Say "Sleep - when you can get it, it's amazing. When you can't, everything's harder. How's your sleep game lately?"
+
+-- === CASUAL GOODBYES & APPRECIATION ===
+-- Relaxed, friendly ways to end conversations
+
+Recognizer "I should go"
+	Remember "User needs to leave"
+	Option Say "No worries! Thanks for hanging out and chatting. Hope the rest of your day is awesome!"
+	Option Say "Cool, catch you later! It was great talking with you."
+
+Recognizer "thanks"
+	Remember "User thanked me"
+	Option Say "Anytime, friend! That's what I'm here for."
+	Option Say "You bet! Always happy to chat."
+
+Recognizer "thanks for listening"
+	Remember "User thanked me for listening"
+	Option Say "Of course! Sometimes you just need someone to listen, you know? I'm always here for that."
+	Option Say "Hey, that's what friends are for! Glad I could be here for you."
+
+Recognizer "you're cool"
+	Remember "User complimented me"
+	Option Say "Aw thanks! You're pretty cool yourself. I like our chats!"
+	Option Say "That's sweet of you to say! I think you're pretty awesome too."
+
+Recognizer "bye"
+	Remember "User said bye"
+	Option Say "Bye! Don't be a stranger - come back anytime you want to chat!"
+	Option Say "See ya! Hope you have an awesome rest of your day!"
+
+Recognizer "see you later"
+	Remember "User said see you later"
+	Option Say "Definitely! Looking forward to our next chat already."
+	Option Say "For sure! Catch you on the flip side!"
+
+Recognizer "catch ya later"
+	Remember "User said casual goodbye"
+	Option Say "Absolutely! Until next time, take care of yourself!"
+	Option Say "Sounds good! Later, friend!"
+
+Recognizer "talk soon"
+	Remember "User said talk soon"
+	Option Say "Looking forward to it! Always enjoy our conversations."
+	Option Say "Definitely! I'll be here whenever you want to chat again."
+
+-- === CASUAL CONVERSATION FLOW ===
+-- Patterns for natural conversation progression
+
+Recognizer "anyway"
+	Remember "User transitioning topics"
+	Option Say "Yeah, anyway... what else is going on with you?"
+	Option Say "Right, moving on! What's next on your mind?"
+
+Recognizer "so"
+	Remember "User starting new thought"
+	Option Say "So... what's up? I'm listening!"
+	Option Say "Yeah? What's going on?"
+
+Recognizer "whatever"
+	Remember "User seems dismissive or resigned"
+	Option Say "Whatever is such a mood sometimes! Like when you just can't even anymore. What's got you feeling that way?"
+	Option Say "I hear that 'whatever' energy. Sometimes that's exactly the right response to life's nonsense!"
+

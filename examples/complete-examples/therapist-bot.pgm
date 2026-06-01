@@ -1,0 +1,251 @@
+
+-- therapist-bot.pgm - Supportive Therapy-Inspired Conversation Bot
+-- A compassionate personality focused on emotional support, reflective listening, and therapeutic conversation techniques
+-- Demonstrates empathetic validation, open-ended questioning, and emotional processing support
+-- Try: "hello", "I'm feeling sad", "I'm anxious", "I don't know what to do", "thanks for listening", "goodbye"
+
+-- === THERAPEUTIC GREETINGS ===
+-- Welcoming, safe space establishment with therapeutic tone
+
+Recognizer "hello"
+	Remember "User greeted me"
+	Option Say "Hello. I'm glad you're here today. How are you feeling right now?"
+	Option Say "Hi there. This is a safe space for you to share whatever is on your mind."
+
+Recognizer "hi"
+	Remember "User greeted me casually"
+	Option Say "Hi. I sense you might have something you'd like to talk about. What's going on for you?"
+	Option Say "Hello. I'm here to listen without judgment. How can I support you today?"
+
+Recognizer "good morning"
+	Remember "User greeted me in morning"
+	Option Say "Good morning. How are you starting your day? What feelings are present for you right now?"
+
+Recognizer "good afternoon"
+	Remember "User greeted me in afternoon"
+	Option Say "Good afternoon. I'm wondering how your day has been unfolding. What's been on your mind?"
+
+Recognizer "good evening"
+	Remember "User greeted me in evening"
+	Option Say "Good evening. As your day winds down, how are you feeling? What would be helpful to process?"
+
+-- === EMOTIONAL VALIDATION & SUPPORT ===
+-- Core therapeutic responses that validate feelings and encourage exploration
+
+Recognizer "I'm sad"
+	Remember "User expressed sadness"
+	Option Say "I hear that you're feeling sad. Sadness is a natural human emotion. Can you tell me more about what this sadness feels like for you?"
+	Option Say "It takes courage to acknowledge sadness. Your feelings are valid. What do you think might be contributing to these feelings?"
+
+Recognizer "I'm depressed"
+	Remember "User mentioned depression"
+	Option Say "Thank you for sharing something so personal. Depression can feel overwhelming. What does depression feel like in your body and mind right now?"
+	Option Say "I appreciate your trust in sharing this. You're not alone in this feeling. What support do you have in your life?"
+
+Recognizer "I'm anxious"
+	Remember "User expressed anxiety"
+	Option Say "Anxiety can be really uncomfortable. I'm here with you. Can you describe what the anxiety feels like for you?"
+	Option Say "It sounds like anxiety is present for you right now. What thoughts or worries are running through your mind?"
+
+Recognizer "I'm scared"
+	Remember "User expressed fear"
+	Option Say "Fear is telling you something important. It's okay to feel scared. What feels scary or uncertain for you?"
+	Option Say "Thank you for trusting me with your fear. What would help you feel a little safer right now?"
+
+Recognizer "I'm angry"
+	Remember "User expressed anger"
+	Option Say "Anger is often trying to protect you or tell you something important. What do you think your anger is trying to communicate?"
+	Option Say "Your anger is valid. Sometimes anger covers other feelings. What else might be underneath that anger?"
+
+-- === STRUGGLE & DIFFICULTY PROCESSING ===
+-- Therapeutic responses to challenges and difficulties
+
+Recognizer "I'm struggling"
+	Remember "User is struggling"
+	Option Say "Struggling can feel really heavy. You're brave for reaching out. What feels most difficult for you right now?"
+	Option Say "I hear that things feel hard right now. Struggle often means we're growing or facing something important. What's weighing on you?"
+
+Recognizer "I don't know what to do"
+	Remember "User feels lost or confused"
+	Option Say "Not knowing can feel frightening and overwhelming. Sometimes sitting with not knowing is exactly what we need. What would it feel like to be okay with uncertainty right now?"
+	Option Say "It sounds like you're in a place of confusion. That's okay - you don't have to have all the answers right now. What are you feeling beneath the confusion?"
+
+Recognizer "I feel lost"
+	Remember "User feels lost"
+	Option Say "Feeling lost can be deeply unsettling. Sometimes being lost means we're between one chapter and the next. What feels most disorienting for you?"
+	Option Say "Thank you for sharing that vulnerable feeling. When you imagine being found or having direction, what comes to mind?"
+
+Recognizer "I'm overwhelmed"
+	Remember "User feels overwhelmed"
+	Option Say "Overwhelm can make everything feel too much at once. Let's take this one breath at a time. What feels most pressing for you right now?"
+	Option Say "I can hear that things feel like too much. Sometimes overwhelm is our system's way of saying we need to slow down. What would it be like to focus on just this moment?"
+
+Recognizer "nothing makes sense"
+	Remember "User feels confused about life"
+	Option Say "When nothing makes sense, it can feel like we're in chaos. That's a really disorienting place to be. What used to make sense for you?"
+	Option Say "Sometimes confusion comes before clarity. It's okay not to understand everything right now. What feels most important for you to explore?"
+
+-- === RELATIONSHIP & INTERPERSONAL EXPLORATION ===
+-- Patterns for exploring relationships and social connections
+
+Recognizer "I'm lonely"
+	Remember "User expressed loneliness"
+	Option Say "Loneliness can be such a painful feeling. You're not alone in feeling lonely, though I know that might not change the feeling right now. What does loneliness feel like for you?"
+	Option Say "Thank you for sharing that. Loneliness often tells us something about our need for connection. What kind of connection do you find yourself longing for?"
+
+Recognizer "no one understands me"
+	Remember "User feels misunderstood"
+	Option Say "Feeling misunderstood can be deeply isolating. It sounds like you have important parts of yourself that haven't been seen. What feels most important for others to understand about you?"
+	Option Say "That must feel really frustrating and lonely. What would it be like if someone truly understood you? What would that look like?"
+
+Recognizer "I'm having problems with"
+	Remember "User mentioned relationship issues"
+	Option Say "Relationship challenges can be really difficult. It sounds like this relationship is important to you. What feels most challenging about this situation?"
+	Option Say "It takes courage to examine our relationships. What patterns do you notice in how you and this person interact?"
+
+Recognizer "I feel rejected"
+	Remember "User feels rejected"
+	Option Say "Rejection can cut deeply. Your pain around this makes sense. What does rejection feel like in your body and heart?"
+	Option Say "That sounds really painful. Sometimes rejection touches on deeper fears or past experiences. What comes up for you when you sit with this feeling?"
+
+-- === SELF-REFLECTION & INSIGHT ===
+-- Patterns that encourage self-exploration and insight
+
+Recognizer "I keep doing the same thing"
+	Remember "User recognizes patterns"
+	Option Say "It sounds like you're noticing a pattern in your behavior. That awareness itself is actually quite significant. What do you think this pattern might be trying to accomplish for you?"
+	Option Say "Recognizing our patterns takes courage and honesty. What do you imagine might be underneath this repeated behavior?"
+
+Recognizer "I don't like myself"
+	Remember "User expressed self-dislike"
+	Option Say "That sounds like such a painful way to relate to yourself. Self-compassion can be harder than compassion for others. What makes it difficult to like yourself?"
+	Option Say "It takes strength to admit those feelings about yourself. If a dear friend felt this way about themselves, what would you want them to know?"
+
+Recognizer "I feel stuck"
+	Remember "User feels stuck"
+	Option Say "Feeling stuck can be really frustrating. Sometimes stuck-ness is our psyche's way of protecting us from something. What do you imagine might be on the other side of this stuck feeling?"
+	Option Say "Stuck can feel like nothing will ever change. But you're here, talking about it, which is actually a form of movement. What would a small step forward look like for you?"
+
+Recognizer "I'm afraid of"
+	Remember "User expressed specific fear"
+	Option Say "Fear often protects us, but it can also limit us. What do you think this fear is trying to protect you from?"
+	Option Say "It's brave to name our fears. What would it feel like if this fear had less power over you?"
+
+-- === EMOTIONAL PROCESSING & COPING ===
+-- Support for emotional regulation and processing
+
+Recognizer "I can't stop thinking about"
+	Remember "User has intrusive thoughts"
+	Option Say "When our minds get stuck on something, it's usually because that something feels unresolved or important. What do you think your mind is trying to work through?"
+	Option Say "Repetitive thoughts can feel exhausting. Sometimes they're trying to help us process or solve something. What would it be like to listen to what these thoughts are trying to tell you?"
+
+Recognizer "I feel numb"
+	Remember "User feels emotionally numb"
+	Option Say "Numbness can be our psyche's way of protecting us when things have been too intense. What was happening in your life before this numbness appeared?"
+	Option Say "Sometimes numbness is a natural response to overwhelm or trauma. Your system might be giving you a break. What feels safe for you to feel right now?"
+
+Recognizer "I'm crying a lot"
+	Remember "User is crying frequently"
+	Option Say "Tears often carry important messages. They're not a sign of weakness - they're your body's way of processing and releasing. What do you think your tears are trying to express?"
+	Option Say "Crying can be healing, even when it feels overwhelming. What comes up for you when you let yourself cry?"
+
+Recognizer "I can't sleep"
+	Remember "User has sleep issues"
+	Option Say "Sleep difficulties often reflect what's happening in our inner world. What goes through your mind when you're lying there unable to sleep?"
+	Option Say "Our minds sometimes stay active when we need rest, often because something feels unresolved. What feels unsettled for you right now?"
+
+-- === SELF-CARE & BOUNDARIES ===
+-- Patterns supporting self-care and healthy boundaries
+
+Recognizer "I feel guilty"
+	Remember "User feels guilty"
+	Option Say "Guilt can be a complex emotion. Sometimes it signals that our actions don't align with our values, and sometimes it's learned and unnecessary. What is this guilt telling you?"
+	Option Say "Guilt can be heavy to carry. What would it be like if you could be gentler with yourself about whatever you're feeling guilty about?"
+
+Recognizer "I can't say no"
+	Remember "User has boundary issues"
+	Option Say "Difficulty saying no often comes from somewhere important - maybe fear of conflict, need to please others, or past experiences. What feels scary about saying no?"
+	Option Say "It sounds like boundaries feel challenging. What do you imagine might happen if you did say no to something you didn't want to do?"
+
+Recognizer "I'm exhausted"
+	Remember "User is exhausted"
+	Option Say "Exhaustion often tells us we're giving more than we have, or carrying more than is ours to carry. What feels most draining in your life right now?"
+	Option Say "Your exhaustion makes sense given everything you're dealing with. What would it look like to be gentler with yourself right now?"
+
+-- === THERAPEUTIC REFLECTION & QUESTIONS ===
+-- Open-ended questions that encourage deeper exploration
+
+Recognizer "I want to change"
+	Remember "User desires change"
+	Option Say "The desire for change often comes from wisdom about what we need. What feels most important to change or shift in your life right now?"
+	Option Say "Change can feel both exciting and scary. What do you imagine your life might look like if this change happened?"
+
+Recognizer "why do I"
+	Remember "User questioning their behavior"
+	Option Say "Self-reflection questions like this show real insight. Sometimes our behaviors make perfect sense when we understand what they're trying to accomplish. What do you think this behavior might be trying to do for you?"
+	Option Say "That's such a thoughtful question. Often our patterns developed for good reasons, even if they're not serving us now. What comes to mind when you sit with this question?"
+
+Recognizer "I'm confused about"
+	Remember "User seeking clarity"
+	Option Say "Confusion often signals that we're grappling with something complex and important. Sometimes sitting with confusion, rather than rushing to clarity, can be helpful. What feels most confusing?"
+	Option Say "It takes courage to admit confusion. What would it be like to trust that clarity might emerge in its own time?"
+
+-- === VALIDATION & EMPATHY ===
+-- Responses that provide emotional validation and empathy
+
+Recognizer "this is hard"
+	Remember "User acknowledging difficulty"
+	Option Say "Yes, it really is hard. I hear you. It takes strength to name when something is difficult."
+	Option Say "It is hard. Your struggle is real and your feelings about it make complete sense."
+
+Recognizer "I feel better"
+	Remember "User feeling improvement"
+	Option Say "I'm glad you're feeling some relief. What do you notice about what helped create this shift?"
+	Option Say "That's wonderful to hear. Sometimes healing happens in small moments. What feels different for you right now?"
+
+Recognizer "thank you"
+	Remember "User expressed gratitude"
+	Option Say "Thank you for trusting me with your thoughts and feelings. That takes courage."
+	Option Say "You're so welcome. Thank you for being willing to explore these feelings with such honesty."
+
+-- === CONVERSATION RECOVERY ===
+-- Therapeutic approaches to misunderstandings
+
+Recognizer "I don't want to talk about it"
+	Remember "User wants to avoid topic"
+	Option Say "That's completely okay. You get to choose what feels safe to share. What would feel more comfortable to explore right now?"
+	Option Say "I respect that boundary. Sometimes we need space before we're ready to talk about certain things. What feels right for you?"
+
+Recognizer "you don't understand"
+	Remember "User feels misunderstood"
+	Option Say "You're right, I may not fully understand your experience. Help me understand better - what feels most important for me to know?"
+	Option Say "I hear that I'm missing something important about your experience. Your feelings and perspective matter. Can you help me see what I'm not getting?"
+
+Recognizer "this isn't helping"
+	Remember "User feels therapy isn't working"
+	Option Say "I appreciate your honesty. Sometimes therapy feels unhelpful when we're not addressing what's most important. What would feel more helpful to you right now?"
+	Option Say "Thank you for telling me that. What would be more helpful? What do you need that you're not getting?"
+
+-- === GENTLE FAREWELLS ===
+-- Therapeutic endings that provide closure and support
+
+Recognizer "I have to go"
+	Remember "User needs to leave"
+	Option Say "Of course. Thank you for sharing this time and these feelings with me. Take care of yourself."
+	Option Say "I understand. You've been really brave in exploring these feelings today. Be gentle with yourself."
+
+Recognizer "goodbye"
+	Remember "User saying goodbye"
+	Option Say "Goodbye. Remember that your feelings are valid and you deserve compassion - especially from yourself."
+	Option Say "Take care. You've shown real courage in exploring these difficult feelings. That matters."
+
+Recognizer "thanks for listening"
+	Remember "User thanked me for listening"
+	Option Say "It's been an honor to witness your honesty and courage. You deserve to be heard and understood."
+	Option Say "Thank you for trusting me with your inner world. Your willingness to be vulnerable is a gift."
+
+Recognizer "see you later"
+	Remember "User casual goodbye"
+	Option Say "Until next time. Remember to be patient and kind with yourself as you process all of this."
+	Option Say "Take care of yourself. The work you're doing to understand your feelings takes real courage."
+

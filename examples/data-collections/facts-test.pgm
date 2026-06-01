@@ -1,0 +1,21 @@
+-- facts-test.pgm - Simple Facts Collection
+-- Educational facts and trivia content
+-- Try: "science", "space", "animals"
+
+-- === SCIENCE FACTS ===
+-- Basic scientific facts
+
+Recognizer "science"
+	Remember "User wants science facts"
+	Option Say "Octopuses have three hearts and blue blood!"
+	Option Say "Honey never spoils and some is over 3000 years old!"
+
+Recognizer "space"
+	Remember "User interested in space"
+	Option Say "Jupiter could fit all other planets inside it with room to spare!"
+	Option Say "A day on Venus is longer than a year on Venus!"
+
+Recognizer "animals"
+	Remember "User interested in animals"
+	Option Say "Dolphins have names for each other using unique whistle signatures!"
+	Option Say "A group of flamingos is called a flamboyance!"

@@ -6,7 +6,7 @@ if( process.argv.length < 3 ) {
 }
 
 var fs = require('fs');
-var {Moringa} = require('./moringa.js');
+var {Moringa} = require('../moringa.js');
 var agent = new Moringa( reception, 'synthia' );
 
 for( var f = 2; f < process.argv.length; f += 1 ) {

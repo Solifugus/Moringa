@@ -1,0 +1,34 @@
+
+-- Complete Starter - A functional mini-bot showcasing key Moringa features
+-- This combines greetings, memory, and context concepts into one working bot
+-- Try: "hello", "enter work", "help", "goodbye"
+
+-- Basic greeting - responds to "hello"
+Recognizer "hello"
+	Remember "User greeted me"
+	Option Say "Hello! Welcome to Moringa!"
+	Option Say "Hi there! Nice to meet you."
+
+-- Case-sensitive greeting - responds to "Hello"
+Recognizer "Hello"
+	Remember "User greeted me politely"
+	Option Say "Hello! Thanks for being polite."
+
+-- Goodbye patterns
+Recognizer "bye"
+	Remember "User said goodbye"
+	Option Say "Goodbye! Thanks for trying Moringa."
+
+Recognizer "goodbye"
+	Remember "User said goodbye"
+	Option Say "See you later!"
+
+Recognizer "enter work"
+	Enter "work"
+	Remember "User entered work mode"
+	Option Say "Entering work mode. Time to be productive!"
+
+Recognizer "help"
+	Remember "User asked for help"
+	Option Say "I'm a starter bot! Try: 'hello', 'enter work', 'goodbye'"
+

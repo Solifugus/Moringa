@@ -1,0 +1,27 @@
+
+-- Hello World - Your First Moringa Script
+-- This is the simplest possible chatbot to get you started
+--
+-- A Moringa script consists of "recognizers" that match user input
+-- and respond with actions like "Say" (output) and "Remember" (memory)
+
+-- Basic greeting - responds to "hello"
+Recognizer "hello"
+	Remember "User greeted me"
+	Option Say "Hello! Welcome to Moringa!"
+	Option Say "Hi there! Nice to meet you."
+
+-- Case-sensitive greeting - responds to "Hello"
+Recognizer "Hello"
+	Remember "User greeted me politely"
+	Option Say "Hello! Thanks for being polite."
+
+-- Goodbye patterns
+Recognizer "bye"
+	Remember "User said goodbye"
+	Option Say "Goodbye! Thanks for trying Moringa."
+
+Recognizer "goodbye"
+	Remember "User said goodbye"
+	Option Say "See you later!"
+

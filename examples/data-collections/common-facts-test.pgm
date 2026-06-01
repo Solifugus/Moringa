@@ -1,0 +1,16 @@
+-- common-facts-test.pgm - Simple test version
+
+Recognizer "science fact"
+	Remember "User wants science facts"
+	Option Say "Octopuses have three hearts and blue blood!"
+	Option Say "Honey never spoils - some is over 3000 years old!"
+
+Recognizer "space"
+	Remember "User interested in space"
+	Option Say "Jupiter could fit all other planets inside it!"
+	Option Say "Saturn would float in water due to low density!"
+
+Recognizer "fun fact"
+	Remember "User wants fun facts"
+	Option Say "Bananas are berries but strawberries are not!"
+	Option Say "A group of pandas is called an embarrassment!"

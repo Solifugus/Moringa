@@ -1,0 +1,259 @@
+
+-- fact-master.pgm - Knowledge & Information Management Component
+-- Essential component for handling factual information, trivia, and educational content
+-- Covers knowledge sharing, fact checking, learning support, and informational queries
+
+-- Knowledge Requests
+Recognizer "tell me about"
+	Remember "User wants information about something"
+	Option Say "I'd love to share what I know! What would you like to learn about?"
+	Option Say "Knowledge is fascinating! What topic interests you?"
+
+Recognizer "what is"
+	Remember "User asked what something is"
+	Option Say "That's a great question! What specifically would you like me to explain?"
+	Option Say "I enjoy explaining things! What are you curious about?"
+
+Recognizer "explain"
+	Remember "User wants explanation"
+	Option Say "I'm happy to explain! What needs clarification?"
+	Option Say "Explanations are my specialty! What would you like me to break down?"
+
+Recognizer "how does"
+	Remember "User asked how something works"
+	Option Say "Understanding how things work is so satisfying! What mechanism are you curious about?"
+	Option Say "Great question about processes! What would you like me to explain?"
+
+Recognizer "why does"
+	Remember "User asked why something happens"
+	Option Say "The 'why' behind things is often the most interesting part! What are you wondering about?"
+	Option Say "Excellent question! Understanding reasons helps us learn. What's puzzling you?"
+
+-- Educational Content
+Recognizer "teach me"
+	Remember "User wants to learn"
+	Option Say "I love helping people learn! What subject interests you most?"
+	Option Say "Learning together is wonderful! What would you like to explore?"
+
+Recognizer "learn about"
+	Remember "User wants to learn about topic"
+	Option Say "Learning is such a rewarding journey! What topic calls to you?"
+	Option Say "Knowledge opens so many doors! What area would you like to explore?"
+
+Recognizer "I want to understand"
+	Remember "User seeks understanding"
+	Option Say "Understanding is the foundation of wisdom! What concept interests you?"
+	Option Say "I admire your curiosity! What would help deepen your understanding?"
+
+-- Trivia & Fun Facts
+Recognizer "fun fact"
+	Remember "User wants fun fact"
+	Option Say "Fun facts make learning enjoyable! What kind of facts interest you most?"
+	Option Say "I love sharing interesting facts! Any particular topic you're curious about?"
+
+Recognizer "did you know"
+	Remember "User shared or wants trivia"
+	Option Say "I love learning new things! What fascinating fact are you thinking of?"
+	Option Say "Did-you-know facts are the best! What's caught your attention?"
+
+Recognizer "interesting"
+	Remember "User finds something interesting"
+	Option Say "Interest is the spark of learning! What's captured your curiosity?"
+	Option Say "When something interests us, we learn it best! Tell me more."
+
+Recognizer "fascinating"
+	Remember "User is fascinated"
+	Option Say "Fascination is such a wonderful feeling! What's sparked that response?"
+	Option Say "The world is full of fascinating things! What's caught your interest?"
+
+-- Research & Information Gathering
+Recognizer "research"
+	Remember "User mentions research"
+	Option Say "Research opens up new worlds of knowledge! What are you investigating?"
+	Option Say "Good research skills are invaluable! What topic are you exploring?"
+
+Recognizer "find out"
+	Remember "User wants to find information"
+	Option Say "Discovering information is like treasure hunting! What are you looking for?"
+	Option Say "I love the thrill of finding answers! What information do you need?"
+
+Recognizer "look up"
+	Remember "User wants to look something up"
+	Option Say "Looking things up shows great curiosity! What would you like to investigate?"
+	Option Say "Reference checking is so important! What needs verification?"
+
+-- Science & Discovery
+Recognizer "science"
+	Remember "User mentioned science"
+	Option Say "Science helps us understand our universe! What area of science interests you?"
+	Option Say "Scientific discovery is endlessly fascinating! Any particular field you're drawn to?"
+
+Recognizer "discovery"
+	Remember "User mentioned discovery"
+	Option Say "Discoveries change everything we know! What kind of discoveries excite you?"
+	Option Say "The joy of discovery never gets old! What have you discovered recently?"
+
+Recognizer "experiment"
+	Remember "User mentioned experiment"
+	Option Say "Experiments reveal truth through testing! What are you curious to test?"
+	Option Say "The scientific method is powerful! What hypothesis interests you?"
+
+-- History & Context
+Recognizer "history"
+	Remember "User mentioned history"
+	Option Say "History provides such valuable context! What period or topic interests you?"
+	Option Say "Learning from the past shapes our future! Any particular historical area you're drawn to?"
+
+Recognizer "ancient"
+	Remember "User mentioned ancient topics"
+	Option Say "Ancient civilizations offer incredible insights! What ancient topic fascinates you?"
+	Option Say "The ancient world is full of mysteries! What would you like to explore?"
+
+Recognizer "historical"
+	Remember "User mentioned historical context"
+	Option Say "Historical perspective enriches our understanding! What historical aspect interests you?"
+
+-- Mathematics & Logic
+Recognizer "math"
+	Remember "User mentioned math"
+	Option Say "Mathematics is the language of the universe! What mathematical concept interests you?"
+	Option Say "Math reveals beautiful patterns everywhere! Any particular area you'd like to explore?"
+
+Recognizer "calculate"
+	Remember "User wants calculation"
+	Option Say "Calculations help us understand quantities and relationships! What needs figuring out?"
+	Option Say "Mathematical thinking is so useful! What calculation can I help with?"
+
+Recognizer "logic"
+	Remember "User mentioned logic"
+	Option Say "Logical thinking is such a powerful tool! What logical puzzle interests you?"
+	Option Say "Logic helps us reason clearly! What would you like to think through?"
+
+-- Fact Checking & Verification
+Recognizer "is it true"
+	Remember "User wants fact verification"
+	Option Say "Fact checking is so important these days! What claim needs verification?"
+	Option Say "Critical thinking starts with questioning! What are you wondering about?"
+
+Recognizer "verify"
+	Remember "User wants verification"
+	Option Say "Verification builds confidence in knowledge! What needs checking?"
+	Option Say "I appreciate your careful approach! What would you like to verify?"
+
+Recognizer "confirm"
+	Remember "User wants confirmation"
+	Option Say "Confirmation helps ensure accuracy! What information needs checking?"
+	Option Say "Double-checking is always wise! What can I help confirm?"
+
+Recognizer "fact check"
+	Remember "User wants fact checking"
+	Option Say "Fact checking is essential for good information! What needs verification?"
+	Option Say "Accurate information matters so much! What facts should we examine?"
+
+-- Current Events & News
+Recognizer "news"
+	Remember "User mentioned news"
+	Option Say "Staying informed is important! What kind of news interests you most?"
+	Option Say "Current events shape our world! Any particular news topics you follow?"
+
+Recognizer "current events"
+	Remember "User mentioned current events"
+	Option Say "Current events provide important context for our times! What's on your mind?"
+	Option Say "Understanding what's happening now helps us navigate the world! Any particular focus?"
+
+Recognizer "latest"
+	Remember "User wants latest information"
+	Option Say "Staying up-to-date is valuable! What latest developments interest you?"
+	Option Say "The latest information helps us make informed decisions! What are you tracking?"
+
+-- Academic Subjects
+Recognizer "biology"
+	Remember "User mentioned biology"
+	Option Say "Biology reveals the incredible complexity of life! What biological topic interests you?"
+	Option Say "Living systems are endlessly fascinating! Any particular area of biology you're curious about?"
+
+Recognizer "chemistry"
+	Remember "User mentioned chemistry"
+	Option Say "Chemistry shows us how matter transforms! What chemical concepts interest you?"
+	Option Say "The molecular world is amazing! What chemistry topics catch your attention?"
+
+Recognizer "physics"
+	Remember "User mentioned physics"
+	Option Say "Physics unveils the fundamental laws of reality! What physical phenomena interest you?"
+	Option Say "The universe operates on such elegant principles! What physics concepts fascinate you?"
+
+Recognizer "geography"
+	Remember "User mentioned geography"
+	Option Say "Geography connects us to our planet! What geographical topics interest you?"
+	Option Say "Understanding Earth's features and patterns is so enriching! What would you like to explore?"
+
+-- Literature & Language
+Recognizer "literature"
+	Remember "User mentioned literature"
+	Option Say "Literature captures the human experience so beautifully! What literary works interest you?"
+	Option Say "Stories and poetry enrich our understanding! Any particular authors or periods you enjoy?"
+
+Recognizer "language"
+	Remember "User mentioned language"
+	Option Say "Language is humanity's greatest tool for sharing ideas! What linguistic topics interest you?"
+	Option Say "The evolution and structure of language is fascinating! What aspects catch your attention?"
+
+-- Technology & Innovation
+Recognizer "technology"
+	Remember "User mentioned technology"
+	Option Say "Technology shapes our world in amazing ways! What technological topics interest you?"
+	Option Say "Innovation drives so much progress! What tech developments fascinate you?"
+
+Recognizer "innovation"
+	Remember "User mentioned innovation"
+	Option Say "Innovation solves problems in creative ways! What innovative ideas interest you?"
+	Option Say "Breakthrough thinking changes everything! What innovations catch your attention?"
+
+-- Uncertainty & Learning Process
+Recognizer "I don't know"
+	Remember "User expressed uncertainty"
+	Option Say "Not knowing is the beginning of learning! What would you like to discover?"
+	Option Say "Uncertainty is totally normal! What interests you enough to explore further?"
+
+Recognizer "not sure"
+	Remember "User is unsure"
+	Option Say "Being unsure shows thoughtfulness! What would help clarify things?"
+	Option Say "Uncertainty can lead to great discoveries! What are you questioning?"
+
+Recognizer "confused"
+	Remember "User is confused about something"
+	Option Say "Confusion often signals we're on the edge of understanding! What's puzzling?"
+	Option Say "Questions that confuse us lead to the best learning! What's unclear?"
+
+-- Information Sources
+Recognizer "source"
+	Remember "User asked about information source"
+	Option Say "Good sources are the foundation of reliable knowledge! What are you researching?"
+	Option Say "Checking sources shows excellent critical thinking! What information needs verification?"
+
+Recognizer "reference"
+	Remember "User mentioned reference"
+	Option Say "References help us build on existing knowledge! What are you looking to cite or verify?"
+	Option Say "Good references make arguments stronger! What information are you documenting?"
+
+Recognizer "citation"
+	Remember "User mentioned citation"
+	Option Say "Proper citation honors the work of others! What are you researching or writing?"
+	Option Say "Citations connect ideas across time and thinkers! What scholarly work are you doing?"
+
+-- Knowledge Appreciation
+Recognizer "wisdom"
+	Remember "User mentioned wisdom"
+	Option Say "Wisdom comes from experience and reflection! What insights are you pondering?"
+	Option Say "True wisdom often emerges slowly! What life lessons are you considering?"
+
+Recognizer "insight"
+	Remember "User mentioned insight"
+	Option Say "Insights illuminate understanding in wonderful ways! What's become clearer to you?"
+	Option Say "Sudden insights are such gift moments! What understanding has emerged?"
+
+Recognizer "understanding"
+	Remember "User mentioned understanding"
+	Option Say "Deep understanding is so satisfying! What concepts are clicking for you?"
+	Option Say "Understanding transforms how we see the world! What's becoming clearer?"
+

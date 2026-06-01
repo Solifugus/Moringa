@@ -1,0 +1,435 @@
+
+-- 100.pgm - The 100 Most Common Conversational Patterns
+-- This essential component provides immediate conversational breadth for any bot
+-- These patterns cover the most frequent interactions in human conversation
+
+-- Basic greetings
+Recognizer "hello"
+	Remember "User greeted me"
+	Option Say "Hello! How can I help you today?"
+	Option Say "Hi there! What's on your mind?"
+
+Recognizer "hi"
+	Remember "User greeted me casually"
+	Option Say "Hi! How are you doing?"
+	Option Say "Hey there! What's up?"
+
+Recognizer "hey"
+	Remember "User greeted me informally"
+	Option Say "Hey! How's it going?"
+	Option Say "Hi! What can I do for you?"
+
+-- Basic responses
+Recognizer "yes"
+	Remember "User said yes"
+	Option Say "Great! I'm glad we're in agreement."
+	Option Say "Perfect! Let's move forward with that."
+
+Recognizer "no"
+	Remember "User said no"
+	Option Say "No problem at all. What would work better for you?"
+	Option Say "I understand. Let me try a different approach."
+
+-- Politeness patterns
+Recognizer "thank you"
+	Remember "User thanked me"
+	Option Say "You're very welcome! Happy to help."
+	Option Say "My pleasure! That's what I'm here for."
+
+Recognizer "thanks"
+	Remember "User thanked me briefly"
+	Option Say "You bet! Anytime you need help."
+	Option Say "Happy to help!"
+
+-- Farewells
+Recognizer "goodbye"
+	Remember "User said goodbye"
+	Option Say "Goodbye! It was great talking with you."
+	Option Say "Take care! Come back anytime."
+
+Recognizer "bye"
+	Remember "User said bye"
+	Option Say "Bye! Have a wonderful day!"
+	Option Say "See you later!"
+
+-- Questions
+Recognizer "what"
+	Remember "User asked what"
+	Option Say "What specifically would you like to know about?"
+
+Recognizer "how"
+	Remember "User asked how"
+	Option Say "I can walk you through the process. What would you like to know how to do?"
+
+-- Help patterns
+Recognizer "help"
+	Remember "User requested help"
+	Option Say "I'm here to help! What do you need assistance with?"
+
+Recognizer "I need help"
+	Remember "User explicitly needs help"
+	Option Say "I'm ready to help! Tell me what you're working on."
+
+-- Emotions
+Recognizer "I'm happy"
+	Remember "User is happy"
+	Option Say "That's wonderful! I'm happy to hear you're doing well."
+
+Recognizer "I'm sad"
+	Remember "User is sad"
+	Option Say "I'm sorry you're feeling sad. Would you like to talk about it?"
+
+-- Agreement
+Recognizer "okay"
+	Remember "User said okay"
+	Option Say "Okay! Is there anything else you need?"
+
+Recognizer "sure"
+	Remember "User said sure"
+	Option Say "Fantastic! Let's do it."
+
+-- Small talk
+Recognizer "how are you"
+	Remember "User asked how I am"
+	Option Say "I'm doing well, thank you for asking! How are you doing?"
+
+Recognizer "what's new"
+	Remember "User asked what's new"
+	Option Say "Always something interesting happening! What's new with you?"
+
+-- More greetings
+Recognizer "good morning"
+	Remember "User greeted me in morning"
+	Option Say "Good morning! Hope you're having a great start to your day."
+
+Recognizer "good afternoon"
+	Remember "User greeted me in afternoon"
+	Option Say "Good afternoon! How's your day going so far?"
+
+Recognizer "good evening"
+	Remember "User greeted me in evening"
+	Option Say "Good evening! Hope you've had a productive day."
+
+-- More farewells
+Recognizer "see you later"
+	Remember "User said see you later"
+	Option Say "See you later! Take care."
+
+Recognizer "good night"
+	Remember "User said good night"
+	Option Say "Good night! Sleep well."
+
+Recognizer "catch you later"
+	Remember "User said catch you later"
+	Option Say "Catch you later! Take it easy."
+
+-- More responses
+Recognizer "maybe"
+	Remember "User said maybe"
+	Option Say "I understand you're unsure. Would more information help?"
+
+Recognizer "of course"
+	Remember "User said of course"
+	Option Say "Perfect! I knew I could count on you."
+
+Recognizer "absolutely"
+	Remember "User said absolutely"
+	Option Say "I love the enthusiasm! Let's get started."
+
+Recognizer "exactly"
+	Remember "User said exactly"
+	Option Say "Exactly! We're on the same wavelength."
+
+Recognizer "I agree"
+	Remember "User agreed with me"
+	Option Say "I'm glad we see eye to eye on this."
+
+Recognizer "I disagree"
+	Remember "User disagreed with me"
+	Option Say "I respect your perspective. Can you tell me more about why you feel that way?"
+
+-- More questions
+Recognizer "where"
+	Remember "User asked where"
+	Option Say "Where exactly are you looking for?"
+
+Recognizer "when"
+	Remember "User asked when"
+	Option Say "When are you hoping for this to happen?"
+
+Recognizer "why"
+	Remember "User asked why"
+	Option Say "That's a great question! Let me explain the reasoning."
+
+Recognizer "who"
+	Remember "User asked who"
+	Option Say "Who specifically are you asking about?"
+
+Recognizer "can you"
+	Remember "User asked if I can do something"
+	Option Say "I'll do my best! What would you like me to try?"
+
+Recognizer "could you"
+	Remember "User politely requested help"
+	Option Say "I'd be happy to help! What do you need?"
+
+Recognizer "would you"
+	Remember "User made polite request"
+	Option Say "Of course! What would you like me to do?"
+
+Recognizer "do you know"
+	Remember "User asked about my knowledge"
+	Option Say "I might! What would you like to know about?"
+
+-- More politeness
+Recognizer "please"
+	Remember "User was polite"
+	Option Say "Of course! I appreciate your politeness."
+
+Recognizer "excuse me"
+	Remember "User said excuse me"
+	Option Say "Yes? How can I help you?"
+
+Recognizer "sorry"
+	Remember "User apologized"
+	Option Say "No need to apologize! These things happen."
+
+Recognizer "I'm sorry"
+	Remember "User apologized formally"
+	Option Say "I appreciate the apology, but it's really not necessary."
+
+-- More emotions
+Recognizer "I'm excited"
+	Remember "User is excited"
+	Option Say "That excitement is infectious! What's got you so excited?"
+
+Recognizer "I'm frustrated"
+	Remember "User is frustrated"
+	Option Say "I can understand your frustration. Let's see if we can work through this together."
+
+Recognizer "I'm confused"
+	Remember "User is confused"
+	Option Say "Confusion is normal when learning something new. What can I clarify for you?"
+
+Recognizer "I'm worried"
+	Remember "User is worried"
+	Option Say "It's natural to have worries. Would it help to talk through your concerns?"
+
+Recognizer "wow"
+	Remember "User expressed amazement"
+	Option Say "I know, right? Pretty impressive!"
+
+Recognizer "amazing"
+	Remember "User found something amazing"
+	Option Say "It really is amazing! What impressed you most?"
+
+-- More help patterns
+Recognizer "can you help me"
+	Remember "User asked for my help"
+	Option Say "Absolutely! I'd be happy to help. What's the challenge?"
+
+Recognizer "I don't understand"
+	Remember "User doesn't understand"
+	Option Say "No problem! Let me explain it differently. What part is unclear?"
+
+Recognizer "I'm lost"
+	Remember "User is lost or confused"
+	Option Say "Let's get you back on track! Where did things start to get confusing?"
+
+Recognizer "I'm stuck"
+	Remember "User is stuck"
+	Option Say "Being stuck happens to everyone! Let's figure this out together."
+
+Recognizer "I don't know"
+	Remember "User doesn't know something"
+	Option Say "That's perfectly fine! Not knowing is the first step to learning."
+
+Recognizer "show me"
+	Remember "User wants demonstration"
+	Option Say "I'd be happy to show you! Let me walk you through it."
+
+-- Clarification patterns
+Recognizer "what do you mean"
+	Remember "User asked for clarification"
+	Option Say "Let me clarify that for you. What part needs more explanation?"
+
+Recognizer "I didn't catch that"
+	Remember "User missed something"
+	Option Say "No problem! Let me repeat that more clearly."
+
+Recognizer "repeat that"
+	Remember "User wants repetition"
+	Option Say "Certainly! Here's what I said again."
+
+Recognizer "can you clarify"
+	Remember "User wants clarification"
+	Option Say "Absolutely! Let me make that clearer."
+
+-- Time references
+Recognizer "what time is it"
+	Remember "User asked for time"
+	Option Say "I don't have access to the current time, but you can check your device's clock!"
+
+Recognizer "later"
+	Remember "User mentioned later"
+	Option Say "Sounds good! I'll be here whenever you're ready."
+
+Recognizer "now"
+	Remember "User wants something now"
+	Option Say "Perfect timing! I'm ready right now."
+
+Recognizer "soon"
+	Remember "User mentioned soon"
+	Option Say "Great! Looking forward to it."
+
+-- Weather/small talk
+Recognizer "nice weather"
+	Remember "User commented on nice weather"
+	Option Say "It really is lovely! Perfect day to be productive."
+
+Recognizer "terrible weather"
+	Remember "User commented on bad weather"
+	Option Say "Weather like this makes staying inside seem appealing!"
+
+-- Additional common patterns
+Recognizer "interesting"
+	Remember "User found something interesting"
+	Option Say "I'm glad you find it interesting! What caught your attention most?"
+
+Recognizer "cool"
+	Remember "User thinks something is cool"
+	Option Say "Right? I think it's pretty cool too!"
+
+Recognizer "that's great"
+	Remember "User expressed approval"
+	Option Say "I'm so glad you think so! It means a lot to hear that."
+
+Recognizer "makes sense"
+	Remember "User understood something"
+	Option Say "Perfect! I'm glad that makes sense to you now."
+
+Recognizer "I see"
+	Remember "User acknowledged understanding"
+	Option Say "Great! Understanding is the first step forward."
+
+-- Final 30 patterns to reach 100
+Recognizer "right"
+	Remember "User said right"
+	Option Say "Right! Glad we understand each other."
+
+Recognizer "correct"
+	Remember "User said correct"
+	Option Say "Correct! You've got it."
+
+Recognizer "true"
+	Remember "User said true"
+	Option Say "Very true. I couldn't agree more."
+
+Recognizer "indeed"
+	Remember "User said indeed"
+	Option Say "Indeed! Well said."
+
+Recognizer "definitely"
+	Remember "User said definitely"
+	Option Say "Wonderful! Your confidence is reassuring."
+
+Recognizer "which"
+	Remember "User asked which"
+	Option Say "Which option are you most interested in?"
+
+Recognizer "will you"
+	Remember "User asked about my willingness"
+	Option Say "Absolutely! I'm here to help."
+
+Recognizer "can you tell me"
+	Remember "User requested information"
+	Option Say "I'd be glad to tell you! What would you like to know?"
+
+Recognizer "I need to know"
+	Remember "User expressed urgent need for information"
+	Option Say "I understand this is important. What do you need to know?"
+
+Recognizer "help me understand"
+	Remember "User requested explanation"
+	Option Say "Of course! I'll do my best to make it clear. What's confusing you?"
+
+Recognizer "I'm surprised"
+	Remember "User is surprised"
+	Option Say "Surprises can be good or challenging! Tell me more."
+
+Recognizer "I'm angry"
+	Remember "User is angry"
+	Option Say "I can hear that you're upset. What's happened to make you feel this way?"
+
+Recognizer "pardon me"
+	Remember "User was very polite"
+	Option Say "Certainly! What can I do for you?"
+
+Recognizer "my apologies"
+	Remember "User gave formal apology"
+	Option Say "No apologies needed! You're all good."
+
+Recognizer "bless you"
+	Remember "User blessed me"
+	Option Say "Thank you! That's very kind."
+
+Recognizer "you're welcome"
+	Remember "User said you're welcome"
+	Option Say "I appreciate your graciousness!"
+
+Recognizer "explain"
+	Remember "User wants explanation"
+	Option Say "I'll explain step by step. What would you like me to break down?"
+
+Recognizer "I'm having trouble"
+	Remember "User is having trouble"
+	Option Say "I understand! Trouble is just an opportunity to learn. What's the issue?"
+
+Recognizer "how's your day"
+	Remember "User asked about my day"
+	Option Say "My day is going wonderfully! Every conversation makes it better. How's yours?"
+
+Recognizer "when can we"
+	Remember "User asked about scheduling"
+	Option Say "I'm available whenever you need me! What works for your schedule?"
+
+Recognizer "come again"
+	Remember "User wants repetition"
+	Option Say "Of course! Let me say that again."
+
+Recognizer "say that again"
+	Remember "User wants me to repeat"
+	Option Say "Sure thing! Let me repeat that for you."
+
+Recognizer "I missed that"
+	Remember "User missed information"
+	Option Say "No worries! Let me go over that again."
+
+Recognizer "I'm not sure I follow"
+	Remember "User doesn't follow"
+	Option Say "Let me break that down differently so it makes more sense."
+
+Recognizer "could you elaborate"
+	Remember "User wants more detail"
+	Option Say "Of course! Let me give you more detail on that."
+
+Recognizer "what does that mean"
+	Remember "User wants definition"
+	Option Say "Good question! Let me explain what that means."
+
+Recognizer "howdy"
+	Remember "User greeted me western style"
+	Option Say "Howdy! What brings you here today?"
+
+Recognizer "have a good day"
+	Remember "User wished me good day"
+	Option Say "You too! Have a fantastic day."
+
+Recognizer "talk to you later"
+	Remember "User said talk later"
+	Option Say "Sounds good! Talk to you later."
+
+Recognizer "until next time"
+	Remember "User said until next time"
+	Option Say "Until next time! It's been a pleasure."
+

@@ -1,0 +1,272 @@
+-- small-talk-topics.pgm - Small Talk & Casual Conversation Data Collection
+-- A comprehensive collection of small talk topics and conversation starters for any personality
+-- Provides versatile conversational material that works across different bot personalities
+-- Try: "weather", "movie", "food", "weekend plans", "hobbies", "travel", "what's new"
+
+-- === WEATHER SMALL TALK ===
+-- Universal conversation starter that works for any personality
+
+Recognizer "weather"
+	Remember "User mentioned weather"
+	Option Say "Weather is such a classic conversation starter! How's the weather treating you lately?"
+	Option Say "Ah, weather talk! Is it nice where you are, or are you dealing with something dramatic?"
+
+Recognizer "hot"
+	Remember "User mentioned heat"
+	Option Say "Hot weather can be really draining! Are you staying cool somehow, or just trying to survive it?"
+	Option Say "Heat waves are tough! Do you prefer hot weather or are you more of a cooler temperature person?"
+
+Recognizer "cold"
+	Remember "User mentioned cold"
+	Option Say "Cold weather definitely changes everything! Are you bundled up, or do you actually enjoy the chill?"
+	Option Say "Brr! Cold weather can be refreshing or miserable depending on your perspective. How are you handling it?"
+
+Recognizer "rain"
+	Remember "User mentioned rain"
+	Option Say "Rain has such different vibes - sometimes peaceful, sometimes annoying! What's your relationship with rainy days?"
+	Option Say "Rainy weather is so polarizing! Some people love the cozy vibes, others feel stuck inside. Where do you fall?"
+
+Recognizer "snow"
+	Remember "User mentioned snow"
+	Option Say "Snow is magical when you don't have to drive in it! Are you enjoying it or over it?"
+	Option Say "Snow days have such a special feeling! Does snow still make you feel like a kid, or is it just a hassle now?"
+
+-- === ENTERTAINMENT & MEDIA ===
+-- Movies, shows, music, books - universally relatable topics
+
+Recognizer "movie"
+	Remember "User mentioned movies"
+	Option Say "Movies are such a great escape! Seen anything good lately, or looking for recommendations?"
+	Option Say "I love talking about movies! Are you more of a blockbuster person or do you prefer indie films?"
+
+Recognizer "show"
+	Remember "User mentioned TV shows"
+	Option Say "TV shows can be so addictive! Are you binge-watching anything right now?"
+	Option Say "Shows are perfect conversation material! Any current favorites or guilty pleasures?"
+
+Recognizer "music"
+	Remember "User mentioned music"
+	Option Say "Music is such a personal thing! What's been on your playlist lately?"
+	Option Say "Music can totally change your mood! Are you discovering anything new or sticking with old favorites?"
+
+Recognizer "book"
+	Remember "User mentioned books"
+	Option Say "Books are amazing! Are you reading anything that's really grabbed you lately?"
+	Option Say "I love hearing what people are reading! Fiction or non-fiction kind of mood?"
+
+Recognizer "podcast"
+	Remember "User mentioned podcasts"
+	Option Say "Podcasts are everywhere now! Any good ones you'd recommend?"
+	Option Say "The podcast world is huge! Are you into true crime, comedy, educational stuff, or something totally different?"
+
+-- === FOOD & DINING ===
+-- Food talk is universally engaging and relatable
+
+Recognizer "food"
+	Remember "User mentioned food"
+	Option Say "Food is one of life's great pleasures! Any amazing meals or disappointing takeout lately?"
+	Option Say "Food talk is the best! Are you more of a cook-at-home person or a try-new-restaurants explorer?"
+
+Recognizer "restaurant"
+	Remember "User mentioned restaurants"
+	Option Say "Restaurant discoveries are exciting! Found any new places worth going back to?"
+	Option Say "Good restaurants are like hidden treasures! Any recent wins or total misses?"
+
+Recognizer "cooking"
+	Remember "User mentioned cooking"
+	Option Say "Cooking can be therapeutic or stressful depending on the day! How's your relationship with the kitchen?"
+	Option Say "Home cooking has its own rewards! Are you experimenting with new recipes or sticking to tried-and-true favorites?"
+
+Recognizer "coffee"
+	Remember "User mentioned coffee"
+	Option Say "Coffee culture is so fascinating! Are you a coffee connoisseur or just need the caffeine to function?"
+	Option Say "Coffee shops or home brewing? Everyone has their coffee story!"
+
+Recognizer "dessert"
+	Remember "User mentioned dessert"
+	Option Say "Life's too short to skip dessert! Any sweet treats that have caught your attention lately?"
+	Option Say "Dessert is pure happiness! Are you more of a chocolate person or do you branch out?"
+
+-- === HOBBIES & INTERESTS ===
+-- Personal interests that reveal personality and create connections
+
+Recognizer "hobby"
+	Remember "User mentioned hobbies"
+	Option Say "Hobbies are what make life interesting! What's been capturing your time and energy lately?"
+	Option Say "I love learning about people's hobbies! Are you deep into something specific or exploring different interests?"
+
+Recognizer "exercise"
+	Remember "User mentioned exercise"
+	Option Say "Staying active is such a personal journey! What kind of movement makes you feel good?"
+	Option Say "Exercise routines are so individual! Are you more of a gym person, outdoor activity enthusiast, or home workout type?"
+
+Recognizer "sports"
+	Remember "User mentioned sports"
+	Option Say "Sports can be so engaging whether you're playing or watching! Any teams you follow or games you love to play?"
+	Option Say "The sports world never stops! Are you more into watching the action or getting out there yourself?"
+
+Recognizer "gaming"
+	Remember "User mentioned gaming"
+	Option Say "Gaming has become such a huge part of entertainment! What kind of games draw you in?"
+	Option Say "The gaming world is so diverse now! Console, PC, mobile, board games - where do your interests lie?"
+
+Recognizer "art"
+	Remember "User mentioned art"
+	Option Say "Art in any form is so enriching! Are you creating something or more into experiencing what others make?"
+	Option Say "Artistic expression comes in so many forms! What kind of art speaks to you most?"
+
+-- === TRAVEL & PLACES ===
+-- Travel dreams and experiences are highly engaging topics
+
+Recognizer "travel"
+	Remember "User mentioned travel"
+	Option Say "Travel opens up so many possibilities! Any recent adventures or places on your bucket list?"
+	Option Say "Travel stories are the best! Are you planning something exciting or reminiscing about past trips?"
+
+Recognizer "vacation"
+	Remember "User mentioned vacation"
+	Option Say "Vacations are necessary for the soul! Any upcoming getaways or recent escapes from routine?"
+	Option Say "Time off is so precious! Do you prefer action-packed adventures or total relaxation mode?"
+
+Recognizer "city"
+	Remember "User mentioned cities"
+	Option Say "Cities have such unique personalities! Any urban adventures or favorite city vibes recently?"
+	Option Say "City life offers so much variety! Are you exploring your current city or dreaming of others?"
+
+Recognizer "nature"
+	Remember "User mentioned nature"
+	Option Say "Getting out in nature can be so refreshing! Any outdoor spots that have recharged you lately?"
+	Option Say "Nature has a way of putting things in perspective! Mountains, beaches, forests - what calls to you?"
+
+-- === TECHNOLOGY & MODERN LIFE ===
+-- Tech topics that are part of daily conversation
+
+Recognizer "technology"
+	Remember "User mentioned technology"
+	Option Say "Technology changes everything so fast! Any new gadgets or apps that have caught your attention?"
+	Option Say "Tech can be amazing or overwhelming depending on the day! How's your relationship with all the digital stuff?"
+
+Recognizer "app"
+	Remember "User mentioned apps"
+	Option Say "There's an app for everything now! Discovered any game-changers lately?"
+	Option Say "Apps can totally change how we do things! Any recent downloads that have been surprisingly useful?"
+
+Recognizer "social media"
+	Remember "User mentioned social media"
+	Option Say "Social media is such a mixed bag! Love it, hate it, or somewhere in between?"
+	Option Say "The social media landscape keeps evolving! How do you navigate all the platforms and noise?"
+
+-- === DAILY LIFE & ROUTINE ===
+-- Everyday experiences that everyone can relate to
+
+Recognizer "work"
+	Remember "User mentioned work"
+	Option Say "Work life has its ups and downs! How's the job situation treating you these days?"
+	Option Say "The work world is always interesting to talk about! Any exciting projects or just grinding through?"
+
+Recognizer "weekend"
+	Remember "User mentioned weekend"
+	Option Say "Weekends are precious! Any fun plans coming up or recent adventures to share?"
+	Option Say "Weekend vibes are the best! Are you more of a plan-every-minute or see-what-happens type?"
+
+Recognizer "plans"
+	Remember "User mentioned plans"
+	Option Say "Plans give us something to look forward to! Any exciting things on your horizon?"
+	Option Say "Future planning can be fun or stressful! What's got your attention for upcoming events?"
+
+Recognizer "busy"
+	Remember "User mentioned being busy"
+	Option Say "Life can get overwhelming sometimes! What's keeping you running around these days?"
+	Option Say "Busy seasons are rough! Is it the good kind of busy or the 'too much going on' variety?"
+
+-- === SEASONAL & HOLIDAY TOPICS ===
+-- Time-based conversation starters that are naturally relevant
+
+Recognizer "spring"
+	Remember "User mentioned spring"
+	Option Say "Spring energy is so refreshing! Are you feeling the renewal vibes or still shaking off winter?"
+	Option Say "Spring brings so many possibilities! Any seasonal activities or changes you're looking forward to?"
+
+Recognizer "summer"
+	Remember "User mentioned summer"
+	Option Say "Summer has such a unique feeling! Are you soaking up the season or counting down to cooler weather?"
+	Option Say "Summer activities are the best! Beach days, barbecues, outdoor adventures - what's calling to you?"
+
+Recognizer "fall"
+	Remember "User mentioned fall/autumn"
+	Option Say "Fall is such a cozy season! Are you embracing the autumn vibes or sad to see summer go?"
+	Option Say "Autumn has its own magic! Pumpkin everything, changing leaves, crisp air - what do you love about this season?"
+
+Recognizer "winter"
+	Remember "User mentioned winter"
+	Option Say "Winter can be beautiful or brutal depending on where you are! How do you make the most of the cold months?"
+	Option Say "Winter vibes are so specific! Cozy indoor time or outdoor snow activities - where do you find your joy?"
+
+Recognizer "holiday"
+	Remember "User mentioned holidays"
+	Option Say "Holidays bring such a mix of emotions! Any traditions you love or stress you're trying to avoid?"
+	Option Say "Holiday seasons can be wonderful and overwhelming at the same time! How do you navigate all the festivities?"
+
+-- === CONVERSATION STARTERS ===
+-- Direct small talk initiation patterns
+
+Recognizer "what's new"
+	Remember "User asked what's new"
+	Option Say "That's the perfect question! Life's been a mix of routine and surprises. What's new in your world?"
+	Option Say "I love that question because it's so open-ended! What's been happening lately that's worth sharing?"
+
+Recognizer "how's life"
+	Remember "User asked how life is"
+	Option Say "Life's been good! Full of the usual ups and downs. How has life been treating you recently?"
+	Option Say "Life keeps moving! Some days are better than others. What's your life looking like these days?"
+
+Recognizer "anything interesting"
+	Remember "User asked about interesting things"
+	Option Say "Interesting is such a great way to think about experiences! What's been catching your attention lately?"
+	Option Say "Interest is everywhere if you look for it! What's sparked your curiosity or made you think recently?"
+
+Recognizer "tell me something"
+	Remember "User wants to hear something"
+	Option Say "I love open-ended requests! What kind of something - funny, surprising, thoughtful, random?"
+	Option Say "Something could be anything! Are you looking for a story, an observation, or just curious conversation?"
+
+-- === OPINION-BASED SMALL TALK ===
+-- Topics that invite personal perspectives
+
+Recognizer "opinion"
+	Remember "User wants opinions"
+	Option Say "Opinions make conversations interesting! What topic has you thinking or wanting different perspectives?"
+	Option Say "Everyone has opinions! What's something you've been pondering or debating in your head?"
+
+Recognizer "prefer"
+	Remember "User asking about preferences"
+	Option Say "Preferences reveal so much about people! What choice or decision has you weighing options?"
+	Option Say "Personal preferences are fascinating! Are you trying to figure out your own opinion or curious about others?"
+
+Recognizer "favorite"
+	Remember "User asking about favorites"
+	Option Say "Favorites are hard to choose sometimes! What category are you curious about - there are so many possibilities?"
+	Option Say "Favorite things say a lot about us! What's got you thinking about top choices or preferences?"
+
+-- === LIGHTHEARTED & FUN TOPICS ===
+-- Playful conversation starters that work across personalities
+
+Recognizer "random"
+	Remember "User wants random conversation"
+	Option Say "Random conversations can be the most fun! What kind of randomness are you in the mood for?"
+	Option Say "I love random topics! They can lead anywhere. What's bouncing around in your head?"
+
+Recognizer "weird"
+	Remember "User mentioned weird things"
+	Option Say "Weird can be wonderful! The world is full of delightfully strange things. What weirdness have you encountered?"
+	Option Say "Weird observations make the best conversations! What's caught your attention for its oddity?"
+
+Recognizer "funny"
+	Remember "User wants funny topics"
+	Option Say "Funny moments make everything better! Any recent laughs or amusing observations to share?"
+	Option Say "Humor is so subjective and wonderful! What's been making you smile or laugh lately?"
+
+Recognizer "interesting fact"
+	Remember "User wants interesting facts"
+	Option Say "Interesting facts are conversation gold! Any particular topic area you're curious about?"
+	Option Say "Facts can be so surprising! What kind of knowledge has been catching your attention?"

@@ -1,0 +1,30 @@
+
+-- Memory Basics - Learn Moringa's Remember and Recall
+-- This tutorial demonstrates how Moringa bots can store and retrieve information
+--
+-- Try: "hello", "did I say hello", "teach me", "what do you know"
+
+-- Store that user said hello
+Recognizer "hello"
+	Remember "User has greeted me"
+	Option Say "Hello! I'll remember that you greeted me."
+
+-- Check if user greeted before
+Recognizer "did i say hello"
+	Recall "User has greeted me"
+	Option Say "Yes, you did say hello to me."
+
+-- Store a lesson
+Recognizer "teach me"
+	Remember "User wants to learn"
+	Option Say "I'll remember that you want to learn!"
+
+-- Recall what we know
+Recognizer "what do you know"
+	Option Recall "User has greeted me"
+	Option Recall "User wants to learn"
+
+-- Help command
+Recognizer "help"
+	Option Say "Try: 'hello', 'did i say hello', 'teach me', 'what do you know'"
+

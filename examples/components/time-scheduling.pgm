@@ -1,0 +1,211 @@
+
+-- time-scheduling.pgm - Time & Scheduling Management Component
+-- Essential component for handling time queries, scheduling, and temporal conversations
+-- Covers time awareness, appointments, deadlines, and calendar operations
+
+-- Time Queries
+Recognizer "what time is it"
+	Remember "User asked for current time"
+	Option Say "I don't have access to real-time data, but you can check your device's clock!"
+	Option Say "You can check the time on your phone or computer - I don't have clock access."
+
+Recognizer "what's the time"
+	Remember "User asked for time"
+	Option Say "I can't see the current time, but your device should show it!"
+
+Recognizer "current time"
+	Remember "User wants current time"
+	Option Say "Check your system clock - I don't have real-time access."
+
+-- Scheduling Requests
+Recognizer "schedule a meeting"
+	Remember "User wants to schedule meeting"
+	Option Say "I'd love to help with scheduling! What meeting details do you have in mind?"
+	Option Say "Great idea! What time works best for your meeting?"
+
+Recognizer "book an appointment"
+	Remember "User wants appointment"
+	Option Say "I can help you think through appointment scheduling. What type of appointment?"
+
+Recognizer "set a reminder"
+	Remember "User wants reminder"
+	Option Say "Good thinking! What would you like to be reminded about?"
+	Option Say "Reminders are so helpful! What should I help you remember?"
+
+-- Time Periods - Today/Tomorrow
+Recognizer "today"
+	Remember "User mentioned today"
+	Option Say "Today's a great day to get things done! What are you planning?"
+	Option Say "What's on your agenda for today?"
+
+Recognizer "tomorrow"
+	Remember "User mentioned tomorrow"
+	Option Say "Tomorrow's coming up fast! Are you planning ahead?"
+	Option Say "Planning for tomorrow is always smart. What's coming up?"
+
+Recognizer "yesterday"
+	Remember "User mentioned yesterday"
+	Option Say "Yesterday's experiences often inform today's decisions. What happened?"
+
+-- This Week/Next Week
+Recognizer "this week"
+	Remember "User mentioned this week"
+	Option Say "This week can be quite productive! What are your main goals?"
+
+Recognizer "next week"
+	Remember "User mentioned next week"
+	Option Say "Next week will be here before you know it! Any plans forming?"
+
+Recognizer "last week"
+	Remember "User mentioned last week"
+	Option Say "Reflecting on last week can provide valuable insights."
+
+-- Time-Based Planning
+Recognizer "deadline"
+	Remember "User mentioned deadline"
+	Option Say "Deadlines help keep us focused! What deadline are you working with?"
+	Option Say "Managing deadlines is crucial. What's your timeline?"
+
+Recognizer "due date"
+	Remember "User mentioned due date"
+	Option Say "Due dates provide important structure. When is this due?"
+
+Recognizer "when is this due"
+	Remember "User asked about due date"
+	Option Say "That's an important question! Do you have the assignment or project details?"
+
+-- Specific Times
+Recognizer "morning"
+	Remember "User mentioned morning"
+	Option Say "Mornings can be so productive! What's your morning plan?"
+	Option Say "Morning time is often the best for focused work."
+
+Recognizer "afternoon"
+	Remember "User mentioned afternoon"
+	Option Say "Afternoon energy can be great for collaboration and lighter tasks."
+
+Recognizer "evening"
+	Remember "User mentioned evening"
+	Option Say "Evenings are perfect for winding down or catching up on personal projects."
+
+Recognizer "night"
+	Remember "User mentioned night"
+	Option Say "Night time can be peaceful for reflection or creative work."
+
+-- Calendar Operations
+Recognizer "check my calendar"
+	Remember "User wants calendar check"
+	Option Say "I can't access your actual calendar, but I can help you think through scheduling!"
+	Option Say "While I can't see your calendar directly, I'm happy to help with planning!"
+
+Recognizer "free time"
+	Remember "User asked about free time"
+	Option Say "Finding free time is so valuable! When do you typically have openings?"
+
+Recognizer "available"
+	Remember "User mentioned availability"
+	Option Say "Knowing your availability helps with planning. What times work best for you?"
+
+-- Urgency & Priority
+Recognizer "urgent"
+	Remember "User mentioned urgency"
+	Option Say "Urgent matters need immediate attention! What's the situation?"
+	Option Say "When something's urgent, it's good to tackle it right away."
+
+Recognizer "asap"
+	Remember "User wants something ASAP"
+	Option Say "ASAP requests show real priority! What needs immediate attention?"
+
+Recognizer "priority"
+	Remember "User mentioned priority"
+	Option Say "Setting priorities helps manage time effectively. What's most important?"
+
+-- Time Duration
+Recognizer "in 5 minutes"
+	Remember "User mentioned 5 minute timeframe"
+	Option Say "Five minutes goes by quickly! What needs to happen in that time?"
+
+Recognizer "in an hour"
+	Remember "User mentioned hour timeframe"
+	Option Say "An hour gives you some good working time! What's the plan?"
+
+Recognizer "in a few hours"
+	Remember "User mentioned few hours timeframe"
+	Option Say "A few hours provides substantial time to accomplish meaningful work."
+
+-- Recurring Events
+Recognizer "daily"
+	Remember "User mentioned daily occurrence"
+	Option Say "Daily habits and routines can be incredibly powerful for consistency!"
+
+Recognizer "weekly"
+	Remember "User mentioned weekly occurrence"
+	Option Say "Weekly schedules provide great structure for planning and review."
+
+Recognizer "monthly"
+	Remember "User mentioned monthly occurrence"
+	Option Say "Monthly cycles are excellent for bigger picture planning and assessment."
+
+-- Time Zones & Geography
+Recognizer "time zone"
+	Remember "User asked about time zones"
+	Option Say "Time zones can be tricky to manage! Are you coordinating across different zones?"
+
+Recognizer "what time is it in"
+	Remember "User asked about time in specific location"
+	Option Say "I can't check real-time clocks, but online world clock tools are great for this!"
+
+-- Meeting & Event Terms
+Recognizer "meeting"
+	Remember "User mentioned meeting"
+	Option Say "Meetings work best when they're well-planned! What's the meeting about?"
+	Option Say "Good meetings have clear purposes. What are you hoping to accomplish?"
+
+Recognizer "appointment"
+	Remember "User mentioned appointment"
+	Option Say "Appointments help structure our commitments. What type of appointment?"
+
+Recognizer "event"
+	Remember "User mentioned event"
+	Option Say "Events can be exciting to plan! What kind of event are you thinking about?"
+
+-- Time Management Concepts
+Recognizer "schedule"
+	Remember "User mentioned schedule"
+	Option Say "Having a good schedule makes everything flow better! What are you scheduling?"
+	Option Say "Schedules provide structure and peace of mind. What needs to be scheduled?"
+
+Recognizer "calendar"
+	Remember "User mentioned calendar"
+	Option Say "Calendars are essential tools for time management! How do you use yours?"
+
+Recognizer "planner"
+	Remember "User mentioned planner"
+	Option Say "Planners help organize thoughts and time! Do you prefer digital or paper planning?"
+
+-- Procrastination & Time Pressure
+Recognizer "running late"
+	Remember "User is running late"
+	Option Say "Running late happens to everyone! What's the most important thing to focus on now?"
+
+Recognizer "out of time"
+	Remember "User is out of time"
+	Option Say "Time pressure is real! What absolutely must be completed?"
+
+Recognizer "behind schedule"
+	Remember "User is behind schedule"
+	Option Say "Falling behind schedule is stressful, but often manageable with some adjustment!"
+
+-- Waiting & Delays
+Recognizer "waiting for"
+	Remember "User is waiting for something"
+	Option Say "Waiting can be an opportunity or a challenge. What are you waiting for?"
+
+Recognizer "delayed"
+	Remember "User mentioned delay"
+	Option Say "Delays are frustrating but sometimes provide unexpected opportunities to improve plans."
+
+Recognizer "postponed"
+	Remember "User mentioned postponement"
+	Option Say "Sometimes postponing is the right call. What prompted the postponement?"
+

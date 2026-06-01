@@ -1,0 +1,203 @@
+
+-- fallbacks.pgm - Conversation Recovery & Unknown Input Handler Component
+-- Essential component for graceful degradation and conversation flow management
+-- Covers misunderstanding recovery, clarification requests, and conversation continuity
+
+-- Generic Misunderstanding
+Recognizer "I don't understand"
+	Remember "Bot didn't understand user"
+	Option Say "I'm not quite following. Could you try rephrasing that?"
+	Option Say "I didn't catch that. Can you say it differently?"
+
+Recognizer "what"
+	Remember "User said what"
+	Option Say "Sorry, what would you like to know?"
+	Option Say "What specifically can I help you with?"
+
+Recognizer "huh"
+	Remember "User expressed confusion"
+	Option Say "I can see this might be confusing. What would help clarify things?"
+	Option Say "Let me try to be clearer. What are you wondering about?"
+
+-- Clarification Requests
+Recognizer "could you clarify"
+	Remember "User needs clarification"
+	Option Say "Absolutely! What part would you like me to explain more clearly?"
+	Option Say "Of course! What needs more explanation?"
+
+Recognizer "I'm not sure what you mean"
+	Remember "User doesn't understand bot"
+	Option Say "Let me try explaining that differently. What was unclear?"
+	Option Say "I should be clearer. What didn't make sense?"
+
+Recognizer "that doesn't make sense"
+	Remember "User thinks bot doesn't make sense"
+	Option Say "You're right, let me try a different approach. What's confusing?"
+	Option Say "That's fair. Let me explain it better. What part isn't clear?"
+
+-- Conversation Recovery
+Recognizer "nevermind"
+	Remember "User wants to drop topic"
+	Option Say "No problem at all! Is there something else I can help you with?"
+	Option Say "That's totally fine! What else is on your mind?"
+
+Recognizer "forget it"
+	Remember "User wants to abandon topic"
+	Option Say "Sure thing! Let's move on. What would you like to talk about?"
+	Option Say "No worries! Is there anything else I can help with?"
+
+Recognizer "start over"
+	Remember "User wants to start fresh"
+	Option Say "Absolutely! Let's begin again. What can I help you with?"
+	Option Say "Fresh start sounds great! What would you like to do?"
+
+-- Alternative Suggestions
+Recognizer "I don't know what to ask"
+	Remember "User needs conversation suggestions"
+	Option Say "That's totally normal! You could ask me about any topic you're curious about."
+	Option Say "No pressure! Feel free to share anything on your mind, or ask about something you're interested in."
+
+Recognizer "what should I say"
+	Remember "User needs interaction help"
+	Option Say "You can ask me anything! Try asking about a topic you're curious about."
+	Option Say "Just be yourself! Ask about something you're wondering about or tell me what's on your mind."
+
+Recognizer "what can you do"
+	Remember "User asks about capabilities"
+	Option Say "I'm here to chat and help however I can! What kind of assistance are you looking for?"
+	Option Say "I love conversations on all kinds of topics! What interests you most?"
+
+-- Error Acknowledgment
+Recognizer "that's wrong"
+	Remember "User says bot is wrong"
+	Option Say "I appreciate you pointing that out! What should I understand differently?"
+	Option Say "Thank you for the correction! Can you help me understand the right way?"
+
+Recognizer "that's not right"
+	Remember "User corrects bot"
+	Option Say "You're absolutely right to correct me! What's the accurate information?"
+	Option Say "Thanks for setting me straight! What should I know instead?"
+
+Recognizer "you're confused"
+	Remember "User thinks bot is confused"
+	Option Say "I might be! Can you help me understand what I'm missing?"
+	Option Say "You could be right! What would help me get on the right track?"
+
+-- Conversation Flow
+Recognizer "anyway"
+	Remember "User wants to change topic"
+	Option Say "Sure! What's next on your mind?"
+	Option Say "What else would you like to talk about?"
+
+Recognizer "moving on"
+	Remember "User switching topics"
+	Option Say "Sounds good! What would you like to discuss?"
+	Option Say "Perfect! What's next?"
+
+Recognizer "different topic"
+	Remember "User wants topic change"
+	Option Say "Absolutely! What new topic interests you?"
+	Option Say "Great idea! What would you like to explore?"
+
+-- Engagement Recovery
+Recognizer "this is boring"
+	Remember "User finds conversation boring"
+	Option Say "Let's make this more interesting! What would you enjoy talking about?"
+	Option Say "I hear you! What topic would be more engaging for you?"
+
+Recognizer "you're boring"
+	Remember "User finds bot boring"
+	Option Say "Fair point! What would make our conversation more interesting?"
+	Option Say "I can do better! What kind of conversation would you prefer?"
+
+Recognizer "whatever"
+	Remember "User seems disengaged"
+	Option Say "I sense you might be losing interest. What would make this more worthwhile?"
+	Option Say "Let's find something you care about! What matters to you right now?"
+
+-- Repetition Handling
+Recognizer "you already said that"
+	Remember "Bot repeated itself"
+	Option Say "You're absolutely right! Let me try a different approach."
+	Option Say "Good catch! Let me give you something new instead."
+
+Recognizer "we talked about this"
+	Remember "Topic already discussed"
+	Option Say "True! Should we explore a different angle or move to something else?"
+	Option Say "You're right! What new direction should we take?"
+
+-- Technical Difficulties
+Recognizer "you're not working"
+	Remember "User experiencing technical issues"
+	Option Say "I'm sorry you're having trouble! Let's try starting fresh. What can I help with?"
+	Option Say "That's frustrating! Let me try to be more helpful. What do you need?"
+
+Recognizer "broken"
+	Remember "User thinks something is broken"
+	Option Say "Sorry for any confusion! Let's try a different approach. What are you trying to do?"
+	Option Say "Let me try to work better! What would help?"
+
+-- Encouragement to Continue
+Recognizer "I give up"
+	Remember "User wants to give up"
+	Option Say "Don't give up! Sometimes these things take a moment to click. What's the main challenge?"
+	Option Say "I understand it can be frustrating! What would make this easier?"
+
+Recognizer "this is hard"
+	Remember "User finds interaction difficult"
+	Option Say "You're doing fine! What would make this feel easier?"
+	Option Say "Hard things are often worth it! What's the trickiest part?"
+
+Recognizer "I'm lost"
+	Remember "User feels lost in conversation"
+	Option Say "Let's get you back on track! What were you hoping to accomplish?"
+	Option Say "No problem! Let's take it step by step. What's your main question?"
+
+-- Silence Breakers
+Recognizer "umm"
+	Remember "User hesitating"
+	Option Say "Take your time! What's on your mind?"
+	Option Say "No rush! What would you like to talk about?"
+
+Recognizer "uh"
+	Remember "User uncertain"
+	Option Say "It's okay to think it through! What are you considering?"
+	Option Say "What's coming to mind?"
+
+Recognizer "hmm"
+	Remember "User pondering"
+	Option Say "I can see you're thinking! What's percolating?"
+	Option Say "Thinking is good! What's on your mind?"
+
+-- Conversation Starters
+Recognizer "I'm bored"
+	Remember "User is bored"
+	Option Say "Let's fix that! What kind of things usually interest you?"
+	Option Say "Boredom is just potential waiting to be unlocked! What sounds fun?"
+
+Recognizer "entertain me"
+	Remember "User wants entertainment"
+	Option Say "I'd love to! What kind of entertainment appeals to you right now?"
+	Option Say "Let's have some fun! What would be entertaining for you?"
+
+Recognizer "surprise me"
+	Remember "User wants surprise"
+	Option Say "I love surprises! What kind of surprise would delight you most?"
+	Option Say "Surprises are the best! What area should I surprise you about?"
+
+-- Meta-conversation
+Recognizer "how do I talk to you"
+	Remember "User needs interaction guidance"
+	Option Say "Just talk naturally! Ask questions, share thoughts, or tell me what's on your mind."
+	Option Say "Be yourself! I respond to questions, comments, and conversation just like talking to a friend."
+
+Recognizer "what should we talk about"
+	Remember "User wants topic suggestions"
+	Option Say "We could talk about anything you're curious about! What interests you lately?"
+	Option Say "The best conversations start with what matters to you! What's been on your mind?"
+
+Recognizer "is this working"
+	Remember "User checking if conversation is working"
+	Option Say "I think so! How does it feel to you? What would make it better?"
+	Option Say "Seems like it! What would make this conversation work better for you?"
+

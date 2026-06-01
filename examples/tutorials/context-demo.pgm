@@ -1,0 +1,21 @@
+
+-- Context Demo - Learn Moringa's Context Switching
+-- Contexts provide scoped conversation modes
+-- Try: "enter work", "hello", "enter play", "hello", "exit"
+
+-- Global context switchers
+Recognizer "enter work"
+	Enter "work"
+	Remember "User entered work context"
+	Option Say "Entering work mode. Time to be productive!"
+
+Recognizer "enter play"
+	Enter "play"
+	Remember "User entered play context"
+	Option Say "Entering play mode. Let's have fun!"
+
+-- Global greeting (works in any context)
+Recognizer "hello"
+	Remember "User said hello"
+	Option Say "Hello! Try 'enter work' or 'enter play' to see context switching."
+
