@@ -1,0 +1,97 @@
+-- catchall.pgm - Universal Fallback Handler Component
+-- Essential component for handling unrecognized input gracefully
+-- This should be the LAST component loaded to serve as the ultimate fallback
+-- when no other recognizer matches user input
+
+-- The Ultimate Fallback Recognizer
+-- This uses a very broad pattern that matches any single word or phrase
+-- Place this at the END of your script so it only triggers when nothing else matches
+
+Recognizer "[unrecognized]"
+	Remember "User said something unrecognized: [unrecognized]"
+
+	-- Helpful and encouraging responses
+	Option Say "I'm not quite sure what you mean by '[unrecognized]'. Could you try saying it differently?"
+	Option Say "I didn't understand '[unrecognized]'. Can you rephrase that for me?"
+	Option Say "Hmm, '[unrecognized]' isn't something I recognize. What did you have in mind?"
+	Option Say "I'm not familiar with '[unrecognized]'. Could you explain what you meant?"
+	Option Say "That's interesting! I don't know about '[unrecognized]' yet. Can you tell me more?"
+
+	-- Educational responses that guide users
+	Option Say "I'm still learning! '[unrecognized]' is new to me. Try asking in a different way?"
+	Option Say "I want to help, but '[unrecognized]' doesn't ring a bell. What would you like to know?"
+	Option Say "Good question about '[unrecognized]'! I'm not sure about that one. Can you be more specific?"
+
+	-- Gentle redirects with examples
+	Option Say "I'm not sure about '[unrecognized]'. Try asking something like 'hello' or 'what can you do'?"
+	Option Say "I didn't catch that. Maybe try 'help', 'hello', or tell me what's on your mind?"
+
+-- Very Broad Catch-All for Multiple Words
+-- This catches longer phrases that don't match any specific recognizer
+Recognizer "[phrase] [more]"
+	Remember "User said multi-word unrecognized phrase: [phrase] [more]"
+
+	Option Say "I'm not quite following '[phrase] [more]'. Could you break that down for me?"
+	Option Say "That's an interesting phrase! I don't understand '[phrase] [more]' yet. Can you explain?"
+	Option Say "I want to help with '[phrase] [more]', but I'm not sure what you mean. Can you rephrase?"
+	Option Say "Hmm, '[phrase] [more]' is beyond my current knowledge. What specifically are you asking?"
+
+-- Even Broader Catch-All for Long Input
+-- This catches very long or complex input that other recognizers miss
+Recognizer "[a] [b] [c] [d]"
+	Remember "User said long unrecognized input"
+
+	Option Say "That's quite a lot to process! I'm having trouble understanding. Could you simplify?"
+	Option Say "I think I'm missing something in all of that. Can you break it down into smaller pieces?"
+	Option Say "That seems complex! I'd love to help, but could you ask about one thing at a time?"
+	Option Say "I'm getting a bit lost in all those details. What's the main thing you'd like to know?"
+
+-- Emergency Fallback for Unusual Characters
+-- This is for when users type special characters or unusual input
+Recognizer "[anything]"
+	Remember "Ultimate fallback triggered"
+
+	Option Say "I'm having trouble understanding that input. Try using simple words or phrases?"
+	Option Say "Something about that didn't parse correctly. Could you try again with different wording?"
+	Option Say "I'm not quite sure how to interpret that. Can you try expressing it another way?"
+
+-- Meta-Help When User Seems Lost
+-- These can be triggered by the above recognizers to provide guidance
+Sequence "offer_help"
+	Say "If you're not sure what to ask, try:"
+	Say "• 'hello' to start a conversation"
+	Say "• 'help' to learn what I can do"
+	Say "• 'what can you do' to see my capabilities"
+	Say "• Just tell me what's on your mind!"
+
+Sequence "suggest_rephrase"
+	Say "Here are some tips for talking with me:"
+	Say "• Use simple, clear language"
+	Say "• Ask one question at a time"
+	Say "• Try being more specific"
+	Say "• Use common words when possible"
+
+-- Fallback Memory Patterns
+-- These help the bot learn from unrecognized input
+Recognizer "teach me about [topic]"
+	Remember "User wants to teach me about [topic]"
+	Option Say "I'd love to learn about [topic]! What should I know?"
+	Option Say "Please teach me about [topic]! I'm all ears."
+
+Recognizer "you should know [fact]"
+	Remember "User suggests I should know: [fact]"
+	Option Say "Thanks for teaching me that [fact]! I'll remember that."
+	Option Say "Good to know about [fact]! I appreciate you sharing that."
+
+-- Encouragement for Trying Again
+Recognizer "this isn't working"
+	Remember "User frustrated with interaction"
+	Option Say "I understand it can be frustrating! Let's try a different approach. What would help?"
+	Option Say "Sorry it's not working well! What specifically can I do better?"
+	Do "suggest_rephrase"
+
+Recognizer "you don't understand anything"
+	Remember "User thinks bot doesn't understand"
+	Option Say "You're right, I'm still learning! What would help me understand you better?"
+	Option Say "I hear your frustration. What can I do to be more helpful?"
+	Do "offer_help"

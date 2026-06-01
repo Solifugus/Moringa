@@ -300,7 +300,7 @@ class Moringa {
 
 					// Match ?Option (but if not, continue without advancing tt because this was only optional)
 					if( gram[w][0] === '?' ) {
-						if( gram[w].substr(1).toLowerCase() === tokens[tt].value.toLowerCase() ) {
+						if( tt < tokens.length && gram[w].substr(1).toLowerCase() === tokens[tt].value.toLowerCase() ) {
 							if( tokens[t].lineNo === debugLineNo ) console.log('\tOption Flag identified (' + tokens[tt].value + ')');
 							flags.push(gram[w].substr(1));  // case preserved as per grammer, although matched caselessly (might be useful)
 							tt += 1;
@@ -317,12 +317,18 @@ class Moringa {
 							if( tokens[tt].value === '"' ) {
 								quotes.push( tokens[tt+1].value );
 								tt += 3;
-								if( tokens[tt].value !== ',' ) { more = false; }
+								if( tt >= tokens.length || tokens[tt].value !== ',' ) { more = false; }
 								else { tt += 1; }
 							}
 							else { more = false; }
 						}
 						if( quotes.length > 0 ) continue;
+					}
+
+					// Check bounds before accessing token
+					if( tt >= tokens.length ) {
+						matched = false;
+						break;
 					}
 
 					// Is Litteral Match?
@@ -333,7 +339,7 @@ class Moringa {
 					}
 
 					// Was No Match -- Error
-					if( tokens[t].lineNo === debugLineNo ) console.log('\tFAILED on "' + tokens[tt].value + '" found where "' + gram[w] + '" was expected.'); 
+					if( tokens[t].lineNo === debugLineNo ) console.log('\tFAILED on "' + tokens[tt].value + '" found where "' + gram[w] + '" was expected.');
 					matched = false;
 					break;
 				} // end of gram loop (w)
@@ -654,7 +660,7 @@ class Moringa {
 		let log = 'Valid options:\n';
 		for( var i = 0; i < model.awareness.options.length; i += 1 ) {
 			log += '\tOption #' + (i+1) + ' actions:\n';
-			for( var ii = 0; ii < model.awareness.options[i].actions[ii].length; ii +=1 ) {
+			for( var ii = 0; ii < model.awareness.options[i].actions.length; ii +=1 ) {
 				log += '\t\t' + JSON.stringify(model.awareness.options[i].actions[ii]) + '\n';
 			}
 		}
@@ -955,10 +961,15 @@ class Moringa {
 						p    = opener + value.length + 2;
 					} 
 					else {
-						// Get variable value else variable name as the value
-						var value = name;
+						// Get variable value if it exists, otherwise use empty string
+						var value;
 						// TODO: add ability in notation to specify "and", "or", or "and/or"
-						if( variable[name] !== undefined ) value = this.valuesToCommaList(variable[name],'and');
+						if( variable[name] !== undefined && variable[name].length > 0 ) {
+							value = this.valuesToCommaList(variable[name],'and');
+						} else {
+							// Variable doesn't exist or has no values - use a helpful placeholder
+							value = '(unknown)';
+						}
 
 						// Insert value into the output puttern
 						pattern = pattern.substring(0,opener) + this.conjugate(value, conjugations) + pattern.substr(closer+1);
@@ -1178,7 +1189,7 @@ class Moringa {
 
 	countMemories( pattern, variable, model ) {
 		var count = 0;
-		pattern = this.formatOutput( pattern, model.awareness.variable, model.conjugations );
+		pattern = this.formatOutput( pattern, variable, model.conjugations );
 		var matchers = this.formatRecognizerPattern( pattern );
 		for( var m = 0; m < model.memories.length; m += 1 ) {
 			if( this.matchRecognizer( model.memories[m].memory, matchers, model ) !== false ) count += 1;
@@ -1355,8 +1366,8 @@ class Moringa {
 				// For each variable name, remove all previous values and reload, accoridng to what was found
 				var variable = model.awareness.variable;
 				for( var name in found ) {
-					//if( model.awareness.variable[name] === undefined ) model.awareness.variable[name] = []; 
-					if( variable[name] === undefined ) variable[name] = []; 
+					//if( model.awareness.variable[name] === undefined ) model.awareness.variable[name] = [];
+					if( variable[name] === undefined ) variable[name] = [];
 					for( var vf = 0; vf < found[name].length; vf += 1 ) {
 						// Is value already known in variable?
 						let alreadyKnown = false;
@@ -1365,7 +1376,7 @@ class Moringa {
 								alreadyKnown = true;
 								break;
 							}
-						} 
+						}
 						// If value not already known to variable, append it..
 						if( !alreadyKnown ) variable[name].push(found[name][vf]);
 					}
