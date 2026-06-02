@@ -1,0 +1,48 @@
+# Moringa Development Studio - Docker Compose
+# Easy development and deployment setup
+
+version: '3.8'
+
+services:
+  moringa-studio:
+    build: .
+    container_name: moringa-dev-studio
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    volumes:
+      # Mount user scripts for persistence
+      - ./user-scripts:/app/user-scripts
+      # Mount config for customization
+      - ./config:/app/config:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/api/system/info', res => process.exit(res.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: nginx reverse proxy for production
+  nginx:
+    image: nginx:alpine
+    container_name: moringa-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - moringa-studio
+    restart: unless-stopped
+    profiles:
+      - production
+
+volumes:
+  user-scripts:
+    driver: local
+  config:
+    driver: local

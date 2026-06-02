@@ -1,0 +1,301 @@
+-- COMPREHENSIVE MORINGA COMMAND TEST SCRIPT
+-- Tests all available MoringaScript commands and features
+-- Run with: node examples/console.js test_all_commands.pgm
+
+-- ========================================
+-- DATA INITIALIZATION TESTS
+-- ========================================
+
+Memories
+	"test fact one"
+	"test fact two"
+	"python is a programming language"
+	"javascript is for web development"
+
+Conjugate "I" And "you"
+Conjugate "my" And "your"
+Conjugate "I'm" To "you are"
+
+synonyms "hello" : hi, hey, greetings
+synonyms "goodbye" : bye, farewell, see_you
+synonyms "yes" : yep, yeah, sure, absolutely
+synonyms "no" : nope, nah, never
+
+-- ========================================
+-- BASIC COMMUNICATION TESTS
+-- ========================================
+
+recognizer "test say"
+	say "Basic say command works!"
+
+recognizer "test multiple say"
+	say "First message"
+	say "Second message"
+	say "Third message"
+
+recognizer "test delayed say"
+	say "Immediate message"
+	say "This message appears after 2 seconds" in "2 seconds"
+
+recognizer "test scheduled say"
+	say "Setting a reminder for 1 minute from now"
+	say "Reminder: This is your 1-minute reminder!" in "1 minutes"
+
+-- ========================================
+-- VARIABLE CAPTURE TESTS
+-- ========================================
+
+recognizer "my name is [name]"
+	say "Nice to meet you, [name]!"
+	remember "user name is [name]"
+
+recognizer "I am [age] years old"
+	say "Interesting, you are [age] years old."
+	remember "user age is [age]"
+
+recognizer "I like [item]"
+	say "Cool! I'll remember that you like [item]."
+	remember "user likes [item]"
+
+recognizer "I choose [choice:red,blue,green,yellow]"
+	say "You chose [choice]. Good choice!"
+	remember "user favorite color is [choice]"
+
+recognizer "I feel [emotion:happy,sad,angry,excited,tired,confused]"
+	say "I understand you feel [emotion]."
+	remember "user current emotion is [emotion]"
+
+-- ========================================
+-- MEMORY SYSTEM TESTS
+-- ========================================
+
+recognizer "what is my name"
+	recall "user name is [name]"
+	say "Your name is [name]."
+
+recognizer "how old am I"
+	recall "user age is [age]"
+	say "You are [age] years old."
+
+recognizer "what do I like"
+	recall "user likes [item]"
+	say "You like [item]."
+
+recognizer "what is my favorite color"
+	recall "user favorite color is [color]"
+	say "Your favorite color is [color]."
+
+recognizer "how do I feel"
+	recall "user current emotion is [emotion]"
+	say "You feel [emotion]."
+
+recognizer "remember [fact]"
+	remember "[fact]"
+	say "I'll remember that [fact]."
+
+recognizer "what is [topic]"
+	recall "[topic] is [description]"
+	say "[topic] is [description]."
+
+recognizer "forget my name"
+	forget "user name"
+	say "I've forgotten your name."
+
+recognizer "forget [topic]"
+	forget "[topic]"
+	say "I've forgotten about [topic]."
+
+-- ========================================
+-- RESPONSE VARIATION TESTS
+-- ========================================
+
+recognizer "test options"
+	option say "First possible response"
+	option say "Second possible response"
+	option say "Third possible response"
+	option say "Fourth possible response"
+
+recognizer "test many options"
+	option say "Option A"
+	option say "Option B"
+	option say "Option C"
+	option say "Option D"
+	option say "Option E"
+	option say "Option F"
+
+-- ========================================
+-- CONDITIONAL LOGIC TESTS
+-- ========================================
+
+recognizer "test happy condition"
+	remember "user is happy"
+	option if "user is happy":
+		say "Great! I can see you're happy."
+	option:
+		say "This shouldn't appear since you are happy."
+
+recognizer "test sad condition"
+	remember "user is sad"
+	option if "user is sad":
+		say "I'm sorry you're feeling sad."
+	option:
+		say "This shouldn't appear since you are sad."
+
+recognizer "test negative condition"
+	option if not "user is angry":
+		say "Good, you don't seem angry."
+	option:
+		say "This would appear if you were angry."
+
+recognizer "test always condition"
+	always if "test fact one":
+		say "Always condition: I remember test fact one."
+
+recognizer "test open condition"
+	option if "nonexistent fact":
+		say "This won't show because the fact doesn't exist."
+	open:
+		say "Open condition: This is the fallback response."
+
+-- ========================================
+-- CONTEXT MANAGEMENT TESTS
+-- ========================================
+
+context "work"
+	recognizer "enter work context"
+		enter "work"
+		say "Entering work context."
+
+	recognizer "work task"
+		say "Let's focus on work tasks!"
+
+	recognizer "leave work context"
+		exit "work"
+		say "Leaving work context."
+
+context "fun"
+	recognizer "enter fun context"
+		enter "fun"
+		say "Entering fun context!"
+
+	recognizer "fun activity"
+		say "Let's have some fun!"
+
+	recognizer "leave fun context"
+		exit "fun"
+		say "Leaving fun context."
+
+-- Global recognizers (work outside any context)
+recognizer "work task"
+	say "I don't know about work tasks in general context."
+
+recognizer "fun activity"
+	say "I don't know about fun activities in general context."
+
+-- ========================================
+-- SEQUENCE TESTS
+-- ========================================
+
+sequence "greeting_sequence"
+	say "Hello there!"
+	say "How are you today?"
+	say "What can I help you with?"
+
+sequence "goodbye_sequence"
+	say "Thanks for chatting!"
+	say "Have a great day!"
+	say "Come back anytime!"
+
+recognizer "test greeting sequence"
+	do "greeting_sequence"
+
+recognizer "test goodbye sequence"
+	do "goodbye_sequence"
+
+-- ========================================
+-- EXPECTATION TESTS
+-- ========================================
+
+recognizer "ask yes no question"
+	say "Do you like programming? (yes/no)"
+	expect "yes" as "I love programming"
+	expect "no" as "I don't like programming"
+
+recognizer "I love programming"
+	say "That's awesome! Programming is great."
+
+recognizer "I don't like programming"
+	say "That's okay, not everyone enjoys programming."
+
+-- ========================================
+-- REINTERPRETATION TESTS
+-- ========================================
+
+recognizer "absolutely"
+	interpret as "yes"
+
+recognizer "definitely not"
+	interpret as "no"
+
+recognizer "yes"
+	say "You said yes!"
+
+recognizer "no"
+	say "You said no!"
+
+-- ========================================
+-- SYNONYM TESTS
+-- ========================================
+
+recognizer "hello"
+	say "Hello! Synonym recognition working."
+
+recognizer "goodbye"
+	say "Goodbye! Synonym recognition working."
+
+-- ========================================
+-- CONJUGATION TESTS
+-- ========================================
+
+recognizer "I am happy"
+	say "you are happy! Conjugation working."
+
+recognizer "my car is red"
+	say "your car is red! Conjugation working."
+
+-- ========================================
+-- COMPLEX COMBINATION TESTS
+-- ========================================
+
+recognizer "full test [name] [age] [item]"
+	remember "user name is [name]"
+	remember "user age is [age]"
+	remember "user likes [item]"
+	say "Hello [name]! You're [age] and like [item]."
+	say "I'll remember all of that."
+	enter "personal"
+
+context "personal"
+	recognizer "personal test"
+		recall "user name is [name]"
+		recall "user age is [age]"
+		recall "user likes [item]"
+		say "In personal context: [name], age [age], likes [item]."
+
+-- ========================================
+-- ADVANCED TIMING TESTS
+-- ========================================
+
+recognizer "test variable timing [duration] [unit]"
+	say "Setting timer for [duration] [unit]"
+	say "Timer finished for [duration] [unit]!" in "[duration] [unit]"
+
+-- ========================================
+-- FALLBACK PATTERNS
+-- ========================================
+
+recognizer "test complete"
+	say "All command tests are loaded and ready!"
+	say "Try various commands to test different features."
+	say "Use /memory to see stored memories."
+	say "Use /recognizers to see all patterns."

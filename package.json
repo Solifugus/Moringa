@@ -8,7 +8,12 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:example": "node examples/example.js",
-    "console": "node examples/console.js"
+    "console": "node examples/console.js",
+    "dev": "node moringa-dev-server.js",
+    "start": "node moringa-dev-server.js",
+    "test:phase3": "node test_phase3_features.js",
+    "test:statemachine": "node test_state_machine.js",
+    "test:plugins": "node test_plugin_system.js"
   },
   "repository": {
     "type": "git",
@@ -27,6 +32,7 @@
   "homepage": "https://github.com/Solifugus/moringa#readme",
   "dependencies": {
     "datejs": "^1.0.0-rc3",
+    "express": "^4.22.2",
     "fs": "0.0.1-security",
     "retokenizer": "^1.4.2"
   },

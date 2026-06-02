@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moringa Development Studio</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+</head>
+<body class="theme-dark">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <h1 class="logo">
+                <span class="logo-icon">🤖</span>
+                Moringa Development Studio
+                <span class="version">v3.0</span>
+            </h1>
+        </div>
+        <div class="header-center">
+            <div class="project-info">
+                <span id="current-project">No Project</span>
+                <span class="separator">•</span>
+                <span id="connection-status" class="status-disconnected">Disconnected</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <div id="ai-status" class="ai-status disabled">🤖 AI: Checking...</div>
+            <button class="btn btn-sm" id="settings-btn">⚙️ Settings</button>
+            <button class="btn btn-sm btn-primary" id="save-project-btn">💾 Save</button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h3>📁 Project</h3>
+                <div class="project-actions">
+                    <button class="btn btn-sm btn-primary" id="new-script-btn">➕ New Script</button>
+                    <button class="btn btn-sm" id="import-script-btn">📥 Import</button>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>📜 Scripts</h3>
+                <div id="script-list" class="script-list">
+                    <div class="empty-state">
+                        <p>No scripts yet</p>
+                        <small>Create your first MoringaScript</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>🤖 Test Agents</h3>
+                <div id="agent-list" class="agent-list">
+                    <div class="empty-state">
+                        <p>No test agents</p>
+                        <small>Create a script first</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>🔧 Tools</h3>
+                <div class="tool-buttons">
+                    <button class="btn btn-sm btn-secondary" id="validator-btn">✓ Validator</button>
+                    <button class="btn btn-sm btn-secondary" id="state-machine-btn">🗂️ State Machine</button>
+                    <button class="btn btn-sm btn-secondary" id="performance-btn">⚡ Performance</button>
+                </div>
+            </div>
+
+            <div class="sidebar-section ai-feature">
+                <h3>🤖 AI Assistant</h3>
+                <div class="ai-assistant">
+                    <div class="ai-input-group">
+                        <input type="text" id="ai-goal-input" placeholder="Describe your chatbot goal..." class="form-control">
+                        <button class="btn btn-sm btn-primary ai-button" id="ai-suggest-btn">💡 Suggest</button>
+                    </div>
+
+                    <div class="ai-suggestions" id="ai-suggestions" style="display: none;">
+                        <h4>AI Pattern Suggestions</h4>
+                        <div id="ai-suggestions-list"></div>
+                        <div class="ai-actions">
+                            <button class="btn btn-xs ai-button" id="ai-insert-all-btn">Insert All</button>
+                            <button class="btn btn-xs" id="ai-clear-suggestions-btn">Clear</button>
+                        </div>
+                    </div>
+
+                    <div class="ai-tools">
+                        <button class="btn btn-sm ai-button" id="ai-analyze-script-btn" disabled>📊 Analyze Script</button>
+                        <button class="btn btn-sm ai-button" id="ai-analyze-conversation-btn" disabled>📈 Analyze Chat</button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Tab System -->
+            <div class="tab-container">
+                <div class="tab-list" id="tab-list">
+                    <div class="tab-item active" data-tab="welcome">
+                        <span class="tab-icon">🏠</span>
+                        Welcome
+                        <button class="tab-close" data-tab="welcome">×</button>
+                    </div>
+                </div>
+                <div class="tab-actions">
+                    <button class="btn btn-xs" id="close-all-tabs">Close All</button>
+                </div>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Welcome Tab -->
+                <div id="tab-welcome" class="tab-pane active">
+                    <div class="welcome-screen">
+                        <div class="welcome-header">
+                            <h2>🚀 Welcome to Moringa Development Studio</h2>
+                            <p>Visual development environment for advanced conversational AI</p>
+                        </div>
+
+                        <div class="welcome-grid">
+                            <div class="welcome-card">
+                                <h3>🎯 Quick Start</h3>
+                                <ul>
+                                    <li>Create a new MoringaScript</li>
+                                    <li>Define recognizers and responses</li>
+                                    <li>Test with live chat interface</li>
+                                    <li>Deploy to production</li>
+                                </ul>
+                                <button class="btn btn-primary" id="quick-start-btn">Create First Script</button>
+                            </div>
+
+                            <div class="welcome-card">
+                                <h3>✨ Phase 3 Features</h3>
+                                <ul>
+                                    <li><strong>Pattern Priorities</strong> - Smart matching order</li>
+                                    <li><strong>Variable Types</strong> - Email, phone, currency validation</li>
+                                    <li><strong>Advanced Logic</strong> - Complex conditionals</li>
+                                    <li><strong>State Machines</strong> - Multi-step conversations</li>
+                                </ul>
+                                <button class="btn btn-secondary" id="features-btn">View Documentation</button>
+                            </div>
+
+                            <div class="welcome-card">
+                                <h3>🔧 Development Tools</h3>
+                                <ul>
+                                    <li><strong>Script Validator</strong> - Real-time syntax checking</li>
+                                    <li><strong>Test Runner</strong> - Automated conversation testing</li>
+                                    <li><strong>Performance Monitor</strong> - Pattern matching analytics</li>
+                                    <li><strong>State Visualizer</strong> - Flow diagram generator</li>
+                                </ul>
+                                <button class="btn btn-secondary" id="tools-btn">Open Tools</button>
+                            </div>
+                        </div>
+
+                        <div class="recent-projects">
+                            <h3>📂 Recent Projects</h3>
+                            <div id="recent-projects-list">
+                                <p class="empty-state">No recent projects</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Script Editor Tab Template -->
+                <div id="tab-script-template" class="tab-pane" style="display: none;">
+                    <div class="script-editor">
+                        <div class="editor-toolbar">
+                            <div class="editor-info">
+                                <span class="script-name">Untitled Script</span>
+                                <span class="script-status">●</span>
+                            </div>
+                            <div class="editor-actions">
+                                <button class="btn btn-xs" data-action="validate">✓ Validate</button>
+                                <button class="btn btn-xs" data-action="test">▶ Test</button>
+                                <button class="btn btn-xs" data-action="save">💾 Save</button>
+                                <select class="select-xs" data-setting="theme">
+                                    <option value="dark">Dark Theme</option>
+                                    <option value="light">Light Theme</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="editor-content">
+                            <textarea class="script-textarea" placeholder="Write your MoringaScript here...
+
+Example:
+recognizer &quot;hello&quot; priority=10
+    say &quot;Hello! Welcome to Moringa Development Studio!&quot;
+
+recognizer &quot;my name is [name]&quot; priority=8
+    remember &quot;user name is [name|capitalize]&quot; type=&quot;string&quot; scope=&quot;session&quot;
+    say &quot;Nice to meet you, [name|title_case]!&quot;"></textarea>
+                        </div>
+                        <div class="editor-footer">
+                            <div class="editor-stats">
+                                <span class="line-count">Lines: 0</span>
+                                <span class="char-count">Characters: 0</span>
+                                <span class="recognizer-count">Recognizers: 0</span>
+                            </div>
+                            <div class="validation-status">
+                                <span class="validation-result">Ready</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Test Tab Template -->
+                <div id="tab-chat-template" class="tab-pane" style="display: none;">
+                    <div class="chat-interface">
+                        <div class="chat-header">
+                            <div class="chat-info">
+                                <span class="agent-name">Test Agent</span>
+                                <span class="agent-status">●</span>
+                            </div>
+                            <div class="chat-actions">
+                                <button class="btn btn-xs" data-action="clear">🗑️ Clear</button>
+                                <button class="btn btn-xs" data-action="restart">🔄 Restart</button>
+                                <button class="btn btn-xs" data-action="export">💾 Export Chat</button>
+                                <button class="btn btn-xs" data-action="debug">🔍 Debug</button>
+                            </div>
+                        </div>
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="message bot-message">
+                                <div class="message-content">
+                                    <strong>Bot:</strong> Chat interface ready! Send a message to test your script.
+                                </div>
+                                <div class="message-time">Ready</div>
+                            </div>
+                        </div>
+                        <div class="chat-input">
+                            <div class="input-group">
+                                <input type="text" class="chat-input-field" placeholder="Type your message..." />
+                                <button class="btn btn-primary" id="send-message-btn">Send</button>
+                            </div>
+                            <div class="typing-indicator" style="display: none;">
+                                <span>Bot is typing</span>
+                                <div class="typing-dots">
+                                    <span></span><span></span><span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Validator Tab Template -->
+                <div id="tab-validator-template" class="tab-pane" style="display: none;">
+                    <div class="validator-interface">
+                        <div class="validator-header">
+                            <h3>✓ Script Validator</h3>
+                            <p>Real-time syntax checking and optimization suggestions</p>
+                        </div>
+                        <div class="validator-results">
+                            <div class="validation-summary">
+                                <div class="summary-item">
+                                    <span class="summary-label">Status:</span>
+                                    <span class="summary-value status-unknown">Not Validated</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Recognizers:</span>
+                                    <span class="summary-value">0</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Issues:</span>
+                                    <span class="summary-value">0</span>
+                                </div>
+                            </div>
+                            <div class="validation-details">
+                                <div class="empty-state">
+                                    <p>Select a script to validate</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- State Machine Tab Template -->
+                <div id="tab-statemachine-template" class="tab-pane" style="display: none;">
+                    <div class="statemachine-interface">
+                        <div class="sm-header">
+                            <h3>🗂️ State Machine Designer</h3>
+                            <div class="sm-actions">
+                                <button class="btn btn-sm" data-action="new-state">➕ Add State</button>
+                                <button class="btn btn-sm" data-action="new-transition">🔀 Add Transition</button>
+                                <button class="btn btn-sm" data-action="visualize">👁️ Visualize</button>
+                                <button class="btn btn-sm" data-action="export">📤 Export</button>
+                            </div>
+                        </div>
+                        <div class="sm-content">
+                            <div class="sm-canvas">
+                                <svg id="state-machine-svg" width="100%" height="400">
+                                    <defs>
+                                        <marker id="arrowhead" markerWidth="10" markerHeight="7"
+                                                refX="10" refY="3.5" orient="auto">
+                                            <polygon points="0 0, 10 3.5, 0 7" fill="#666" />
+                                        </marker>
+                                    </defs>
+                                    <text x="50%" y="50%" text-anchor="middle" class="empty-state-text">
+                                        State machine visualization will appear here
+                                    </text>
+                                </svg>
+                            </div>
+                            <div class="sm-properties">
+                                <h4>Properties</h4>
+                                <div class="sm-property-panel">
+                                    <p class="empty-state">Select a state or transition to edit properties</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Side Panel (for debug info, variables, etc.) -->
+        <aside class="side-panel" id="side-panel" style="display: none;">
+            <div class="side-panel-header">
+                <h3 id="side-panel-title">Debug Information</h3>
+                <button class="btn btn-xs" id="close-side-panel">×</button>
+            </div>
+            <div class="side-panel-content" id="side-panel-content">
+                <!-- Dynamic content -->
+            </div>
+        </aside>
+    </div>
+
+    <!-- Modals -->
+    <!-- New Script Modal -->
+    <div id="new-script-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New Script</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="new-script-form">
+                    <div class="form-group">
+                        <label for="script-name">Script Name:</label>
+                        <input type="text" id="script-name" name="name" placeholder="My Awesome Bot" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="script-type">Script Type:</label>
+                        <select id="script-type" name="type">
+                            <option value="moringa">MoringaScript</option>
+                            <option value="statemachine">State Machine</option>
+                            <option value="plugin">Plugin</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="script-template">Template:</label>
+                        <select id="script-template" name="template">
+                            <option value="blank">Blank Script</option>
+                            <option value="basic-bot">Basic Chatbot</option>
+                            <option value="customer-service">Customer Service</option>
+                            <option value="survey-bot">Survey Bot</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancel-new-script">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="create-new-script">Create Script</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Settings</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h4>Appearance</h4>
+                    <div class="form-group">
+                        <label for="theme-select">Theme:</label>
+                        <select id="theme-select">
+                            <option value="dark">Dark</option>
+                            <option value="light">Light</option>
+                            <option value="auto">Auto</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h4>Editor</h4>
+                    <div class="form-group">
+                        <label for="auto-save">
+                            <input type="checkbox" id="auto-save" checked> Auto-save scripts
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="debug-level">Debug Level:</label>
+                        <select id="debug-level">
+                            <option value="error">Error</option>
+                            <option value="warn">Warning</option>
+                            <option value="info">Info</option>
+                            <option value="debug">Debug</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancel-settings">Cancel</button>
+                <button type="button" class="btn btn-primary" id="save-settings">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="loading-spinner" style="display: none;">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/app.js"></script>
+    <script>
+        // Initialize the application when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            window.MoringaStudio = new MoringaDevStudio();
+            window.MoringaStudio.init();
+        });
+    </script>
+</body>
+</html>

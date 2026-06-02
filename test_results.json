@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-06-01T23:43:45.274Z",
+  "summary": {
+    "passed": 18,
+    "failed": 0,
+    "skipped": 0,
+    "errors": []
+  },
+  "performance": {
+    "totalTests": 18,
+    "totalDuration": 83,
+    "slowTests": []
+  },
+  "coverage": {
+    "recognizers": [],
+    "contexts": [],
+    "actions": [],
+    "conditions": []
+  },
+  "errors": []
+}

@@ -1,0 +1,2672 @@
+{
+  "filePath": "test_3.pgm",
+  "isValid": true,
+  "analysis": {
+    "filePath": "test_3.pgm",
+    "script": "\nrecognizer \"this is a very very very long pattern that exceeds reasonable length limits and might cause performance issues\"\n    say \"Long pattern response\"\n\nrecognizer \"pattern with [var1] and [var2] and [var3] and [var4] and [var5] and [var6]\"\n    say \"Too many variables: [var1] [var2] [var3] [var4] [var5] [var6]\"\n\ncontext \"main\"\n\n    recognizer \"test pattern 0\"\n        say \"Response 0\"\n    recognizer \"test pattern 1\"\n        say \"Response 1\"\n    recognizer \"test pattern 2\"\n        say \"Response 2\"\n    recognizer \"test pattern 3\"\n        say \"Response 3\"\n    recognizer \"test pattern 4\"\n        say \"Response 4\"\n    recognizer \"test pattern 5\"\n        say \"Response 5\"\n    recognizer \"test pattern 6\"\n        say \"Response 6\"\n    recognizer \"test pattern 7\"\n        say \"Response 7\"\n    recognizer \"test pattern 8\"\n        say \"Response 8\"\n    recognizer \"test pattern 9\"\n        say \"Response 9\"\n    recognizer \"test pattern 10\"\n        say \"Response 10\"\n    recognizer \"test pattern 11\"\n        say \"Response 11\"\n    recognizer \"test pattern 12\"\n        say \"Response 12\"\n    recognizer \"test pattern 13\"\n        say \"Response 13\"\n    recognizer \"test pattern 14\"\n        say \"Response 14\"\n    recognizer \"test pattern 15\"\n        say \"Response 15\"\n    recognizer \"test pattern 16\"\n        say \"Response 16\"\n    recognizer \"test pattern 17\"\n        say \"Response 17\"\n    recognizer \"test pattern 18\"\n        say \"Response 18\"\n    recognizer \"test pattern 19\"\n        say \"Response 19\"\n    recognizer \"test pattern 20\"\n        say \"Response 20\"\n    recognizer \"test pattern 21\"\n        say \"Response 21\"\n    recognizer \"test pattern 22\"\n        say \"Response 22\"\n    recognizer \"test pattern 23\"\n        say \"Response 23\"\n    recognizer \"test pattern 24\"\n        say \"Response 24\"\n    recognizer \"test pattern 25\"\n        say \"Response 25\"\n    recognizer \"test pattern 26\"\n        say \"Response 26\"\n    recognizer \"test pattern 27\"\n        say \"Response 27\"\n    recognizer \"test pattern 28\"\n        say \"Response 28\"\n    recognizer \"test pattern 29\"\n        say \"Response 29\"\n    recognizer \"test pattern 30\"\n        say \"Response 30\"\n    recognizer \"test pattern 31\"\n        say \"Response 31\"\n    recognizer \"test pattern 32\"\n        say \"Response 32\"\n    recognizer \"test pattern 33\"\n        say \"Response 33\"\n    recognizer \"test pattern 34\"\n        say \"Response 34\"\n    recognizer \"test pattern 35\"\n        say \"Response 35\"\n    recognizer \"test pattern 36\"\n        say \"Response 36\"\n    recognizer \"test pattern 37\"\n        say \"Response 37\"\n    recognizer \"test pattern 38\"\n        say \"Response 38\"\n    recognizer \"test pattern 39\"\n        say \"Response 39\"\n    recognizer \"test pattern 40\"\n        say \"Response 40\"\n    recognizer \"test pattern 41\"\n        say \"Response 41\"\n    recognizer \"test pattern 42\"\n        say \"Response 42\"\n    recognizer \"test pattern 43\"\n        say \"Response 43\"\n    recognizer \"test pattern 44\"\n        say \"Response 44\"\n    recognizer \"test pattern 45\"\n        say \"Response 45\"\n    recognizer \"test pattern 46\"\n        say \"Response 46\"\n    recognizer \"test pattern 47\"\n        say \"Response 47\"\n    recognizer \"test pattern 48\"\n        say \"Response 48\"\n    recognizer \"test pattern 49\"\n        say \"Response 49\"\n    recognizer \"test pattern 50\"\n        say \"Response 50\"\n    recognizer \"test pattern 51\"\n        say \"Response 51\"\n    recognizer \"test pattern 52\"\n        say \"Response 52\"\n    recognizer \"test pattern 53\"\n        say \"Response 53\"\n    recognizer \"test pattern 54\"\n        say \"Response 54\"\n    recognizer \"test pattern 55\"\n        say \"Response 55\"\n    recognizer \"test pattern 56\"\n        say \"Response 56\"\n    recognizer \"test pattern 57\"\n        say \"Response 57\"\n    recognizer \"test pattern 58\"\n        say \"Response 58\"\n    recognizer \"test pattern 59\"\n        say \"Response 59\"\n",
+    "lines": [
+      "",
+      "recognizer \"this is a very very very long pattern that exceeds reasonable length limits and might cause performance issues\"",
+      "    say \"Long pattern response\"",
+      "",
+      "recognizer \"pattern with [var1] and [var2] and [var3] and [var4] and [var5] and [var6]\"",
+      "    say \"Too many variables: [var1] [var2] [var3] [var4] [var5] [var6]\"",
+      "",
+      "context \"main\"",
+      "",
+      "    recognizer \"test pattern 0\"",
+      "        say \"Response 0\"",
+      "    recognizer \"test pattern 1\"",
+      "        say \"Response 1\"",
+      "    recognizer \"test pattern 2\"",
+      "        say \"Response 2\"",
+      "    recognizer \"test pattern 3\"",
+      "        say \"Response 3\"",
+      "    recognizer \"test pattern 4\"",
+      "        say \"Response 4\"",
+      "    recognizer \"test pattern 5\"",
+      "        say \"Response 5\"",
+      "    recognizer \"test pattern 6\"",
+      "        say \"Response 6\"",
+      "    recognizer \"test pattern 7\"",
+      "        say \"Response 7\"",
+      "    recognizer \"test pattern 8\"",
+      "        say \"Response 8\"",
+      "    recognizer \"test pattern 9\"",
+      "        say \"Response 9\"",
+      "    recognizer \"test pattern 10\"",
+      "        say \"Response 10\"",
+      "    recognizer \"test pattern 11\"",
+      "        say \"Response 11\"",
+      "    recognizer \"test pattern 12\"",
+      "        say \"Response 12\"",
+      "    recognizer \"test pattern 13\"",
+      "        say \"Response 13\"",
+      "    recognizer \"test pattern 14\"",
+      "        say \"Response 14\"",
+      "    recognizer \"test pattern 15\"",
+      "        say \"Response 15\"",
+      "    recognizer \"test pattern 16\"",
+      "        say \"Response 16\"",
+      "    recognizer \"test pattern 17\"",
+      "        say \"Response 17\"",
+      "    recognizer \"test pattern 18\"",
+      "        say \"Response 18\"",
+      "    recognizer \"test pattern 19\"",
+      "        say \"Response 19\"",
+      "    recognizer \"test pattern 20\"",
+      "        say \"Response 20\"",
+      "    recognizer \"test pattern 21\"",
+      "        say \"Response 21\"",
+      "    recognizer \"test pattern 22\"",
+      "        say \"Response 22\"",
+      "    recognizer \"test pattern 23\"",
+      "        say \"Response 23\"",
+      "    recognizer \"test pattern 24\"",
+      "        say \"Response 24\"",
+      "    recognizer \"test pattern 25\"",
+      "        say \"Response 25\"",
+      "    recognizer \"test pattern 26\"",
+      "        say \"Response 26\"",
+      "    recognizer \"test pattern 27\"",
+      "        say \"Response 27\"",
+      "    recognizer \"test pattern 28\"",
+      "        say \"Response 28\"",
+      "    recognizer \"test pattern 29\"",
+      "        say \"Response 29\"",
+      "    recognizer \"test pattern 30\"",
+      "        say \"Response 30\"",
+      "    recognizer \"test pattern 31\"",
+      "        say \"Response 31\"",
+      "    recognizer \"test pattern 32\"",
+      "        say \"Response 32\"",
+      "    recognizer \"test pattern 33\"",
+      "        say \"Response 33\"",
+      "    recognizer \"test pattern 34\"",
+      "        say \"Response 34\"",
+      "    recognizer \"test pattern 35\"",
+      "        say \"Response 35\"",
+      "    recognizer \"test pattern 36\"",
+      "        say \"Response 36\"",
+      "    recognizer \"test pattern 37\"",
+      "        say \"Response 37\"",
+      "    recognizer \"test pattern 38\"",
+      "        say \"Response 38\"",
+      "    recognizer \"test pattern 39\"",
+      "        say \"Response 39\"",
+      "    recognizer \"test pattern 40\"",
+      "        say \"Response 40\"",
+      "    recognizer \"test pattern 41\"",
+      "        say \"Response 41\"",
+      "    recognizer \"test pattern 42\"",
+      "        say \"Response 42\"",
+      "    recognizer \"test pattern 43\"",
+      "        say \"Response 43\"",
+      "    recognizer \"test pattern 44\"",
+      "        say \"Response 44\"",
+      "    recognizer \"test pattern 45\"",
+      "        say \"Response 45\"",
+      "    recognizer \"test pattern 46\"",
+      "        say \"Response 46\"",
+      "    recognizer \"test pattern 47\"",
+      "        say \"Response 47\"",
+      "    recognizer \"test pattern 48\"",
+      "        say \"Response 48\"",
+      "    recognizer \"test pattern 49\"",
+      "        say \"Response 49\"",
+      "    recognizer \"test pattern 50\"",
+      "        say \"Response 50\"",
+      "    recognizer \"test pattern 51\"",
+      "        say \"Response 51\"",
+      "    recognizer \"test pattern 52\"",
+      "        say \"Response 52\"",
+      "    recognizer \"test pattern 53\"",
+      "        say \"Response 53\"",
+      "    recognizer \"test pattern 54\"",
+      "        say \"Response 54\"",
+      "    recognizer \"test pattern 55\"",
+      "        say \"Response 55\"",
+      "    recognizer \"test pattern 56\"",
+      "        say \"Response 56\"",
+      "    recognizer \"test pattern 57\"",
+      "        say \"Response 57\"",
+      "    recognizer \"test pattern 58\"",
+      "        say \"Response 58\"",
+      "    recognizer \"test pattern 59\"",
+      "        say \"Response 59\"",
+      ""
+    ],
+    "tokens": [
+      {
+        "value": "recognizer",
+        "line": 2,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"this is a very very very long pattern that exceeds reasonable length limits and might cause performance issues\"",
+        "line": 2,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 3,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Long pattern response\"",
+        "line": 3,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 5,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"pattern with [var1] and [var2] and [var3] and [var4] and [var5] and [var6]\"",
+        "line": 5,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 6,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Too many variables: [var1] [var2] [var3] [var4] [var5] [var6]\"",
+        "line": 6,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "context",
+        "line": 8,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"main\"",
+        "line": 8,
+        "column": 8,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 10,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 0\"",
+        "line": 10,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 11,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 0\"",
+        "line": 11,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 12,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 1\"",
+        "line": 12,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 13,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 1\"",
+        "line": 13,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 14,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 2\"",
+        "line": 14,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 15,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 2\"",
+        "line": 15,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 16,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 3\"",
+        "line": 16,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 17,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 3\"",
+        "line": 17,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 18,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 4\"",
+        "line": 18,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 19,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 4\"",
+        "line": 19,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 20,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 5\"",
+        "line": 20,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 21,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 5\"",
+        "line": 21,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 22,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 6\"",
+        "line": 22,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 23,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 6\"",
+        "line": 23,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 24,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 7\"",
+        "line": 24,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 25,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 7\"",
+        "line": 25,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 26,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 8\"",
+        "line": 26,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 27,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 8\"",
+        "line": 27,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 28,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 9\"",
+        "line": 28,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 29,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 9\"",
+        "line": 29,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 30,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 10\"",
+        "line": 30,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 31,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 10\"",
+        "line": 31,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 32,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 11\"",
+        "line": 32,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 33,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 11\"",
+        "line": 33,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 34,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 12\"",
+        "line": 34,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 35,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 12\"",
+        "line": 35,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 36,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 13\"",
+        "line": 36,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 37,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 13\"",
+        "line": 37,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 38,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 14\"",
+        "line": 38,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 39,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 14\"",
+        "line": 39,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 40,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 15\"",
+        "line": 40,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 41,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 15\"",
+        "line": 41,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 42,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 16\"",
+        "line": 42,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 43,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 16\"",
+        "line": 43,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 44,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 17\"",
+        "line": 44,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 45,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 17\"",
+        "line": 45,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 46,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 18\"",
+        "line": 46,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 47,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 18\"",
+        "line": 47,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 48,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 19\"",
+        "line": 48,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 49,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 19\"",
+        "line": 49,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 50,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 20\"",
+        "line": 50,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 51,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 20\"",
+        "line": 51,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 52,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 21\"",
+        "line": 52,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 53,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 21\"",
+        "line": 53,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 54,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 22\"",
+        "line": 54,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 55,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 22\"",
+        "line": 55,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 56,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 23\"",
+        "line": 56,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 57,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 23\"",
+        "line": 57,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 58,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 24\"",
+        "line": 58,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 59,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 24\"",
+        "line": 59,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 60,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 25\"",
+        "line": 60,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 61,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 25\"",
+        "line": 61,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 62,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 26\"",
+        "line": 62,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 63,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 26\"",
+        "line": 63,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 64,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 27\"",
+        "line": 64,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 65,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 27\"",
+        "line": 65,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 66,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 28\"",
+        "line": 66,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 67,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 28\"",
+        "line": 67,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 68,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 29\"",
+        "line": 68,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 69,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 29\"",
+        "line": 69,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 70,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 30\"",
+        "line": 70,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 71,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 30\"",
+        "line": 71,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 72,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 31\"",
+        "line": 72,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 73,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 31\"",
+        "line": 73,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 74,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 32\"",
+        "line": 74,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 75,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 32\"",
+        "line": 75,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 76,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 33\"",
+        "line": 76,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 77,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 33\"",
+        "line": 77,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 78,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 34\"",
+        "line": 78,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 79,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 34\"",
+        "line": 79,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 80,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 35\"",
+        "line": 80,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 81,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 35\"",
+        "line": 81,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 82,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 36\"",
+        "line": 82,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 83,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 36\"",
+        "line": 83,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 84,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 37\"",
+        "line": 84,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 85,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 37\"",
+        "line": 85,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 86,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 38\"",
+        "line": 86,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 87,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 38\"",
+        "line": 87,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 88,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 39\"",
+        "line": 88,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 89,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 39\"",
+        "line": 89,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 90,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 40\"",
+        "line": 90,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 91,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 40\"",
+        "line": 91,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 92,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 41\"",
+        "line": 92,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 93,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 41\"",
+        "line": 93,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 94,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 42\"",
+        "line": 94,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 95,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 42\"",
+        "line": 95,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 96,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 43\"",
+        "line": 96,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 97,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 43\"",
+        "line": 97,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 98,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 44\"",
+        "line": 98,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 99,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 44\"",
+        "line": 99,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 100,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 45\"",
+        "line": 100,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 101,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 45\"",
+        "line": 101,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 102,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 46\"",
+        "line": 102,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 103,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 46\"",
+        "line": 103,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 104,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 47\"",
+        "line": 104,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 105,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 47\"",
+        "line": 105,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 106,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 48\"",
+        "line": 106,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 107,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 48\"",
+        "line": 107,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 108,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 49\"",
+        "line": 108,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 109,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 49\"",
+        "line": 109,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 110,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 50\"",
+        "line": 110,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 111,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 50\"",
+        "line": 111,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 112,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 51\"",
+        "line": 112,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 113,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 51\"",
+        "line": 113,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 114,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 52\"",
+        "line": 114,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 115,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 52\"",
+        "line": 115,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 116,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 53\"",
+        "line": 116,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 117,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 53\"",
+        "line": 117,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 118,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 54\"",
+        "line": 118,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 119,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 54\"",
+        "line": 119,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 120,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 55\"",
+        "line": 120,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 121,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 55\"",
+        "line": 121,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 122,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 56\"",
+        "line": 122,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 123,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 56\"",
+        "line": 123,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 124,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 57\"",
+        "line": 124,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 125,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 57\"",
+        "line": 125,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 126,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 58\"",
+        "line": 126,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 127,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 58\"",
+        "line": 127,
+        "column": 4,
+        "type": "STRING"
+      },
+      {
+        "value": "recognizer",
+        "line": 128,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"test pattern 59\"",
+        "line": 128,
+        "column": 11,
+        "type": "STRING"
+      },
+      {
+        "value": "say",
+        "line": 129,
+        "column": 1,
+        "type": "KEYWORD"
+      },
+      {
+        "value": "\"Response 59\"",
+        "line": 129,
+        "column": 4,
+        "type": "STRING"
+      }
+    ],
+    "structure": {
+      "memories": [],
+      "synonyms": [],
+      "conjugations": [],
+      "contexts": [
+        {
+          "name": "main",
+          "line": 8,
+          "recognizers": []
+        }
+      ],
+      "recognizers": [
+        {
+          "pattern": "this is a very very very long pattern that exceeds reasonable length limits and might cause performance issues",
+          "context": "general",
+          "line": 2,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "pattern with [var1] and [var2] and [var3] and [var4] and [var5] and [var6]",
+          "context": "general",
+          "line": 5,
+          "actions": [],
+          "options": [],
+          "variables": [
+            "var1",
+            "var2",
+            "var3",
+            "var4",
+            "var5",
+            "var6"
+          ]
+        },
+        {
+          "pattern": "test pattern 0",
+          "context": "main",
+          "line": 10,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 1",
+          "context": "main",
+          "line": 12,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 2",
+          "context": "main",
+          "line": 14,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 3",
+          "context": "main",
+          "line": 16,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 4",
+          "context": "main",
+          "line": 18,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 5",
+          "context": "main",
+          "line": 20,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 6",
+          "context": "main",
+          "line": 22,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 7",
+          "context": "main",
+          "line": 24,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 8",
+          "context": "main",
+          "line": 26,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 9",
+          "context": "main",
+          "line": 28,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 10",
+          "context": "main",
+          "line": 30,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 11",
+          "context": "main",
+          "line": 32,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 12",
+          "context": "main",
+          "line": 34,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 13",
+          "context": "main",
+          "line": 36,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 14",
+          "context": "main",
+          "line": 38,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 15",
+          "context": "main",
+          "line": 40,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 16",
+          "context": "main",
+          "line": 42,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 17",
+          "context": "main",
+          "line": 44,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 18",
+          "context": "main",
+          "line": 46,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 19",
+          "context": "main",
+          "line": 48,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 20",
+          "context": "main",
+          "line": 50,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 21",
+          "context": "main",
+          "line": 52,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 22",
+          "context": "main",
+          "line": 54,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 23",
+          "context": "main",
+          "line": 56,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 24",
+          "context": "main",
+          "line": 58,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 25",
+          "context": "main",
+          "line": 60,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 26",
+          "context": "main",
+          "line": 62,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 27",
+          "context": "main",
+          "line": 64,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 28",
+          "context": "main",
+          "line": 66,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 29",
+          "context": "main",
+          "line": 68,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 30",
+          "context": "main",
+          "line": 70,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 31",
+          "context": "main",
+          "line": 72,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 32",
+          "context": "main",
+          "line": 74,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 33",
+          "context": "main",
+          "line": 76,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 34",
+          "context": "main",
+          "line": 78,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 35",
+          "context": "main",
+          "line": 80,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 36",
+          "context": "main",
+          "line": 82,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 37",
+          "context": "main",
+          "line": 84,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 38",
+          "context": "main",
+          "line": 86,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 39",
+          "context": "main",
+          "line": 88,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 40",
+          "context": "main",
+          "line": 90,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 41",
+          "context": "main",
+          "line": 92,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 42",
+          "context": "main",
+          "line": 94,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 43",
+          "context": "main",
+          "line": 96,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 44",
+          "context": "main",
+          "line": 98,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 45",
+          "context": "main",
+          "line": 100,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 46",
+          "context": "main",
+          "line": 102,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 47",
+          "context": "main",
+          "line": 104,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 48",
+          "context": "main",
+          "line": 106,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 49",
+          "context": "main",
+          "line": 108,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 50",
+          "context": "main",
+          "line": 110,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 51",
+          "context": "main",
+          "line": 112,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 52",
+          "context": "main",
+          "line": 114,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 53",
+          "context": "main",
+          "line": 116,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 54",
+          "context": "main",
+          "line": 118,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 55",
+          "context": "main",
+          "line": 120,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 56",
+          "context": "main",
+          "line": 122,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 57",
+          "context": "main",
+          "line": 124,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 58",
+          "context": "main",
+          "line": 126,
+          "actions": [],
+          "options": [],
+          "variables": []
+        },
+        {
+          "pattern": "test pattern 59",
+          "context": "main",
+          "line": 128,
+          "actions": [],
+          "options": [],
+          "variables": []
+        }
+      ],
+      "sequences": []
+    },
+    "patterns": {},
+    "variables": {},
+    "actions": {},
+    "conditions": {},
+    "references": {}
+  },
+  "metrics": {
+    "recognizers": 62,
+    "contexts": 1,
+    "memories": 0,
+    "variables": {},
+    "unusedPatterns": [
+      "this is a very very very long pattern that exceeds reasonable length limits and might cause performance issues",
+      "pattern with [var1] and [var2] and [var3] and [var4] and [var5] and [var6]",
+      "test pattern 0",
+      "test pattern 1",
+      "test pattern 2",
+      "test pattern 3",
+      "test pattern 4",
+      "test pattern 5",
+      "test pattern 6",
+      "test pattern 7",
+      "test pattern 8",
+      "test pattern 9",
+      "test pattern 10",
+      "test pattern 11",
+      "test pattern 12",
+      "test pattern 13",
+      "test pattern 14",
+      "test pattern 15",
+      "test pattern 16",
+      "test pattern 17",
+      "test pattern 18",
+      "test pattern 19",
+      "test pattern 20",
+      "test pattern 21",
+      "test pattern 22",
+      "test pattern 23",
+      "test pattern 24",
+      "test pattern 25",
+      "test pattern 26",
+      "test pattern 27",
+      "test pattern 28",
+      "test pattern 29",
+      "test pattern 30",
+      "test pattern 31",
+      "test pattern 32",
+      "test pattern 33",
+      "test pattern 34",
+      "test pattern 35",
+      "test pattern 36",
+      "test pattern 37",
+      "test pattern 38",
+      "test pattern 39",
+      "test pattern 40",
+      "test pattern 41",
+      "test pattern 42",
+      "test pattern 43",
+      "test pattern 44",
+      "test pattern 45",
+      "test pattern 46",
+      "test pattern 47",
+      "test pattern 48",
+      "test pattern 49",
+      "test pattern 50",
+      "test pattern 51",
+      "test pattern 52",
+      "test pattern 53",
+      "test pattern 54",
+      "test pattern 55",
+      "test pattern 56",
+      "test pattern 57",
+      "test pattern 58",
+      "test pattern 59"
+    ],
+    "complexityScore": 67.5
+  },
+  "issues": {
+    "errors": [],
+    "warnings": [
+      {
+        "type": "PATTERN_DESIGN",
+        "message": "Pattern may be too specific: \"this is a very very very long pattern that exceeds reasonable length limits and might cause performance issues\"",
+        "line": 2,
+        "severity": "warning"
+      },
+      {
+        "type": "PATTERN_DESIGN",
+        "message": "Pattern may be too specific: \"pattern with [var1] and [var2] and [var3] and [var4] and [var5] and [var6]\"",
+        "line": 5,
+        "severity": "warning"
+      },
+      {
+        "type": "PERFORMANCE",
+        "message": "Pattern too long (110 chars): \"this is a very very very long pattern that exceeds reasonable length limits and might cause performance issues\"",
+        "line": 2,
+        "severity": "warning"
+      },
+      {
+        "type": "PERFORMANCE",
+        "message": "Too many variables (6) in pattern: \"pattern with [var1] and [var2] and [var3] and [var4] and [var5] and [var6]\"",
+        "line": 5,
+        "severity": "warning"
+      },
+      {
+        "type": "PERFORMANCE",
+        "message": "Too many recognizers in context \"main\" (60). Consider splitting.",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"this is a very very very long pattern that exceeds reasonable length limits and might cause performance issues\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"pattern with [var1] and [var2] and [var3] and [var4] and [var5] and [var6]\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 0\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 1\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 2\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 3\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 4\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 5\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 6\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 7\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 8\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 9\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 10\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 11\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 12\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 13\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 14\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 15\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 16\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 17\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 18\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 19\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 20\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 21\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 22\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 23\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 24\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 25\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 26\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 27\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 28\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 29\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 30\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 31\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 32\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 33\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 34\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 35\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 36\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 37\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 38\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 39\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 40\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 41\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 42\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 43\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 44\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 45\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 46\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 47\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 48\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 49\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 50\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 51\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 52\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 53\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 54\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 55\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 56\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 57\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 58\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      },
+      {
+        "type": "UNUSED_PATTERN",
+        "message": "Pattern \"test pattern 59\" is defined but never used",
+        "line": 1,
+        "severity": "warning"
+      }
+    ],
+    "suggestions": [
+      {
+        "type": "ACCESSIBILITY",
+        "message": "Consider adding error handling recognizers",
+        "line": 1,
+        "severity": "suggestion"
+      },
+      {
+        "type": "ACCESSIBILITY",
+        "message": "Consider adding help or guidance recognizers",
+        "line": 1,
+        "severity": "suggestion"
+      },
+      {
+        "type": "STRUCTURE",
+        "message": "Consider organizing 62 recognizers into contexts",
+        "line": 1,
+        "severity": "suggestion"
+      }
+    ],
+    "total": 67
+  },
+  "summary": {
+    "recognizers": 62,
+    "contexts": 1,
+    "variables": 6,
+    "memories": 0,
+    "complexityScore": 68,
+    "qualityScore": 0
+  }
+}

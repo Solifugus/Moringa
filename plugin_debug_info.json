@@ -1,0 +1,90 @@
+{
+  "timestamp": "2026-06-02T00:33:49.622Z",
+  "inputCount": 41,
+  "energy": 5,
+  "fading": 60000,
+  "model": [],
+  "logEntries": [],
+  "traces": [],
+  "pluginSystem": {
+    "enabled": true,
+    "status": {
+      "enabled": true,
+      "totalPlugins": 6,
+      "loadedPlugins": 6,
+      "failedPlugins": 0,
+      "pluginsByType": {
+        "action": 3,
+        "pattern": 3,
+        "memory": 0,
+        "integration": 0
+      },
+      "hooks": {
+        "beforePatternMatch": 0,
+        "afterPatternMatch": 0,
+        "beforeAction": 0,
+        "afterAction": 0,
+        "beforeMemoryOperation": 0,
+        "afterMemoryOperation": 0,
+        "onContextChange": 0,
+        "onError": 0
+      }
+    },
+    "plugins": [
+      {
+        "name": "http-actions",
+        "version": "1.0.0",
+        "type": "action",
+        "description": "HTTP request actions for API integration",
+        "status": "loaded",
+        "registeredAt": "2026-06-02T00:33:49.585Z",
+        "loadedAt": "2026-06-02T00:33:49.586Z"
+      },
+      {
+        "name": "file-actions",
+        "version": "1.0.0",
+        "type": "action",
+        "description": "File system operations for reading/writing files",
+        "status": "loaded",
+        "registeredAt": "2026-06-02T00:33:49.586Z",
+        "loadedAt": "2026-06-02T00:33:49.587Z"
+      },
+      {
+        "name": "math-actions",
+        "version": "1.0.0",
+        "type": "action",
+        "description": "Mathematical operations and calculations",
+        "status": "loaded",
+        "registeredAt": "2026-06-02T00:33:49.586Z",
+        "loadedAt": "2026-06-02T00:33:49.620Z"
+      },
+      {
+        "name": "fuzzy-matcher",
+        "version": "1.0.0",
+        "type": "pattern",
+        "description": "Fuzzy string matching for approximate pattern recognition",
+        "status": "loaded",
+        "registeredAt": "2026-06-02T00:33:49.592Z",
+        "loadedAt": "2026-06-02T00:33:49.592Z"
+      },
+      {
+        "name": "regex-matcher",
+        "version": "1.0.0",
+        "type": "pattern",
+        "description": "Regular expression pattern matching for complex patterns",
+        "status": "loaded",
+        "registeredAt": "2026-06-02T00:33:49.592Z",
+        "loadedAt": "2026-06-02T00:33:49.592Z"
+      },
+      {
+        "name": "semantic-matcher",
+        "version": "1.0.0",
+        "type": "pattern",
+        "description": "Semantic pattern matching using word embeddings and context",
+        "status": "loaded",
+        "registeredAt": "2026-06-02T00:33:49.592Z",
+        "loadedAt": "2026-06-02T00:33:49.592Z"
+      }
+    ]
+  }
+}

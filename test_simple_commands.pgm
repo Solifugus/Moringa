@@ -1,0 +1,15 @@
+-- Simple command test
+
+Memories
+	"test fact"
+
+recognizer "test say"
+	say "Basic say works!"
+
+recognizer "test memory [item]"
+	remember "user likes [item]"
+	say "I'll remember you like [item]."
+
+recognizer "what do I like"
+	recall "user likes [item]"
+	say "You like [item]."

@@ -194,6 +194,9 @@ class Moringa {
 		}
 
 		// Extract Any Conjugation Declarations
+		// NOTE: Commented out early extraction as it conflicts with grammar-based parsing
+		// The conjugateAnd/conjugateTo commands in the grammar handle this properly
+		/*
 		t = 0;
 		while( t < tokens.length ) {
 			if( tokens[t].type === 'splitter' && tokens[t].value.toLowerCase() === 'conjugate' ) {
@@ -221,6 +224,7 @@ class Moringa {
 			}
 			t += 1;
 		}
+		*/
 
 		// If quote not closed by end of line, make error clear closing quote is missing..
 		for( t = 0; t < tokens.length; t += 1 ) {
@@ -712,12 +716,19 @@ class Moringa {
 
 		// For each context (0 is always general; higher to lower priority)..
 		for( var c = model.contexts.length-1; c >= 0; c -= 1 ) {
-			awareness.contextName = model.contexts[c].name; 
+			var context = model.contexts[c];
+
+			// Only process active contexts (general context is always active)
+			if( !context.active && context.name !== 'general' ) {
+				continue;
+			}
+
+			awareness.contextName = context.name;
 			awareness.contextPriority = c;
-			
+
 			// For each recognizer..
-			for( var r = 0; r < model.contexts[c].recognizers.length; r += 1 ) {
-				var recognizer = model.contexts[c].recognizers[r];
+			for( var r = 0; r < context.recognizers.length; r += 1 ) {
+				var recognizer = context.recognizers[r];
 
 				// If the context's always recognizer then execute no matter what.. 
 				if( recognizer.pattern.length === 0 ) {
@@ -821,6 +832,15 @@ class Moringa {
 				lastActual = a; if( firstActual === undefined ) { firstActual = a; }  // ensure we capture first + last found actuals
 				var name  = matchers[m].substr(1,matchers[m].length-2).trim();
 
+				// Parse choice variables [name:choice1,choice2,choice3]
+				var baseName = name;
+				var allowedChoices = null;
+				if( name.indexOf(':') !== -1 ) {
+					var parts = name.split(':');
+					baseName = parts[0].trim();
+					allowedChoices = parts[1].split(',').map(choice => choice.trim());
+				}
+
 				// Capture variable until next matcher or end of actuals (of no more matchers)
 				var value = '';
 
@@ -832,7 +852,7 @@ class Moringa {
 					a += 1;
 				}
 				a -= 1;
-				
+
 				// remove all punctuation and outlaying spaces, but preserve decimal points in numbers
 				value = value.trim();
 				// Only remove punctuation if this isn't a decimal number
@@ -840,15 +860,30 @@ class Moringa {
 					value = value.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
 				}
 
-				if( name.indexOf('<<') !== -1 ) {
-					let group = name.split('<<')[1].trim();
-					name      = name.split('<<')[0].trim();
+				// For choice variables, validate the input against allowed choices
+				if( allowedChoices !== null ) {
+					var validChoice = false;
+					for( var i = 0; i < allowedChoices.length; i += 1 ) {
+						if( value.toLowerCase() === allowedChoices[i].toLowerCase() ) {
+							validChoice = true;
+							break;
+						}
+					}
+					if( !validChoice ) {
+						// Input doesn't match any allowed choice - this recognizer doesn't match
+						return false;
+					}
+				}
+
+				if( baseName.indexOf('<<') !== -1 ) {
+					let group = baseName.split('<<')[1].trim();
+					baseName  = baseName.split('<<')[0].trim();
 					//console.log( 'Constrain "' + value + '" from "' + group + '": ' + JSON.stringify( model.awareness.variable[group]) );
 					if( group !== '' && !this.valueInVariable( model.awareness.variable[group], value ) ) return false;
 				}
 
-				// All is well.. assign variable to collection (singular overwrite, as opposed to Recall command that may collect multipe values)
-				if( name !== '' ) variable[name] = [{ value:value, timeStamp:timeStamp }]; 
+				// All is well.. assign variable to collection using base name (singular overwrite, as opposed to Recall command that may collect multipe values)
+				if( baseName !== '' ) variable[baseName] = [{ value:value, timeStamp:timeStamp }]; 
 			} 
 			// Else litteral
 			else {
@@ -1061,7 +1096,7 @@ class Moringa {
 		return Math.floor( Math.random() * ( max - min + 1 ) + min );
 	}
 
-	isConditionTrue( condition, model ) { 
+	isConditionTrue( condition, model ) {
 		var variable = model.awareness.variable;
 
 		// If no condition given, assume it's true..
@@ -1357,33 +1392,71 @@ class Moringa {
 			}
 		}
 
+		// Create a filled pattern for more precise matching
+		var filledPattern = this.formatOutput(param.message, model.awareness.variable, model.conjugations);
+		var filledMatchers = this.formatRecognizerPattern(filledPattern);
+
+		// Search for the best matching memory, prioritizing exact and specific matches
+		var bestMatch = null;
+		var bestScore = -1;
+		var bestMemory = null;
+
 		for( var m = 0; m < model.memories.length; m += 1 ) {
-			// Only search memories from currently active contexts
-			if( activeContexts.includes(model.memories[m].context) ) {
+			// Only search memories from currently active contexts (including predefined)
+			var memoryContext = model.memories[m].context || 'general';
+			if( activeContexts.includes(memoryContext) || memoryContext === 'predefined' ) {
 				var memory = model.memories[m].memory;
 				var found  = this.matchRecognizer( memory, matchers, model );
 				if( found !== false ) {
-				// For each variable name, remove all previous values and reload, accoridng to what was found
-				var variable = model.awareness.variable;
-				for( var name in found ) {
-					//if( model.awareness.variable[name] === undefined ) model.awareness.variable[name] = [];
-					if( variable[name] === undefined ) variable[name] = [];
-					for( var vf = 0; vf < found[name].length; vf += 1 ) {
-						// Is value already known in variable?
-						let alreadyKnown = false;
-						for( let vs = 0; vs < variable[name].length; vs += 1 ) {
-							if( variable[name][vs].value === found[name][vf].value ) {
-								alreadyKnown = true;
-								break;
+					// Calculate specificity score: how well do the variables match the query?
+					var score = 0;
+					var specificity = 0;
+
+					// For simple recall without specific query variables, just use the match
+					if( Object.keys(model.awareness.variable).length === 0 ) {
+						specificity = 100; // Default good score for basic recall
+					} else {
+						// Check if variables from the query match the found variables more specifically
+						for( var varName in model.awareness.variable ) {
+							if( found[varName] && model.awareness.variable[varName] ) {
+								var queryValue = model.awareness.variable[varName][0].value.toLowerCase();
+								var foundValue = found[varName][0].value.toLowerCase();
+
+								// Exact match gets highest score
+								if( queryValue === foundValue ) {
+									specificity += 1000;
+								}
+								// Partial match gets medium score
+								else if( foundValue.includes(queryValue) || queryValue.includes(foundValue) ) {
+									specificity += 100;
+								}
 							}
 						}
-						// If value not already known to variable, append it..
-						if( !alreadyKnown ) variable[name].push(found[name][vf]);
+					}
+
+					score = specificity - (model.memories.length - m); // Prefer more specific and earlier memories
+
+					// If this is a better match, use it
+					if( score > bestScore ) {
+						bestMatch = found;
+						bestScore = score;
+						bestMemory = memory;
 					}
 				}
 			}
 		}
-	}
+
+		// If we found a match, load only those variables
+		if( bestMatch !== null ) {
+			var variable = model.awareness.variable;
+			for( var name in bestMatch ) {
+				// Clear existing values for this variable and set the recalled value
+				variable[name] = [];
+				for( var vf = 0; vf < bestMatch[name].length; vf += 1 ) {
+					variable[name].push(bestMatch[name][vf]);
+				}
+			}
+		}
 	}
 	
 	actionForget( param, model ) {
@@ -1440,7 +1513,7 @@ class Moringa {
 		}
 	}
 
-	actionEnter( param, model ) { // ZZZ
+	actionEnter( param, model ) {
 		// First deactivate all non-general contexts (exclusive context switching)
 		for(var c = 0; c < model.contexts.length; c += 1 ) {
 			if( model.contexts[c].name !== 'general' ) {
